@@ -7,6 +7,6 @@ namespace Menu.Classes
 {
     public class Controls
     {
-
+        public string text;
     }
 }
