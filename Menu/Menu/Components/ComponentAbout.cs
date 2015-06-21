@@ -19,7 +19,6 @@ namespace Menu
             about.AddItem("Graphics: ");
             about.AddItem("");
             about.AddItem("Programmer: ");
-            about.AddItem("Lol");
             about.AddItem("");
         }
         public override void Initialize()
