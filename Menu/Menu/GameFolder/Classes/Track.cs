@@ -37,7 +37,7 @@ namespace Menu.Classes
                     position.Y--;
                 }
                 trackList.Add(new Vector2(position.X, position.Y));
-            } while (trackList.Count < Game.width/2);
+            } while (trackList.Count < Game.width);
         }
 
         public void DrawTrack()
