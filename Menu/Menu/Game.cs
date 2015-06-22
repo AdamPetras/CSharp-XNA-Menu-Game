@@ -29,7 +29,7 @@ namespace Menu
             ComponentAbout about = new ComponentAbout(this);
             ComponentControls controls = new ComponentControls(this);
             TheGame theGame = new TheGame(this);
-            ComponentGameMenu menu = new ComponentGameMenu(this, about,controls,theGame);
+            ComponentGameMenu menu = new ComponentGameMenu(this, about, controls, theGame);
 
             Components.Add(menu);
             Components.Add(about);
@@ -78,7 +78,7 @@ namespace Menu
         }
 
         public bool SingleClick(Keys key)
-        {           
+        {
             return keyState.IsKeyDown(key) && keyStateBefore.IsKeyUp(key);
         }
 

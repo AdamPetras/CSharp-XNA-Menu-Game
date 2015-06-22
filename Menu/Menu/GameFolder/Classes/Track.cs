@@ -11,18 +11,21 @@ namespace Menu.Classes
         private Random rnd;
         private Vector2 position;
         private Game game;
+        private const int value = 4; //čím větsí hodnota tím větší kopce
+        private List<Vector2> track;
 
         public Track(Game game)
         {
             this.game = game;
             position = new Vector2(0,800);
+            track = new List<Vector2>();
             rnd = new Random();
         }
 
         public void GeneratingTrack()
         {
             position.X++;
-            int rand = rnd.Next(1, 3);
+            int rand = rnd.Next(1, value);
             if (rand == 1)
             {
                 position.Y++;
@@ -31,7 +34,16 @@ namespace Menu.Classes
             {
                 position.Y--;
             }
+            track.Add(new Vector2(position.X,position.Y));
             game.spriteBatch.DrawString(game.font,"X",new Vector2(position.X,position.Y),Color.White);
+        }
+
+        public void DrawTrack()
+        {
+            foreach (Vector2 vec in track)
+            {
+                game.spriteBatch.DrawString(game.normalFont, "-", vec, Color.White);
+            }
         }
     }
 }

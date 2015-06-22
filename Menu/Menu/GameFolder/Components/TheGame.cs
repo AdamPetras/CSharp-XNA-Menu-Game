@@ -43,6 +43,7 @@ namespace Menu.Components
         {
             game.spriteBatch.Begin();
             track.GeneratingTrack();
+            track.DrawTrack();
             game.spriteBatch.End();
             base.Draw(gameTime);
         }
