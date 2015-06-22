@@ -20,10 +20,12 @@ namespace Menu.Components
     {
         private Game game;
         private Track track;
+        private Movement movement;
         public TheGame(Game game)
             : base(game)
         {
             this.game = game;
+            movement = new Movement(game,track);
             track = new Track(game);
         } 
 
@@ -35,7 +37,7 @@ namespace Menu.Components
 
         public override void Update(GameTime gameTime)
         {
-
+            movement.Move();
             base.Update(gameTime);
         }
 
@@ -44,6 +46,7 @@ namespace Menu.Components
             game.spriteBatch.Begin();
             track.GeneratingTrack();
             track.DrawTrack();
+            movement.DrawPosition();
             game.spriteBatch.End();
             base.Draw(gameTime);
         }
