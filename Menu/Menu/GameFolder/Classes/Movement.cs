@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Menu.Classes;
+﻿using Menu.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -18,12 +14,16 @@ namespace Menu.Components
             this.game = game;
             this.track = track;
             position = new Vector2(0, 800);
+
+
         }
 
         public void Move()
         {
             if (game.keyState.IsKeyDown(Keys.A))
+            {
                 position.X--;
+            }
             if (game.keyState.IsKeyDown(Keys.D))
                 position.X++;
         }

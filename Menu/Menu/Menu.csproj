@@ -73,7 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameFolder\Classes\Movement.cs" />
-    <Compile Include="GameFolder\Classes\SurfaceMove.cs" />
+    <Compile Include="GameFolder\Classes\Camera.cs" />
     <Compile Include="Menu\Classes\AboutItems.cs" />
     <Compile Include="Menu\Classes\About.cs" />
     <Compile Include="Menu\Classes\ControlItems.cs" />

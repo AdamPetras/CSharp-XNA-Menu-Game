@@ -1,34 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Menu.Classes;
 using Menu.GameFolder.Classes;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-
 
 namespace Menu.Components
 {
-    /// <summary>
-    /// This is a game component that implements IUpdateable.
-    /// </summary>
-    public class TheGame : Microsoft.Xna.Framework.DrawableGameComponent
+    public class TheGame : DrawableGameComponent
     {
         private Game game;
         private Track track;
-        private Movement movement;
+        public Movement movement;
+        private Camera camera;
         public TheGame(Game game)
             : base(game)
         {
             this.game = game;
             track = new Track(game);
             movement = new Movement(game,track);
-
+            camera = new Camera(GraphicsDevice.Viewport);
         } 
 
         public override void Initialize()
@@ -41,16 +30,18 @@ namespace Menu.Components
         {
             track.GeneratingTrack();
             movement.Move();
+            camera.Update(this);
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            game.spriteBatch.Begin();
+            game.spriteBatch.Begin(SpriteSortMode.Deferred,BlendState.AlphaBlend,null,null,null,null,camera.transform);
             track.DrawTrack();
             movement.DrawPosition();
             game.spriteBatch.End();
             base.Draw(gameTime);
         }
+
     }
 }
