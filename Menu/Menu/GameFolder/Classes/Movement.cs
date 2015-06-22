@@ -25,7 +25,7 @@ namespace Menu.Components
             if (game.keyState.IsKeyDown(Keys.D))
                 position.X++;
         }
-
+        
         public void DrawPosition()
         {
             game.spriteBatch.DrawString(game.font, "X", new Vector2(position.X, track.GetTrackList()[(int)position.X].Y), Color.Red);
