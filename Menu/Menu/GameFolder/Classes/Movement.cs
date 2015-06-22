@@ -10,7 +10,7 @@ namespace Menu.Components
 {
     public class Movement
     {
-        private Vector2 position;
+        public Vector2 position;
         private Game game;
         private Track track;
         public Movement(Game game, Track track)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Menu.Classes;
+using Menu.GameFolder.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -21,12 +22,14 @@ namespace Menu.Components
         private Game game;
         private Track track;
         private Movement movement;
+        private Viewport viewport;
         public TheGame(Game game)
             : base(game)
         {
             this.game = game;
             track = new Track(game);
             movement = new Movement(game,track);
+            viewport = game.graphics.GraphicsDevice.Viewport;
 
         } 
 
@@ -47,7 +50,7 @@ namespace Menu.Components
         {
             game.spriteBatch.Begin();
             track.DrawTrack();
-            movement.DrawPosition();
+            movement.DrawPosition();         
             game.spriteBatch.End();
             base.Draw(gameTime);
         }

@@ -11,7 +11,7 @@ namespace Menu.Classes
         private Random rnd;
         private Vector2 position;
         private Game game;
-        private const int value = 3;
+        private const int value = 4;
         private List<Vector2> trackList;
 
         public Track(Game game)
@@ -25,12 +25,12 @@ namespace Menu.Classes
         public void GeneratingTrack()
         {
             position.X+=1;
-            int rand = rnd.Next(1, value);
-            if (rand == 1)
+            double rand = rnd.NextDouble();
+            if (rand <=0.5)
             {
                 position.Y++;
             }
-            else
+            else if (rand>=0.5)
             {
                 position.Y--;
             }
