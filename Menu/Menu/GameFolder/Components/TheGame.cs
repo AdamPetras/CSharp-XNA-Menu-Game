@@ -11,13 +11,15 @@ namespace Menu.Components
         private Track track;
         public Movement movement;
         private Camera camera;
+        private Viewport viewport;
         public TheGame(Game game)
             : base(game)
         {
             this.game = game;
             track = new Track(game);
             movement = new Movement(game,track);
-            camera = new Camera(GraphicsDevice.Viewport);
+            viewport = GraphicsDevice.Viewport;
+            camera = new Camera(viewport);
         } 
 
         public override void Initialize()
