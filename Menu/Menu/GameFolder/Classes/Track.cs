@@ -21,7 +21,7 @@ namespace Menu.Classes
             trackList = new List<Vector2>();
             rnd = new Random();
         }
-
+        
         public void GeneratingTrack()
         {
             do
