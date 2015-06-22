@@ -76,11 +76,13 @@
     <Compile Include="Classes\About.cs" />
     <Compile Include="Classes\ControlItems.cs" />
     <Compile Include="Classes\Controls.cs" />
+    <Compile Include="Classes\Track.cs" />
     <Compile Include="Components\ComponentAbout.cs" />
     <Compile Include="Components\ComponentControls.cs" />
     <Compile Include="Components\ComponentGameMenu.cs" />
     <Compile Include="Classes\Menu.cs" />
     <Compile Include="Classes\MenuItems.cs" />
+    <Compile Include="Components\TheGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Components\Game.cs" />

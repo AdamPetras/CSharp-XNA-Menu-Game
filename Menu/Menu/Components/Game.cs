@@ -28,10 +28,14 @@ namespace Menu
             Content.RootDirectory = "Content";
             ComponentAbout about = new ComponentAbout(this);
             ComponentControls controls = new ComponentControls(this);
-            ComponentGameMenu menu = new ComponentGameMenu(this, about,controls);
+            TheGame theGame = new TheGame(this);
+            ComponentGameMenu menu = new ComponentGameMenu(this, about,controls,theGame);
+
             Components.Add(menu);
             Components.Add(about);
             Components.Add(controls);
+            Components.Add(theGame);
+            StartUp(theGame);
             StartUp(about);
             StartUp(controls);
         }
@@ -69,7 +73,6 @@ namespace Menu
         protected override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-
             spriteBatch.End();
             base.Draw(gameTime);
         }

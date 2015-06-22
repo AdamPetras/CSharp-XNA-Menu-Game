@@ -13,7 +13,8 @@ namespace Menu
         private Game game;
         private ComponentAbout about;
         private ComponentControls controls;
-        public ComponentGameMenu(Game game,ComponentAbout about,ComponentControls controls)
+        private TheGame theGame;
+        public ComponentGameMenu(Game game,ComponentAbout about,ComponentControls controls,TheGame theGame)
             : base(game)
         {
             this.game = game;
@@ -26,6 +27,7 @@ namespace Menu
             menuItems.Next();
             this.about = about;
             this.controls = controls;
+            this.theGame = theGame;
         }
         public override void Initialize()
         {
@@ -49,6 +51,8 @@ namespace Menu
                 switch (menuItems.menu.text)
                 {
                     case "Start":
+                        SetComponents(theGame,true);
+                        SetComponents(this, false);
                         break;
                     case "Controls":
                         SetComponents(controls,true);
