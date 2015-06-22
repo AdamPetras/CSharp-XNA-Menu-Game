@@ -11,7 +11,7 @@ namespace Menu.Classes
         private Random rnd;
         private Vector2 position;
         private Game game;
-        private const int value = 3; //čím větsí hodnota tím větší kopce
+        private const int value = 3;
         private List<Vector2> trackList;
 
         public Track(Game game)
@@ -24,7 +24,7 @@ namespace Menu.Classes
 
         public void GeneratingTrack()
         {
-            position.X+=3;
+            position.X+=1;
             int rand = rnd.Next(1, value);
             if (rand == 1)
             {
@@ -35,7 +35,6 @@ namespace Menu.Classes
                 position.Y--;
             }
             trackList.Add(new Vector2(position.X,position.Y));
-            game.spriteBatch.DrawString(game.font,"X",new Vector2(position.X,position.Y),Color.White);
         }
 
         public void DrawTrack()

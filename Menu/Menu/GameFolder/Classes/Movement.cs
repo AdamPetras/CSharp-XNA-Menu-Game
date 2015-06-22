@@ -30,7 +30,7 @@ namespace Menu.Components
 
         public void DrawPosition()
         {
-            game.spriteBatch.DrawString(game.font,"X",new Vector2(position.X,track.GetTrackList()[(int) position.X].Y),Color.Red);
+            game.spriteBatch.DrawString(game.font, "X", new Vector2(position.X, track.GetTrackList()[(int)position.X].Y), Color.Red);
         }
     }
 }
