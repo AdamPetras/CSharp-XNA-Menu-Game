@@ -29,7 +29,7 @@ namespace Menu
         {
             foreach (About about in items)
             {
-                Color color = Color.Red;  //pokud je nějaky about item aktivni, změní barvu na červenou
+                Color color = Color.Red;
                 game.spriteBatch.DrawString(game.normalFont, about.text, about.position,color);
             }
         }

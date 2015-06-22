@@ -1,3 +1,4 @@
+using Menu.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -26,10 +27,13 @@ namespace Menu
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             ComponentAbout about = new ComponentAbout(this);
-            ComponentGameMenu menu = new ComponentGameMenu(this, about);
+            ComponentControls controls = new ComponentControls(this);
+            ComponentGameMenu menu = new ComponentGameMenu(this, about,controls);
             Components.Add(menu);
             Components.Add(about);
+            Components.Add(controls);
             StartUp(about);
+            StartUp(controls);
         }
 
         protected override void Initialize()

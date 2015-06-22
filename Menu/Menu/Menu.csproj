@@ -74,8 +74,10 @@
   <ItemGroup>
     <Compile Include="Classes\AboutItems.cs" />
     <Compile Include="Classes\About.cs" />
+    <Compile Include="Classes\ControlItems.cs" />
     <Compile Include="Classes\Controls.cs" />
     <Compile Include="Components\ComponentAbout.cs" />
+    <Compile Include="Components\ComponentControls.cs" />
     <Compile Include="Components\ComponentGameMenu.cs" />
     <Compile Include="Classes\Menu.cs" />
     <Compile Include="Classes\MenuItems.cs" />

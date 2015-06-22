@@ -1,3 +1,4 @@
+using Menu.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,7 +12,8 @@ namespace Menu
         private MenuItems menuItems;
         private Game game;
         private ComponentAbout about;
-        public ComponentGameMenu(Game game,ComponentAbout about)
+        private ComponentControls controls;
+        public ComponentGameMenu(Game game,ComponentAbout about,ComponentControls controls)
             : base(game)
         {
             this.game = game;
@@ -23,6 +25,7 @@ namespace Menu
             menuItems.AddItem("End");
             menuItems.Next();
             this.about = about;
+            this.controls = controls;
         }
         public override void Initialize()
         {
@@ -48,7 +51,7 @@ namespace Menu
                     case "Start":
                         break;
                     case "Controls":
-                        
+                        SetComponents(controls,true);
                         break;
                     case "About":
                         SetComponents(about, true);
@@ -59,7 +62,10 @@ namespace Menu
                 }
             }
             if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.Up))
-                SetComponents(about,false);
+            {
+                SetComponents(controls,false);
+                SetComponents(about, false);
+            }
             base.Update(gameTime);
         }
 
