@@ -26,18 +26,7 @@ namespace Menu
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            ComponentAbout about = new ComponentAbout(this);
-            ComponentControls controls = new ComponentControls(this);
-            TheGame theGame = new TheGame(this);
-            ComponentGameMenu menu = new ComponentGameMenu(this, about, controls, theGame);
 
-            Components.Add(menu);
-            Components.Add(about);
-            Components.Add(controls);
-            Components.Add(theGame);
-            StartUp(theGame);
-            StartUp(about);
-            StartUp(controls);
         }
 
         protected override void Initialize()
@@ -45,6 +34,18 @@ namespace Menu
             graphics.PreferredBackBufferWidth = width;
             graphics.PreferredBackBufferHeight = height;
             graphics.ApplyChanges();
+
+            ComponentAbout about = new ComponentAbout(this);
+            ComponentControls controls = new ComponentControls(this);
+            TheGame theGame = new TheGame(this);
+            ComponentGameMenu menu = new ComponentGameMenu(this, about, controls, theGame);
+            Components.Add(menu);
+            Components.Add(about);
+            Components.Add(controls);
+            Components.Add(theGame);
+            StartUp(theGame);
+            StartUp(about);
+            StartUp(controls);
             base.Initialize();
         }
 

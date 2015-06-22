@@ -21,17 +21,14 @@ namespace Menu.Components
             : base(game)
         {
             this.game = game;
-            controlItems = new ControlItems(game);
-            controlItems.AddItem("***MOVEMENT***");
-            controlItems.AddItem("Up-W");
-            controlItems.AddItem("Down-S");
-            controlItems.AddItem("Left-A");
-            controlItems.AddItem("Right-D");
         }
 
         public override void Initialize()
         {
-
+            controlItems = new ControlItems(game);
+            controlItems.AddItem("***MOVEMENT***");
+            controlItems.AddItem("Brake-A");
+            controlItems.AddItem("Throttle-D");
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

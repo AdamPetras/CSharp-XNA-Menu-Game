@@ -13,17 +13,17 @@ namespace Menu
             : base(game)
         {
             this.game = game;
+        }
+        public override void Initialize()
+        {
             about = new AboutItems(game);
             about.AddItem("***GAME DESIGNERS***");
             about.AddItem("");
-            about.AddItem("Graphics: ");
+            about.AddItem("Main graphics: ");
+            about.AddItem("Jiøí Mrhálek");
             about.AddItem("");
-            about.AddItem("Programmer: ");
-            about.AddItem("");
-        }
-        public override void Initialize()
-        {           
-            
+            about.AddItem("Main programmer: ");
+            about.AddItem("Adam Petráš");
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

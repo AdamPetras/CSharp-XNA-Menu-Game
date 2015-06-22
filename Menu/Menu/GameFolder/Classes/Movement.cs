@@ -13,9 +13,7 @@ namespace Menu.Components
         {
             this.game = game;
             this.track = track;
-            position = new Vector2(0, 800);
-
-
+            position = new Vector2(0, 0);
         }
 
         public void Move()
