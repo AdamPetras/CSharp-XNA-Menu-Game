@@ -5,7 +5,6 @@ namespace Menu
 {
     public class MenuItems
     {
-        private string text;
         public Menu menu;
         private List<Menu> items;
         private Game game;
@@ -13,7 +12,6 @@ namespace Menu
 
         public MenuItems(Game game)
         {
-            text = "";
             height = 72;
             this.game = game;
             items = new List<Menu>();

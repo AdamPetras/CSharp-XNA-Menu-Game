@@ -5,14 +5,11 @@ namespace Menu
 {
     public class AboutItems
     {
-        private string text;
-        public About about;
         private List<About> items;
         private Game game;
         private float height;
         public AboutItems(Game game)
         {
-            text = "";
             height = 18;
             this.game = game;
             items = new List<About>();

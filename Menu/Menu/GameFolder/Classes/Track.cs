@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using Menu.GameFolder.Classes;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Menu.Classes
 {
@@ -11,37 +13,41 @@ namespace Menu.Classes
         private Vector2 position;
         private Game game;
         private List<Vector2> trackList;
-        private Camera camera;
 
-        public Track(Game game,Camera camera)
+        public Track(Game game)
         {
             this.game = game;
-            this.camera = camera;
-            position = new Vector2(0, Game.height/2);
+            position = new Vector2(0, Game.height / 2);
             trackList = new List<Vector2>();
             rnd = new Random();
         }
-        
-        public void GeneratingTrack()
+
+        private void GeneratingTrack(GameTime gameTime)
+        {
+            int offset = rnd.Next(0,10);
+            position.X++;
+            if (offset < 2)
+                position.Y ++;
+            else if (offset > 7)
+                position.Y --;
+            else
+                position.Y += 0;
+            trackList.Add(new Vector2(position.X, position.Y));
+        }
+
+        private void StartUp()
         {
             do
             {
                 position.X++;
-                double rand = rnd.NextDouble();
-                if (rand <= 0.5)
-                {
-                    position.Y++;
-                }
-                else if (rand >= 0.5)
-                {
-                    position.Y--;
-                }
                 trackList.Add(new Vector2(position.X, position.Y));
-            } while (trackList.Count < Game.width);
+            } while (trackList.Count < Game.width / 2);
         }
 
-        public void DrawTrack()
+        public void DrawTrack(GameTime gameTime)
         {
+            StartUp();
+            GeneratingTrack(gameTime);
             foreach (Vector2 vec in trackList)
             {
                 game.spriteBatch.DrawString(game.normalFont, "-", vec, Color.White);

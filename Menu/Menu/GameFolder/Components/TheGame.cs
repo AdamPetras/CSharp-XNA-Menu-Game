@@ -9,7 +9,7 @@ namespace Menu.Components
     {
         private Game game;
         private Track track;
-        public Movement movement;
+        private Movement movement;
         private Camera camera;
         public TheGame(Game game)
             : base(game)
@@ -22,16 +22,14 @@ namespace Menu.Components
         public override void Initialize()
         {
             base.Initialize();
-            track = new Track(game, camera);
+            track = new Track(game);
             movement = new Movement(game, track);
             camera = new Camera(movement);
-            //track.GeneratingTrack();
         }
 
         public override void Update(GameTime gameTime)
         {
             camera.Update(this);
-            track.GeneratingTrack();
             movement.Move();
             base.Update(gameTime);
         }
@@ -39,7 +37,7 @@ namespace Menu.Components
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.transform);
-            track.DrawTrack();
+            track.DrawTrack(gameTime);
             movement.DrawPosition();
             game.spriteBatch.End();
             base.Draw(gameTime);

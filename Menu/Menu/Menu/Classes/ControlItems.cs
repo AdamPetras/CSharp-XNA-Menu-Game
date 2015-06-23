@@ -8,15 +8,12 @@ namespace Menu.Classes
 {
     public class ControlItems
     {
-        private string text;
-        private Controls controls;
         private Game game;
         private List<Controls> items;
         private float height;
         public ControlItems(Game game)
         {
             this.game = game;
-            text = "";
             height = 16;
             items = new List<Controls>();
         }
@@ -31,7 +28,7 @@ namespace Menu.Classes
         {
             foreach (Controls controls in items)
             {
-                Color color = Color.White;
+                Color color = Color.Red;
                 game.spriteBatch.DrawString(game.normalFont, controls.text, controls.position, color);
             }
         }

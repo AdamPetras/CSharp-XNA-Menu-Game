@@ -6,7 +6,7 @@ namespace Menu.GameFolder.Classes
     public class Camera
     {
         public Matrix transform;
-        public Vector2 centering;
+        private Vector2 centering;
         private Movement movement;
         public Camera(Movement movement)
         {

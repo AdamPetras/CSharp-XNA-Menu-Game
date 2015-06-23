@@ -19,11 +19,12 @@ namespace Menu
             about = new AboutItems(game);
             about.AddItem("***GAME DESIGNERS***");
             about.AddItem("");
-            about.AddItem("Main graphics: ");
-            about.AddItem("Jiøí Mrhálek");
-            about.AddItem("");
             about.AddItem("Main programmer: ");
             about.AddItem("Adam Petráš");
+            about.AddItem("");
+            about.AddItem("Main graphics: ");
+            about.AddItem("Jiøí Mrhálek");
+
             base.Initialize();
         }
         public override void Update(GameTime gameTime)
