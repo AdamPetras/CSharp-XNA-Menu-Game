@@ -6,7 +6,7 @@ namespace Menu.GameFolder.Classes
     public class Camera
     {
         public Matrix transform;
-        private Vector2 centering;
+        public Vector2 centering;
         private Movement movement;
         public Camera(Movement movement)
         {
@@ -15,7 +15,7 @@ namespace Menu.GameFolder.Classes
 
         public void Update(TheGame theGame)
         {
-            centering = new Vector2(movement.position.X + movement.position.Y / 2 - Game.width / 2, movement.position.Y);
+            centering = new Vector2(movement.position.X-Game.width/2, movement.position.Y-Game.height/2);
             transform = Matrix.CreateScale(new Vector3(1, 1, 0))*
                         Matrix.CreateTranslation(new Vector3(-centering.X, -centering.Y, 0));
         }

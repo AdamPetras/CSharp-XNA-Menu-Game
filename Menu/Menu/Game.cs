@@ -14,8 +14,12 @@ namespace Menu
         public SpriteBatch spriteBatch;
         public KeyboardState keyState, keyStateBefore;
 
-        public Texture2D spritBackground;
+        public Texture2D spritMenuBackground;
         public Texture2D spritAbout;
+        public Texture2D spritGameBackground;
+        public Texture2D spritCar;
+
+
 
         public SpriteFont font;
         public SpriteFont normalFont;
@@ -54,8 +58,10 @@ namespace Menu
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>(@"Font");
             normalFont = Content.Load<SpriteFont>(@"NormalFont");
-            spritBackground = Content.Load<Texture2D>(@"Sprits/backGround");
+            spritMenuBackground = Content.Load<Texture2D>(@"Sprits/backGround");
             spritAbout = Content.Load<Texture2D>(@"Sprits/About");
+            spritGameBackground = Content.Load<Texture2D>(@"Sprits/grass");
+            spritCar = Content.Load<Texture2D>(@"Sprits/car");
             // TODO: use this.Content to load your game content here
         }
 

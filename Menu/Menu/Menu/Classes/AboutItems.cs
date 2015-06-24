@@ -24,6 +24,7 @@ namespace Menu
 
         public void DrawAbout()  //výpis about cyklem foreach tzn... vypíše všechny položky about
         {
+            game.spriteBatch.Draw(game.spritAbout, new Vector2(800, 200), Color.LightBlue * 0.3f);
             foreach (About about in items)
             {
                 Color color = Color.Red;

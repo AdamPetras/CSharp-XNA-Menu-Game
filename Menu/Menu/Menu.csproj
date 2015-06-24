@@ -78,7 +78,6 @@
     <Compile Include="Menu\Classes\About.cs" />
     <Compile Include="Menu\Classes\ControlItems.cs" />
     <Compile Include="Menu\Classes\Controls.cs" />
-    <Compile Include="GameFolder\Classes\Track.cs" />
     <Compile Include="Menu\Components\ComponentAbout.cs" />
     <Compile Include="Menu\Components\ComponentControls.cs" />
     <Compile Include="Menu\Components\ComponentGameMenu.cs" />

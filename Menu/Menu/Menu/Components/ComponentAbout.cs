@@ -23,7 +23,7 @@ namespace Menu
             about.AddItem("Adam Petráš");
             about.AddItem("");
             about.AddItem("Main graphics: ");
-            about.AddItem("Jiøí Mrhálek");
+            about.AddItem("Adam Petráš");
 
             base.Initialize();
         }
@@ -36,7 +36,6 @@ namespace Menu
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
-            game.spriteBatch.Draw(game.spritAbout,new Vector2(800,200), Color.LightBlue*0.3f );
             about.DrawAbout();
             game.spriteBatch.End();
             base.Draw(gameTime);

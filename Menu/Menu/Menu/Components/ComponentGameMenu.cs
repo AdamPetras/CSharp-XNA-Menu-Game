@@ -76,7 +76,7 @@ namespace Menu
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
-            game.spriteBatch.Draw(game.spritBackground, new Vector2(0, 0), Color.White); //vykreslení backgroundu pro menu
+            game.spriteBatch.Draw(game.spritMenuBackground, Vector2.Zero, Color.White); //vykreslení backgroundu pro menu
             menuItems.DrawMenu();
             game.spriteBatch.End();
             base.Draw(gameTime);
