@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Menu.GameFolder;
+using Menu.GameFolder.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -19,16 +20,18 @@ namespace Menu.Components
         public Vector2 position;
         private Game game;
         private float angle;
-        public ECar eCar;
+        private ECar eCar;
+        public CarPhysics physics;
         public Car(Game game)
         {
             this.game = game;
             angle = 0.0f;
             position = new Vector2(Game.width / 2, Game.height / 2);
             eCar = ECar.Stop;
+            physics = new CarPhysics();
         }
 
-        public void Move()
+        public void Move(GameTime gameTime)
         {
 
             if (game.keyState.IsKeyDown(Keys.Left))
@@ -57,6 +60,12 @@ namespace Menu.Components
                 Distance();
                 Position();
             }
+            if (game.keyState.IsKeyUp(Keys.Up) && game.keyState.IsKeyUp(Keys.Down))
+            {
+                eCar = ECar.Stop;
+                physics.Reset();
+            }
+            physics.Speed(gameTime,eCar);
         }
 
         private float Rotation()
@@ -73,7 +82,7 @@ namespace Menu.Components
             double distance = 0;
             if (eCar == ECar.Forward)
             {
-                distance+=2;
+                distance+=physics.Velocity;
             }
             else if(eCar==ECar.Backward)
             {

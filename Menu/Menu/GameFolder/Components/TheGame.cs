@@ -27,7 +27,7 @@ namespace Menu.Components
         public override void Update(GameTime gameTime)
         {
             camera.Update(this);
-            car.Move();
+            car.Move(gameTime);
             base.Update(gameTime);        
         }
 
@@ -36,7 +36,7 @@ namespace Menu.Components
             game.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.transform);
             game.spriteBatch.Draw(game.spritGameBackground,Vector2.Zero,Color.White);
             car.DrawCar();
-            game.spriteBatch.DrawString(game.font, car.eCar+"\n"+car.position.X+"   "+car.position.Y, new Vector2(400, 200), Color.White);
+            game.spriteBatch.DrawString(game.font, car.physics.Velocity.ToString(), new Vector2(400, 200), Color.White);
             game.spriteBatch.End();
             base.Draw(gameTime);
         }
