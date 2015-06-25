@@ -6,14 +6,14 @@ namespace Menu.GameFolder.Classes
     public class Camera
     {
         public Matrix transform;
-        public Vector2 centering;
+        private Vector2 centering;
         private Car car;
         public Camera(Car car)
         {
             this.car = car;
         }
 
-        public void Update(TheGame theGame)
+        public void Update()
         {
             centering = new Vector2(car.position.X-Game.width/2, car.position.Y-Game.height/2);
             transform = Matrix.CreateScale(new Vector3(1, 1, 0))*

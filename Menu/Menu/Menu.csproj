@@ -75,6 +75,7 @@
     <Compile Include="GameFolder\Classes\Car.cs" />
     <Compile Include="GameFolder\Classes\Camera.cs" />
     <Compile Include="GameFolder\Classes\CarPhysics.cs" />
+    <Compile Include="GameFolder\Components\ComponentCar.cs" />
     <Compile Include="GameFolder\Interface\IPhysics.cs" />
     <Compile Include="MenuFolder\Classes\Items.cs" />
     <Compile Include="MenuFolder\Interface\IMenuItems.cs" />
@@ -84,7 +85,7 @@
     <Compile Include="MenuFolder\Components\ComponentControls.cs" />
     <Compile Include="MenuFolder\Components\ComponentGameMenu.cs" />
     <Compile Include="MenuFolder\Classes\MenuItems.cs" />
-    <Compile Include="GameFolder\Components\TheGame.cs" />
+    <Compile Include="GameFolder\Components\ComponentGame.cs" />
     <Compile Include="MenuFolder\Interface\IMenu.cs" />
     <Compile Include="MenuFolder\Interface\IItems.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

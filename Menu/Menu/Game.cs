@@ -42,7 +42,7 @@ namespace Menu
             graphics.ApplyChanges();
             ComponentAbout about = new ComponentAbout(this);
             ComponentControls controls = new ComponentControls(this);
-            TheGame theGame = new TheGame(this);
+            ComponentGame theGame = new ComponentGame(this);
             ComponentGameMenu menu = new ComponentGameMenu(this, about, controls, theGame);
             Components.Add(menu);
             Components.Add(about);
@@ -63,12 +63,11 @@ namespace Menu
             spritAbout = Content.Load<Texture2D>(@"Sprits/About");
             spritGameBackground = Content.Load<Texture2D>(@"Sprits/grass");
             spritCar = Content.Load<Texture2D>(@"Sprits/car");
-            // TODO: use this.Content to load your game content here
         }
 
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+
         }
 
         protected override void Update(GameTime gameTime)

@@ -22,10 +22,10 @@ namespace Menu.MenuFolder.Components
             about.AddItem("***GAME DESIGNERS***");
             about.AddItem("");
             about.AddItem("Main programmer: ");
-            about.AddItem("Adam Petr�");
+            about.AddItem("Adam Petráš");
             about.AddItem("");
             about.AddItem("Main graphics: ");
-            about.AddItem("Adam Petr�");
+            about.AddItem("Adam Petráš");
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

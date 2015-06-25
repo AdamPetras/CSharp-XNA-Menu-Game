@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Menu.MenuFolder.Classes
 {
-    public class AboutItems:IMenuItems
+    public class AboutItems : IMenuItems
     {
         private List<Items> items;
         private Game game;
@@ -28,8 +28,7 @@ namespace Menu.MenuFolder.Classes
             game.spriteBatch.Draw(game.spritAbout, new Vector2(800, 200), Color.LightBlue * 0.3f);
             foreach (Items about in items)
             {
-                Color color = Color.Red;
-                game.spriteBatch.DrawString(game.normalFont, about.Text, about.Position,color);
+                game.spriteBatch.DrawString(game.normalFont, about.Text, about.Position,Color.Red);
             }
         }
     }

@@ -15,8 +15,8 @@ namespace Menu.MenuFolder.Components
         private Game game;
         private ComponentAbout about;
         private ComponentControls controls;
-        private TheGame theGame;
-        public ComponentGameMenu(Game game,ComponentAbout about,ComponentControls controls,TheGame theGame)
+        private ComponentGame theGame;
+        public ComponentGameMenu(Game game,ComponentAbout about,ComponentControls controls,ComponentGame theGame)
             : base(game)
         {
             this.game = game;
