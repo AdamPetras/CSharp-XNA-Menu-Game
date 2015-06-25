@@ -1,5 +1,4 @@
-﻿using System;
-using Menu.Components;
+﻿using Menu.Components;
 using Menu.GameFolder.Interface;
 using Microsoft.Xna.Framework;
 
@@ -13,12 +12,12 @@ namespace Menu.GameFolder.Classes
             Velocity = 0;
         }
 
-        public double Speed(GameTime gameTime, ECar eCar)
+        public double Speed(GameTime gameTime, ECar ECar)
         {
             double time = gameTime.ElapsedGameTime.TotalSeconds;
-            if (eCar == ECar.Forward && Velocity <= 13)          //Maximální rychlost vpřed
+            if (ECar == ECar.Forward && Velocity <= 13)          //Maximální rychlost vpřed
                 Velocity += time;
-            else if (eCar == ECar.Backward && Velocity <= 3)    //Maximální rychlost vzad
+            else if (ECar == ECar.Backward && Velocity <= 3)    //Maximální rychlost vzad
                 Velocity += time;
             return Velocity;
         }

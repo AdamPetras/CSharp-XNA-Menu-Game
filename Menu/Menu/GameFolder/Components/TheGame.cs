@@ -36,7 +36,7 @@ namespace Menu.Components
             game.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.transform);
             game.spriteBatch.Draw(game.spritGameBackground,Vector2.Zero,Color.White);
             car.DrawCar();
-            game.spriteBatch.DrawString(game.font, car.CurrentSpeed()+"\n"+car.eCar, new Vector2(400, 200), Color.White);
+            game.spriteBatch.DrawString(game.font, car.CurrentSpeed()+"\n"+car.ECar, new Vector2(400, 200), Color.White);
             game.spriteBatch.End();
             base.Draw(gameTime);
         }

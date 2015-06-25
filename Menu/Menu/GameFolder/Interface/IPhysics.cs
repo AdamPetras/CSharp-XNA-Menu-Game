@@ -10,7 +10,7 @@ namespace Menu.GameFolder.Interface
     public interface IPhysics
     {
         double Velocity { get; set; }
-        double Speed(GameTime gameTime,ECar eCar);
+        double Speed(GameTime gameTime,ECar ECar);
         double Inertia(GameTime gameTime);
         double Brake(GameTime gameTime);
     }
