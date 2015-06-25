@@ -12,6 +12,6 @@ namespace Menu.GameFolder.Interface
         double Velocity { get; set; }
         double Speed(GameTime gameTime,ECar eCar);
         double Inertia(GameTime gameTime);
-        double Brake(GameTime gameTime,ECar eCar);
+        double Brake(GameTime gameTime);
     }
 }
