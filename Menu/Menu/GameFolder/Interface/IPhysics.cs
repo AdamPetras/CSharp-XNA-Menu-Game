@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Menu.Components;
+﻿using Menu.GameFolder.Classes;
 using Microsoft.Xna.Framework;
 
 namespace Menu.GameFolder.Interface
@@ -10,7 +6,7 @@ namespace Menu.GameFolder.Interface
     public interface IPhysics
     {
         double Velocity { get; set; }
-        double Speed(GameTime gameTime,ECar ECar);
+        double Speed(GameTime gameTime,ECar eCar);
         double Inertia(GameTime gameTime);
         double Brake(GameTime gameTime);
     }

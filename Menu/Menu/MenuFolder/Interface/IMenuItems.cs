@@ -1,4 +1,4 @@
-namespace Menu.Interface
+namespace Menu.MenuFolder.Interface
 {
     public interface IMenuItems
     {

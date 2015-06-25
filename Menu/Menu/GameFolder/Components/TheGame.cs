@@ -1,10 +1,8 @@
-using System.Security.AccessControl;
-using Menu.Classes;
 using Menu.GameFolder.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Menu.Components
+namespace Menu.GameFolder.Components
 {
     public class TheGame : DrawableGameComponent
     {

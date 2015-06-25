@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Menu.Classes;
-using Menu.Interface;
+using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 
-namespace Menu
+namespace Menu.MenuFolder.Classes
 {
     public class AboutItems:IMenuItems
     {
@@ -20,7 +19,7 @@ namespace Menu
         public void AddItem(string text)
         {
             Vector2 posit = new Vector2(950, Game.height / 2 + items.Count * height);  //určení pozice přidané položky
-            I_Items about = new Items(text, posit);
+            IItems about = new Items(text, posit);
             items.Add((Items)about);        //vložení do listu
         }
 

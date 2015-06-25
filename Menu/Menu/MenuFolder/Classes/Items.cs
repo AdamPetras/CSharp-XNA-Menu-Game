@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Menu.Interface;
+﻿using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 
-namespace Menu.Classes
+namespace Menu.MenuFolder.Classes
 {
-    public class Items : I_Items
+    public class Items : IItems
     {
         public string Text { get; set; }
         public Vector2 Position { get; set; }

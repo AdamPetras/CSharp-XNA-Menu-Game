@@ -1,8 +1,8 @@
-using Menu.Classes;
-using Menu.Interface;
+using Menu.MenuFolder.Classes;
+using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 
-namespace Menu.Components
+namespace Menu.MenuFolder.Components
 {
     public class ComponentControls : DrawableGameComponent
     {
@@ -18,8 +18,10 @@ namespace Menu.Components
         {
             controlItems = new ControlItems(game);
             controlItems.AddItem("***MOVEMENT***");
-            controlItems.AddItem("Brake-A");
-            controlItems.AddItem("Throttle-D");
+            controlItems.AddItem("Throttle       -   Up_Arrow");
+            controlItems.AddItem("Brake           -   Down_Arrow");
+            controlItems.AddItem("Turn left      -   Left_Arrow");
+            controlItems.AddItem("Turn right    -   Right_Arrow");
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using Menu.GameFolder;
-using Menu.GameFolder.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Menu.Components
+namespace Menu.GameFolder.Classes
 {
     public enum ECar
     {
@@ -36,7 +32,6 @@ namespace Menu.Components
 
         public void Move(GameTime gameTime)
         {
-
             if (game.keyState.IsKeyDown(Keys.Left))
             {
                 if (ECar == ECar.Forward || ECar == ECar.InertiaForward)            //Podmínka, aby auto zatáčelo jen když jede vpřed
@@ -44,7 +39,7 @@ namespace Menu.Components
                 else if (ECar == ECar.Backward || ECar == ECar.InertiaBackward)     //Podmínka, aby auto zatáčelo jen když jede vzad
                     angle += 0.02f;
             }
-            else if (physics.Velocity <= 0)     //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
+            if (physics.Velocity <= 0)     //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
                 ECar = ECar.Stop;
             if (game.keyState.IsKeyDown(Keys.Right))
             {
@@ -53,7 +48,7 @@ namespace Menu.Components
                 else if (ECar == ECar.Backward || ECar == ECar.InertiaForward)     //Podmínka, aby auto zatáčelo jen když jede vzad
                     angle -= 0.02f;
             }
-            else if (physics.Velocity <= 0)     //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
+            if (physics.Velocity <= 0)     //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
                 ECar = ECar.Stop;
             if (game.keyState.IsKeyDown(Keys.Up) && ECar != ECar.InertiaBackward) //Pokud jede vpřed
             {
@@ -63,7 +58,7 @@ namespace Menu.Components
                     Position();
                 }
             }
-            else if (game.keyState.IsKeyDown(Keys.Down) && ECar != ECar.InertiaForward)     //Pokud jede vzad
+            if (game.keyState.IsKeyDown(Keys.Down) && ECar != ECar.InertiaForward)     //Pokud jede vzad
             {
                 if (!game.keyState.IsKeyDown(Keys.Up) && ECar != ECar.Forward)      //pokud neni záčknuto nahoru i dolu
                 {

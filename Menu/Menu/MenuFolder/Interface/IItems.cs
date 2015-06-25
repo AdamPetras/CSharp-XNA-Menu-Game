@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Menu.Interface
+namespace Menu.MenuFolder.Interface
 {
-    public interface I_Items
+    public interface IItems
     {
         string Text { get; set; }
         Vector2 Position { get; set; }

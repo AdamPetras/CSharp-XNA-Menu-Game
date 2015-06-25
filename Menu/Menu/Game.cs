@@ -1,4 +1,5 @@
-using Menu.Components;
+using Menu.GameFolder.Components;
+using Menu.MenuFolder.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -12,7 +13,8 @@ namespace Menu
     {
         public GraphicsDeviceManager graphics;
         public SpriteBatch spriteBatch;
-        public KeyboardState keyState, keyStateBefore;
+        public KeyboardState keyState;
+        public KeyboardState keyStateBefore;
 
         public Texture2D spritMenuBackground;
         public Texture2D spritAbout;

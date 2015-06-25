@@ -1,4 +1,4 @@
-﻿using Menu.Components;
+﻿using Menu.GameFolder.Components;
 using Microsoft.Xna.Framework;
 
 namespace Menu.GameFolder.Classes

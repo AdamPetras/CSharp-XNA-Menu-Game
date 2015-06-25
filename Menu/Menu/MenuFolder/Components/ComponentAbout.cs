@@ -1,7 +1,8 @@
-using Menu.Interface;
+ï»¿using Menu.MenuFolder.Classes;
+using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 
-namespace Menu
+namespace Menu.MenuFolder.Components
 {
     /// <summary>
     /// This is a game component that implements IUpdateable.
@@ -21,10 +22,10 @@ namespace Menu
             about.AddItem("***GAME DESIGNERS***");
             about.AddItem("");
             about.AddItem("Main programmer: ");
-            about.AddItem("Adam Petráš");
+            about.AddItem("Adam Petrï¿½");
             about.AddItem("");
             about.AddItem("Main graphics: ");
-            about.AddItem("Adam Petráš");
+            about.AddItem("Adam Petrï¿½");
             base.Initialize();
         }
         public override void Update(GameTime gameTime)
@@ -42,3 +43,4 @@ namespace Menu
         }
     }
 }
+

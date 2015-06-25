@@ -1,9 +1,10 @@
-using Menu.Components;
-using Menu.Interface;
+using Menu.GameFolder.Components;
+using Menu.MenuFolder.Classes;
+using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Menu
+namespace Menu.MenuFolder.Components
 {
     /// <summary>
     /// This is a game component that implements IUpdateable.
