@@ -1,4 +1,5 @@
 using Menu.Components;
+using Menu.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -9,7 +10,7 @@ namespace Menu
     /// </summary>
     public class ComponentGameMenu : DrawableGameComponent
     {
-        private MenuItems menuItems;
+        private IMenu menuItems;
         private Game game;
         private ComponentAbout about;
         private ComponentControls controls;
@@ -48,7 +49,7 @@ namespace Menu
             if (game.SingleClick(Keys.Enter))
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
-                switch (menuItems.menu.text)
+                switch (menuItems.menu.Text)
                 {
                     case "Start":
                         SetComponents(theGame,true);
@@ -77,12 +78,12 @@ namespace Menu
         {
             game.spriteBatch.Begin();
             game.spriteBatch.Draw(game.spritMenuBackground, Vector2.Zero, Color.White); //vykreslení backgroundu pro menu
-            menuItems.DrawMenu();
+            menuItems.Draw();
             game.spriteBatch.End();
             base.Draw(gameTime);
         }
 
-        public void SetComponents(GameComponent component, bool active)
+        private void SetComponents(GameComponent component, bool active)
         {
             component.Enabled = active;
             if (component is DrawableGameComponent)

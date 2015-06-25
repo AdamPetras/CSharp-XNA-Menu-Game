@@ -1,37 +1,41 @@
 ﻿using System.Collections.Generic;
+using Menu.Classes;
+using Menu.Interface;
 using Microsoft.Xna.Framework;
 
 namespace Menu
 {
-    public class MenuItems
+    public class MenuItems:IMenu
     {
-        public Menu menu;
-        private List<Menu> items;
+        public Items menu { get; set; }
+        private List<Items> items;
         private Game game;
         private float height;
+        public string text { get; set; }
+        public Vector2 position { get; set; }
 
         public MenuItems(Game game)
         {
             height = 72;
             this.game = game;
-            items = new List<Menu>();
+            items = new List<Items>();
         }
         //přidání itemu do menu
         public void AddItem(string text)
         {
             Vector2 posit = new Vector2(100,Game.height/2+items.Count*height);  //určení pozice přidané položky
-            Menu menu = new Menu(text,posit);
-            items.Add(menu);        //vložení do listu
+            I_Items menu = new Items(text,posit);
+            items.Add((Items)menu);        //vložení do listu
         }
 
-        public void DrawMenu()  //výpis menu cyklem foreach tzn... vypíše všechny položky menu
+        public void Draw()  //výpis menu cyklem foreach tzn... vypíše všechny položky menu
         {
-            foreach (Menu menu in items)
+            foreach (Items menu in items)
             {
                 Color color = Color.White;  //pokud je nějaky menu item aktivni, změní barvu na červenou
                 if (menu == this.menu)
                     color = Color.Red;
-                game.spriteBatch.DrawString(game.font, menu.text, menu.position, color);
+                game.spriteBatch.DrawString(game.font, menu.Text, menu.Position, color);
             }
         }
         public void Next()      //postupování v menu dolu

@@ -1,21 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Menu.Classes;
+using Menu.Interface;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-
 
 namespace Menu.Components
 {
-    public class ComponentControls : Microsoft.Xna.Framework.DrawableGameComponent
+    public class ComponentControls : DrawableGameComponent
     {
-        private ControlItems controlItems;
+        private IMenuItems controlItems;
         private Game game;
         public ComponentControls(Game game)
             : base(game)
@@ -40,7 +31,7 @@ namespace Menu.Components
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
-            controlItems.DrawControls();
+            controlItems.Draw();
             game.spriteBatch.End();
             base.Draw(gameTime);
         }

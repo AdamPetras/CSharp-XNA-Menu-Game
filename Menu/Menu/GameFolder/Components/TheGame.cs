@@ -9,7 +9,7 @@ namespace Menu.Components
     public class TheGame : DrawableGameComponent
     {
         private Game game;
-        private Movement movement;
+        private Car car;
         private Camera camera;
         public TheGame(Game game)
             : base(game)
@@ -20,14 +20,14 @@ namespace Menu.Components
         public override void Initialize()
         {
             base.Initialize();
-            movement = new Movement(game);
-            camera = new Camera(movement);
+            car = new Car(game);
+            camera = new Camera(car);
         }
 
         public override void Update(GameTime gameTime)
         {
             camera.Update(this);
-            movement.Move();
+            car.Move();
             base.Update(gameTime);        
         }
 
@@ -35,8 +35,8 @@ namespace Menu.Components
         {
             game.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.transform);
             game.spriteBatch.Draw(game.spritGameBackground,Vector2.Zero,Color.White);
-            movement.DrawPosition();
-            game.spriteBatch.DrawString(game.font, movement.angle+"\n"+movement.position.X+"   "+movement.position.Y, new Vector2(400, 200), Color.White);
+            car.DrawCar();
+            game.spriteBatch.DrawString(game.font, car.eCar+"\n"+car.position.X+"   "+car.position.Y, new Vector2(400, 200), Color.White);
             game.spriteBatch.End();
             base.Draw(gameTime);
         }

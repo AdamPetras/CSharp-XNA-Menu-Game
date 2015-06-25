@@ -1,3 +1,4 @@
+using Menu.Interface;
 using Microsoft.Xna.Framework;
 
 namespace Menu
@@ -8,7 +9,7 @@ namespace Menu
     public class ComponentAbout : DrawableGameComponent
     {
         private Game game;
-        private AboutItems about;
+        private IMenuItems about;
         public ComponentAbout(Game game)
             : base(game)
         {
@@ -24,7 +25,6 @@ namespace Menu
             about.AddItem("");
             about.AddItem("Main graphics: ");
             about.AddItem("Adam Petráš");
-
             base.Initialize();
         }
         public override void Update(GameTime gameTime)
@@ -36,7 +36,7 @@ namespace Menu
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
-            about.DrawAbout();
+            about.Draw();
             game.spriteBatch.End();
             base.Draw(gameTime);
         }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Menu.GameFolder;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -12,13 +14,13 @@ namespace Menu.Components
         Stop
     }
 
-    public class Movement
+    public class Car
     {
         public Vector2 position;
         private Game game;
-        public float angle;
-        private ECar eCar;
-        public Movement(Game game)
+        private float angle;
+        public ECar eCar;
+        public Car(Game game)
         {
             this.game = game;
             angle = 0.0f;
@@ -28,28 +30,33 @@ namespace Menu.Components
 
         public void Move()
         {
-            if (game.keyState.IsKeyDown(Keys.A))
+
+            if (game.keyState.IsKeyDown(Keys.Left))
             {
+                if(eCar == ECar.Forward)
                 angle -= 0.02f;
+                else if(eCar == ECar.Backward)
+                    angle += 0.02f;
             }
-            if (game.keyState.IsKeyDown(Keys.D))
+            if (game.keyState.IsKeyDown(Keys.Right))
             {
+                if (eCar == ECar.Forward)
                 angle += 0.02f;
+                else if (eCar == ECar.Backward)
+                    angle -= 0.02f;
             }
-            if (game.keyState.IsKeyDown(Keys.W))
+            if (game.keyState.IsKeyDown(Keys.Up))
             {
                 eCar = ECar.Forward;
                 Distance();
                 Position();
             }
-            if (game.keyState.IsKeyDown(Keys.S))
+            if (game.keyState.IsKeyDown(Keys.Down))
             {
                 eCar = ECar.Backward;
                 Distance();
                 Position();
             }
-            else if(eCar != ECar.Stop)
-            eCar = ECar.Stop;
         }
 
         private float Rotation()
@@ -78,10 +85,10 @@ namespace Menu.Components
         private void Position()
         {
             position.X = (float)(Math.Cos(angle) * Distance() + position.X);
-            position.Y = (float)(Math.Sin(angle) * Distance() + position.Y);            
+            position.Y = (float)(Math.Sin(angle) * Distance() + position.Y);  
         }
 
-        public void DrawPosition()
+        public void DrawCar()
         {
             game.spriteBatch.Draw(game.spritCar, new Rectangle((int)position.X, (int)position.Y, game.spritCar.Width, game.spritCar.Height), null, Color.White, Rotation(), new Vector2(game.spritCar.Width / 2, game.spritCar.Height / 2), SpriteEffects.None, 0f);
         }

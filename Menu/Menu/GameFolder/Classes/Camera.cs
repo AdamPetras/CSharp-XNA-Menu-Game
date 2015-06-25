@@ -7,15 +7,15 @@ namespace Menu.GameFolder.Classes
     {
         public Matrix transform;
         public Vector2 centering;
-        private Movement movement;
-        public Camera(Movement movement)
+        private Car car;
+        public Camera(Car car)
         {
-            this.movement = movement;
+            this.car = car;
         }
 
         public void Update(TheGame theGame)
         {
-            centering = new Vector2(movement.position.X-Game.width/2, movement.position.Y-Game.height/2);
+            centering = new Vector2(car.position.X-Game.width/2, car.position.Y-Game.height/2);
             transform = Matrix.CreateScale(new Vector3(1, 1, 0))*
                         Matrix.CreateTranslation(new Vector3(-centering.X, -centering.Y, 0));
         }

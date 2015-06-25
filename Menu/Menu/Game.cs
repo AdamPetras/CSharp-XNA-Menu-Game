@@ -38,7 +38,6 @@ namespace Menu
             graphics.PreferredBackBufferWidth = width;
             graphics.PreferredBackBufferHeight = height;
             graphics.ApplyChanges();
-
             ComponentAbout about = new ComponentAbout(this);
             ComponentControls controls = new ComponentControls(this);
             TheGame theGame = new TheGame(this);
