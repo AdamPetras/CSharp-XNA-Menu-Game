@@ -1,4 +1,5 @@
 ﻿using System;
+using Menu.GameFolder.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -20,7 +21,7 @@ namespace Menu.GameFolder.Classes
         private Game game;
         private float angle;
         public ECar ECar;
-        private CarPhysics physics;
+        private IPhysics physics;
         public Car(Game game)
         {
             this.game = game;
@@ -32,6 +33,8 @@ namespace Menu.GameFolder.Classes
 
         public void Move(GameTime gameTime)
         {
+            //-------------------------------------------------------------------     
+            //*******************************Doleva******************************
             if (game.keyState.IsKeyDown(Keys.Left))
             {
                 if (ECar == ECar.Forward || ECar == ECar.InertiaForward)            //Podmínka, aby auto zatáčelo jen když jede vpřed
@@ -41,6 +44,8 @@ namespace Menu.GameFolder.Classes
             }
             if (physics.Velocity <= 0)     //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
                 ECar = ECar.Stop;
+            //-------------------------------------------------------------------
+            //*******************************Doprava******************************
             if (game.keyState.IsKeyDown(Keys.Right))
             {
                 if (ECar == ECar.Forward || ECar == ECar.InertiaForward)            //Podmínka, aby auto zatáčelo jen když jede vpřed
@@ -50,26 +55,30 @@ namespace Menu.GameFolder.Classes
             }
             if (physics.Velocity <= 0)     //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
                 ECar = ECar.Stop;
+            //-------------------------------------------------------------------
+            //*******************************Dopředu******************************
             if (game.keyState.IsKeyDown(Keys.Up) && ECar != ECar.InertiaBackward) //Pokud jede vpřed
             {
-                if (!game.keyState.IsKeyDown(Keys.Down) && ECar != ECar.Backward)    //pokud neni záčknuto nahoru i dolu
+                if (game.keyState.IsKeyUp(Keys.Down) && ECar != ECar.Backward) //pokud neni záčknuto nahoru i dolu
                 {
                     ECar = ECar.Forward;
                     Position();
                 }
             }
-            if (game.keyState.IsKeyDown(Keys.Down) && ECar != ECar.InertiaForward)     //Pokud jede vzad
+            //-------------------------------------------------------------------
+            //*******************************Dozadu******************************
+            if (game.keyState.IsKeyDown(Keys.Down) && ECar != ECar.InertiaForward) //Pokud jede vzad
             {
-                if (!game.keyState.IsKeyDown(Keys.Up) && ECar != ECar.Forward)      //pokud neni záčknuto nahoru i dolu
+                if (game.keyState.IsKeyUp(Keys.Up) && ECar != ECar.Forward) //pokud neni záčknuto nahoru i dolu
                 {
                     ECar = ECar.Backward;
                     Position();
                 }
             }
-
-            Inertia(gameTime);
-            Braking(gameTime);
-            physics.Speed(gameTime, ECar);
+            //-------------------------------------------------------------------
+            Inertia(gameTime);      //Setrvačnost
+            Braking(gameTime);      //Brždění
+            physics.Speed(gameTime, ECar);      //Rychlost
         }
 
         private float Rotation()        //Zatáčení auta
@@ -102,7 +111,7 @@ namespace Menu.GameFolder.Classes
                 physics.Brake(gameTime);
                 Position();
             }
-            if (ECar == ECar.InertiaBackward && game.keyState.IsKeyDown(Keys.Up))       //Pokud je auto v setrvacnosti vzad a sipka nahoru je stracena tak se brzdi
+            else if (ECar == ECar.InertiaBackward && game.keyState.IsKeyDown(Keys.Up))       //Pokud je auto v setrvacnosti vzad a sipka nahoru je stracena tak se brzdi
             {
                 physics.Brake(gameTime);
                 Position();

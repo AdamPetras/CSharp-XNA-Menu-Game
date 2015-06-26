@@ -6,7 +6,7 @@ namespace Menu.GameFolder.Classes
     public class Camera
     {
         public Matrix transform;
-        private Vector2 centering;
+        public Vector2 centering;
         private Car car;
         public Camera(Car car)
         {
