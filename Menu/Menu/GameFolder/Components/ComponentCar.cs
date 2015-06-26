@@ -1,6 +1,7 @@
 using Menu.GameFolder.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Menu.GameFolder.Components
 {
@@ -28,6 +29,7 @@ namespace Menu.GameFolder.Components
 
             car.Move(gameTime);
             camera.Update();
+
             base.Update(gameTime);
         }
 

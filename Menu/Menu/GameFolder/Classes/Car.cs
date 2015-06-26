@@ -66,6 +66,7 @@ namespace Menu.GameFolder.Classes
                     Position();
                 }
             }
+
             Inertia(gameTime);
             Braking(gameTime);
             physics.Speed(gameTime, ECar);
