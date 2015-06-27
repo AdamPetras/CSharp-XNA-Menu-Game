@@ -21,6 +21,8 @@ namespace Menu
         public Texture2D spritGameBackground;
         public Texture2D spritCar;
 
+        public ComponentGameMenu menu;
+        public ComponentSettings settings;
 
 
         public SpriteFont font;
@@ -37,20 +39,16 @@ namespace Menu
 
         protected override void Initialize()
         {
+            //-----------------------------------------------------------------------------
+            //*******************************Definice Okna*********************************
             graphics.PreferredBackBufferWidth = width;
             graphics.PreferredBackBufferHeight = height;
             graphics.ApplyChanges();
-            ComponentAbout about = new ComponentAbout(this);
-            ComponentControls controls = new ComponentControls(this);
-            ComponentGame theGame = new ComponentGame(this);
-            ComponentGameMenu menu = new ComponentGameMenu(this, about, controls, theGame);
+            //-----------------------------------------------------------------------------
+            //**************************Inicializace komponent*****************************
+            menu = new ComponentGameMenu(this);
+            //-----------------------------------------------------------------------------
             Components.Add(menu);
-            Components.Add(about);
-            Components.Add(controls);
-            Components.Add(theGame);
-            StartUp(theGame);
-            StartUp(about);
-            StartUp(controls);
             base.Initialize();
         }
 
@@ -87,13 +85,6 @@ namespace Menu
         public bool SingleClick(Keys key)
         {
             return keyState.IsKeyDown(key) && keyStateBefore.IsKeyUp(key);
-        }
-
-        public void StartUp(GameComponent component)
-        {
-            component.Enabled = false;
-            if (component is DrawableGameComponent)
-                ((DrawableGameComponent)component).Visible = false;
         }
     }
 }

@@ -30,7 +30,6 @@ namespace Menu.GameFolder.Components
 
         public override void Draw(GameTime gameTime)
         {
-            game.spriteBatch.Draw(game.spritGameBackground, Vector2.Zero, Color.White);
             car.DrawCar();
             base.Draw(gameTime);
         }

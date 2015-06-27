@@ -15,8 +15,8 @@ namespace Menu.GameFolder.Classes
 
         public void Update()
         {
-            centering = new Vector2(car.position.X-Game.width/2, car.position.Y-Game.height/2);
-            transform = Matrix.CreateScale(new Vector3(1, 1, 0))*
+            centering = new Vector2(car.position.X - Game.width / 2, car.position.Y - Game.height / 2);
+            transform = Matrix.CreateScale(new Vector3(1, 1, 0)) *
                         Matrix.CreateTranslation(new Vector3(-centering.X, -centering.Y, 0));
         }
     }

@@ -4,37 +4,39 @@ using Microsoft.Xna.Framework;
 
 namespace Menu.MenuFolder.Classes
 {
-    public class MenuItems:IMenu
+    class SettingItems : IMenu
     {
         public Items menu { get; set; }
         private List<Items> items;
         private Game game;
         private float height;
-        public MenuItems(Game game)
+
+        public SettingItems(Game game)
         {
             height = 72;
             this.game = game;
             items = new List<Items>();
         }
-        //přidání itemu do menu
+
         public void AddItem(string text)
         {
-            Vector2 posit = new Vector2(100,Game.height/2+items.Count*height);  //určení pozice přidané položky
-            IItems menu = new Items(text,posit);
-            items.Add((Items)menu);        //vložení do listu
+            Vector2 posit = new Vector2(900, Game.height / 2 + items.Count * height);  //určení pozice přidané položky
+            IItems setting = new Items(text, posit);
+            items.Add((Items)setting); 
         }
 
-        public void Draw()  //výpis menu cyklem foreach tzn... vypíše všechny položky menu
+        public void Draw()
         {
-            foreach (Items menu in items)
+            foreach (Items setting in items)
             {
-                Color color = Color.White;  //pokud je nějaky menu item aktivni, změní barvu na červenou
-                if (menu == this.menu)
+                Color color = Color.White;  //pokud je nějaky settings item aktivni, změní barvu na červenou
+                if (setting == menu)
                     color = Color.Red;
-                game.spriteBatch.DrawString(game.font, menu.Text, menu.Position, color);
+                game.spriteBatch.DrawString(game.font, setting.Text, setting.Position, color);
             }
         }
-        public void Next()      //postupování v menu dolu
+
+        public void Next()
         {
             int index = items.IndexOf(menu);
             if (index < items.Count - 1)
@@ -42,7 +44,8 @@ namespace Menu.MenuFolder.Classes
             else
                 menu = items[0];
         }
-        public void Before()    //postupování v menu nahoru
+
+        public void Before()
         {
             int index = items.IndexOf(menu);
             if (index > 0)

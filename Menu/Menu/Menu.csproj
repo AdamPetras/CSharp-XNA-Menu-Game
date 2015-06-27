@@ -78,6 +78,8 @@
     <Compile Include="GameFolder\Components\ComponentCar.cs" />
     <Compile Include="GameFolder\Interface\IPhysics.cs" />
     <Compile Include="MenuFolder\Classes\Items.cs" />
+    <Compile Include="MenuFolder\Classes\SettingItems.cs" />
+    <Compile Include="MenuFolder\Components\ComponentSettings.cs" />
     <Compile Include="MenuFolder\Interface\IMenuItems.cs" />
     <Compile Include="MenuFolder\Classes\AboutItems.cs" />
     <Compile Include="MenuFolder\Classes\ControlItems.cs" />

@@ -16,24 +16,30 @@ namespace Menu.MenuFolder.Components
         private ComponentAbout about;
         private ComponentControls controls;
         private ComponentGame theGame;
-        public ComponentGameMenu(Game game,ComponentAbout about,ComponentControls controls,ComponentGame theGame)
+        private ComponentSettings settings;
+        public ComponentGameMenu(Game game)
             : base(game)
         {
             this.game = game;
             menuItems = new MenuItems(game);
             //pøidávání položek do menu
             menuItems.AddItem("Start");
+            menuItems.AddItem("Settings");
             menuItems.AddItem("Controls");
             menuItems.AddItem("About");
             menuItems.AddItem("End");
             menuItems.Next();
-            this.about = about;
-            this.controls = controls;
-            this.theGame = theGame;
         }
         public override void Initialize()
         {
+            controls = new ComponentControls(game);
+            about = new ComponentAbout(game);
 
+            Game.Components.Add(about);
+            Game.Components.Add(controls);
+
+            StartUp(controls);
+            StartUp(about);
             base.Initialize();
         }
 
@@ -53,7 +59,13 @@ namespace Menu.MenuFolder.Components
                 switch (menuItems.menu.Text)
                 {
                     case "Start":
-                        SetComponents(theGame,true);
+                        theGame = new ComponentGame(game);
+                        Game.Components.Add(theGame);
+                        SetComponents(this, false);
+                        break;
+                    case "Settings":
+                        settings = new ComponentSettings(game, this);
+                        Game.Components.Add(settings);
                         SetComponents(this, false);
                         break;
                     case "Controls":
@@ -89,6 +101,12 @@ namespace Menu.MenuFolder.Components
             component.Enabled = active;
             if (component is DrawableGameComponent)
                 ((DrawableGameComponent)component).Visible = active;
+        }
+        private void StartUp(GameComponent component)
+        {
+            component.Enabled = false;
+            if (component is DrawableGameComponent)
+                ((DrawableGameComponent)component).Visible = false;
         }
     }
 }

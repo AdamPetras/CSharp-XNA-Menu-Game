@@ -42,7 +42,7 @@ namespace Menu.GameFolder.Classes
                 else if (ECar == ECar.Backward || ECar == ECar.InertiaBackward)     //Podmínka, aby auto zatáčelo jen když jede vzad
                     angle += 0.02f;
             }
-            if (physics.Velocity <= 0)     //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
+            if (CurrentSpeed() == 0)     //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
                 ECar = ECar.Stop;
             //-------------------------------------------------------------------
             //*******************************Doprava******************************
@@ -50,10 +50,10 @@ namespace Menu.GameFolder.Classes
             {
                 if (ECar == ECar.Forward || ECar == ECar.InertiaForward)            //Podmínka, aby auto zatáčelo jen když jede vpřed
                     angle += 0.02f;
-                else if (ECar == ECar.Backward || ECar == ECar.InertiaForward)     //Podmínka, aby auto zatáčelo jen když jede vzad
+                else if (ECar == ECar.Backward || ECar == ECar.InertiaBackward)     //Podmínka, aby auto zatáčelo jen když jede vzad
                     angle -= 0.02f;
             }
-            if (physics.Velocity <= 0)     //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
+            if (CurrentSpeed() == 0)     //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
                 ECar = ECar.Stop;
             //-------------------------------------------------------------------
             //*******************************Dopředu******************************
@@ -64,6 +64,8 @@ namespace Menu.GameFolder.Classes
                     ECar = ECar.Forward;
                     Position();
                 }
+                else
+                    physics.Velocity = CurrentSpeed() / 10;
             }
             //-------------------------------------------------------------------
             //*******************************Dozadu******************************
@@ -74,6 +76,8 @@ namespace Menu.GameFolder.Classes
                     ECar = ECar.Backward;
                     Position();
                 }
+                else
+                    physics.Velocity = CurrentSpeed() / 10;
             }
             //-------------------------------------------------------------------
             Inertia(gameTime);      //Setrvačnost
