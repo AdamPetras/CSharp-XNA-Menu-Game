@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Menu.MenuFolder.Classes
 {
-    class SettingItems : IMenu
+    class SettingItems
     {
         public Items menu { get; set; }
         private List<Items> items;
@@ -18,11 +18,11 @@ namespace Menu.MenuFolder.Classes
             items = new List<Items>();
         }
 
-        public void AddItem(string text)
+        public void AddItem(string text,string value = "")
         {
             Vector2 posit = new Vector2(900, Game.height / 2 + items.Count * height);  //určení pozice přidané položky
-            IItems setting = new Items(text, posit);
-            items.Add((Items)setting); 
+            IItems setting = new Items(text, posit, value);
+            items.Add((Items)setting);
         }
 
         public void Draw()
@@ -32,7 +32,7 @@ namespace Menu.MenuFolder.Classes
                 Color color = Color.White;  //pokud je nějaky settings item aktivni, změní barvu na červenou
                 if (setting == menu)
                     color = Color.Red;
-                game.spriteBatch.DrawString(game.font, setting.Text, setting.Position, color);
+                game.spriteBatch.DrawString(game.font, setting.Text+"   "+setting.Value, setting.Position, color);
             }
         }
 

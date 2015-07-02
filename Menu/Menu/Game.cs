@@ -45,7 +45,7 @@ namespace Menu
             graphics.PreferredBackBufferHeight = height;
             graphics.ApplyChanges();
             //-----------------------------------------------------------------------------
-            //**************************Inicializace komponent*****************************
+            //********************Inicializace komponenty pro menu*************************
             menu = new ComponentGameMenu(this);
             //-----------------------------------------------------------------------------
             Components.Add(menu);
@@ -77,8 +77,6 @@ namespace Menu
 
         protected override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
-            spriteBatch.End();
             base.Draw(gameTime);
         }
 

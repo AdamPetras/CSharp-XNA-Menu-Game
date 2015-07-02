@@ -8,8 +8,9 @@ namespace Menu.MenuFolder.Components
     public class ComponentSettings : DrawableGameComponent
     {
         private Game game;
-        private IMenu settings;
+        private SettingItems settings;
         private ComponentGameMenu componentGameMenu;
+        private SettingValues values;
         public ComponentSettings(Game game,ComponentGameMenu componentGameMenu)
             : base(game)
         {
@@ -19,8 +20,9 @@ namespace Menu.MenuFolder.Components
         public override void Initialize()
         {
             settings = new SettingItems(game);
-            settings.AddItem("Display mode: ");
-            settings.AddItem("Resolution: ");
+            values = new SettingValues(game);
+            settings.AddItem("Display mode:",values.IsFullScreen());
+            settings.AddItem("Resolution:",values.Resolution());
             settings.AddItem("Apply");
             settings.AddItem("Back");
             settings.Next();
@@ -41,9 +43,12 @@ namespace Menu.MenuFolder.Components
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
                 switch (settings.menu.Text)
                 {
-                    case "Display mode: ":
+                    case "Display mode:":
+                        game.graphics.IsFullScreen = !game.graphics.IsFullScreen;
+                        game.graphics.ApplyChanges();
                         break;
                     case "Resolution: ":
+ 
                         break;
                     case "Apply":
 
