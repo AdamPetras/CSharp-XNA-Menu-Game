@@ -18,14 +18,14 @@ namespace Menu.MenuFolder.Classes
         //přidání itemu do about
         public void AddItem(string text)
         {
-            Vector2 posit = new Vector2(950, Game.height / 2 + items.Count * height);  //určení pozice přidané položky
+            Vector2 posit = new Vector2(Game.width/2, Game.height / 2 + items.Count * height);  //určení pozice přidané položky
             IItems about = new Items(text, posit);
             items.Add((Items)about);        //vložení do listu
         }
 
         public void Draw()  //výpis about cyklem foreach tzn... vypíše všechny položky about
         {
-            game.spriteBatch.Draw(game.spritAbout, new Vector2(800, 200), Color.LightBlue * 0.3f);
+            game.spriteBatch.Draw(game.spritAbout, new Vector2(Game.width/2-game.spritAbout.Width/3, Game.height/2-game.spritAbout.Height/3), Color.LightBlue * 0.3f);
             foreach (Items about in items)
             {
                 game.spriteBatch.DrawString(game.normalFont, about.Text, about.Position,Color.Red);

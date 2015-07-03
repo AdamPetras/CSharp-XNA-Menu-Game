@@ -1,3 +1,4 @@
+using System;
 using Menu.MenuFolder.Classes;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
@@ -8,9 +9,10 @@ namespace Menu.MenuFolder.Components
     public class ComponentSettings : DrawableGameComponent
     {
         private Game game;
+        private SettingValues values;
         private SettingItems settings;
         private ComponentGameMenu componentGameMenu;
-        private SettingValues values;
+
         public ComponentSettings(Game game,ComponentGameMenu componentGameMenu)
             : base(game)
         {
@@ -22,8 +24,7 @@ namespace Menu.MenuFolder.Components
             settings = new SettingItems(game);
             values = new SettingValues(game);
             settings.AddItem("Display mode:",values.IsFullScreen());
-            settings.AddItem("Resolution:",values.Resolution());
-            settings.AddItem("Apply");
+            settings.AddItem("Resolution:");
             settings.AddItem("Back");
             settings.Next();
             base.Initialize();
@@ -46,12 +47,10 @@ namespace Menu.MenuFolder.Components
                     case "Display mode:":
                         game.graphics.IsFullScreen = !game.graphics.IsFullScreen;
                         game.graphics.ApplyChanges();
+                        settings.UpdateItem("Display mode:",0,values.IsFullScreen());
                         break;
-                    case "Resolution: ":
- 
-                        break;
-                    case "Apply":
-
+                    case "Resolution:":
+                        
                         break;
                     case "Back":
                         Enabled = false;
