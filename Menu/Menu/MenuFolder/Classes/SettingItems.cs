@@ -43,7 +43,6 @@ namespace Menu.MenuFolder.Classes
             items.RemoveAt(i);
             items.Insert(i,(Items)setting);
         }
-
         public void Next()
         {
             int index = items.IndexOf(menu);

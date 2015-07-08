@@ -20,7 +20,7 @@ namespace Menu.GameFolder.Classes
         public Vector2 position;
         private Game game;
         private float angle;
-        public ECar ECar;
+        private ECar ECar;
         private IPhysics physics;
         public Car(Game game)
         {

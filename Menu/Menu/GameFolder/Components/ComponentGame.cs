@@ -39,7 +39,7 @@ namespace Menu.GameFolder.Components
                 game.spriteBatch.Draw(game.spritGameBackground, new Vector2(i, j), Color.White);
             }
             componentCar.Draw(gameTime);
-            game.spriteBatch.DrawString(game.font, componentCar.car.CurrentSpeed() + "km/h\n" + componentCar.car.ECar, new Vector2(camera.centering.X, camera.centering.Y), Color.White);
+            game.spriteBatch.DrawString(game.font, componentCar.car.CurrentSpeed() + "km/h\n", new Vector2(camera.centering.X, camera.centering.Y), Color.White);
             game.spriteBatch.End();
             base.Draw(gameTime);
         }
