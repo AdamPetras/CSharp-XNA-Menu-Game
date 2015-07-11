@@ -1,4 +1,3 @@
-using Menu.GameFolder.Components;
 using Menu.MenuFolder.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,6 +19,8 @@ namespace Menu
         public Texture2D spritAbout;
         public Texture2D spritGameBackground;
         public Texture2D spritCar;
+        public Texture2D spritPauseBackground;
+        public Texture2D spritPauseMenu;
 
         public ComponentGameMenu menu;
         public ComponentSettings settings;
@@ -61,6 +62,8 @@ namespace Menu
             spritAbout = Content.Load<Texture2D>(@"Sprits/About");
             spritGameBackground = Content.Load<Texture2D>(@"Sprits/grass");
             spritCar = Content.Load<Texture2D>(@"Sprits/car");
+            spritPauseBackground = Content.Load<Texture2D>(@"Sprits/pauseBackground");
+            spritPauseMenu = Content.Load<Texture2D>(@"Sprits/pauseMenu");
         }
 
         protected override void UnloadContent()

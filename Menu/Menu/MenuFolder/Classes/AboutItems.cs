@@ -1,34 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 
 namespace Menu.MenuFolder.Classes
 {
-    public class AboutItems : IMenuItems
+    public class AboutItems : DrawItems
     {
-        private List<Items> items;
-        private Game game;
-        private float height;
-        public AboutItems(Game game)
+        private new int height;
+        public AboutItems(Game game):base(game)
         {
             height = 18;
-            this.game = game;
-            items = new List<Items>();
         }
-        //přidání itemu do about
-        public void AddItem(string text)
+        public new void AddItem(string text, string value = "")
         {
-            Vector2 posit = new Vector2(Game.width/2, Game.height / 2 + items.Count * height);  //určení pozice přidané položky
-            IItems about = new Items(text, posit);
-            items.Add((Items)about);        //vložení do listu
+            Vector2 posit = new Vector2(Game.width / 2, Game.height / 2 + items.Count * height); //určení pozice přidané položky
+            IItems setting = new Items(text, posit, value);
+            items.Add((Items)setting);
         }
 
-        public void Draw()  //výpis about cyklem foreach tzn... vypíše všechny položky about
+        public new void Draw()
         {
-            game.spriteBatch.Draw(game.spritAbout, new Vector2(Game.width/2-game.spritAbout.Width/3, Game.height/2-game.spritAbout.Height/3), Color.LightBlue * 0.3f);
-            foreach (Items about in items)
+            foreach (Items setting in items)
             {
-                game.spriteBatch.DrawString(game.normalFont, about.Text, about.Position,Color.Red);
+                game.spriteBatch.DrawString(game.normalFont, setting.Text + "   " + setting.Value, setting.Position, Color.Red);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Menu.GameFolder.Components;
 using Menu.GameFolder.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,6 +23,7 @@ namespace Menu.GameFolder.Classes
         private float angle;
         private ECar ECar;
         private IPhysics physics;
+
         public Car(Game game)
         {
             this.game = game;
@@ -33,30 +35,40 @@ namespace Menu.GameFolder.Classes
 
         public void Move(GameTime gameTime)
         {
-            //-------------------------------------------------------------------     
-            //*******************************Doleva******************************
+            #region Doleva
+
             if (game.keyState.IsKeyDown(Keys.Left))
             {
-                if (ECar == ECar.Forward || ECar == ECar.InertiaForward)            //Podmínka, aby auto zatáčelo jen když jede vpřed
+                if (ECar == ECar.Forward || ECar == ECar.InertiaForward)
+                    //Podmínka, aby auto zatáčelo jen když jede vpřed
                     angle -= 0.02f;
-                else if (ECar == ECar.Backward || ECar == ECar.InertiaBackward)     //Podmínka, aby auto zatáčelo jen když jede vzad
+                else if (ECar == ECar.Backward || ECar == ECar.InertiaBackward)
+                    //Podmínka, aby auto zatáčelo jen když jede vzad
                     angle += 0.02f;
             }
-            if (CurrentSpeed() == 0)     //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
+            if (CurrentSpeed() == 0) //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
                 ECar = ECar.Stop;
-            //-------------------------------------------------------------------
-            //*******************************Doprava******************************
+
+            #endregion
+
+            #region Doprava
+
             if (game.keyState.IsKeyDown(Keys.Right))
             {
-                if (ECar == ECar.Forward || ECar == ECar.InertiaForward)            //Podmínka, aby auto zatáčelo jen když jede vpřed
+                if (ECar == ECar.Forward || ECar == ECar.InertiaForward)
+                    //Podmínka, aby auto zatáčelo jen když jede vpřed
                     angle += 0.02f;
-                else if (ECar == ECar.Backward || ECar == ECar.InertiaBackward)     //Podmínka, aby auto zatáčelo jen když jede vzad
+                else if (ECar == ECar.Backward || ECar == ECar.InertiaBackward)
+                    //Podmínka, aby auto zatáčelo jen když jede vzad
                     angle -= 0.02f;
             }
-            if (CurrentSpeed() == 0)     //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
+            if (CurrentSpeed() == 0) //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
                 ECar = ECar.Stop;
-            //-------------------------------------------------------------------
-            //*******************************Dopředu******************************
+
+            #endregion
+
+            #region Dopředu
+
             if (game.keyState.IsKeyDown(Keys.Up) && ECar != ECar.InertiaBackward) //Pokud jede vpřed
             {
                 if (game.keyState.IsKeyUp(Keys.Down) && ECar != ECar.Backward) //pokud neni záčknuto nahoru i dolu
@@ -67,8 +79,11 @@ namespace Menu.GameFolder.Classes
                 else
                     physics.Velocity = CurrentSpeed() / 10;
             }
-            //-------------------------------------------------------------------
-            //*******************************Dozadu******************************
+
+            #endregion
+
+            #region Dozadu
+
             if (game.keyState.IsKeyDown(Keys.Down) && ECar != ECar.InertiaForward) //Pokud jede vzad
             {
                 if (game.keyState.IsKeyUp(Keys.Up) && ECar != ECar.Forward) //pokud neni záčknuto nahoru i dolu
@@ -79,13 +94,15 @@ namespace Menu.GameFolder.Classes
                 else
                     physics.Velocity = CurrentSpeed() / 10;
             }
-            //-------------------------------------------------------------------
-            Inertia(gameTime);      //Setrvačnost
-            Braking(gameTime);      //Brždění
-            physics.Speed(gameTime, ECar);      //Rychlost
+
+            #endregion
+
+            Inertia(gameTime); //Setrvačnost
+            Braking(gameTime); //Brždění
+            physics.Speed(gameTime, ECar); //Rychlost
         }
 
-        private float Rotation()        //Zatáčení auta
+        private float Rotation() //Zatáčení auta
         {
             float rotationAngle = 0;
             rotationAngle += angle;
@@ -94,14 +111,14 @@ namespace Menu.GameFolder.Classes
             return rotationAngle;
         }
 
-        private double Distance()       //zjištění ujeté vzdálenosti pro výpočet pozice
+        private double Distance() //zjištění ujeté vzdálenosti pro výpočet pozice
         {
             double distance = 0;
-            if (ECar == ECar.Forward || ECar == ECar.InertiaForward)            //pokud jede dopřed nebo setrvačností dopřed
+            if (ECar == ECar.Forward || ECar == ECar.InertiaForward) //pokud jede dopřed nebo setrvačností dopřed
             {
                 distance += physics.Velocity;
             }
-            else if (ECar == ECar.Backward || ECar == ECar.InertiaBackward)     //pokud jede vzad nebo setrvačností vzda
+            else if (ECar == ECar.Backward || ECar == ECar.InertiaBackward) //pokud jede vzad nebo setrvačností vzda
             {
                 distance -= physics.Velocity;
             }
@@ -110,12 +127,14 @@ namespace Menu.GameFolder.Classes
 
         private void Braking(GameTime gameTime)
         {
-            if (ECar == ECar.InertiaForward && game.keyState.IsKeyDown(Keys.Down))      //Pokud je auto v setrvacnosti dopred a sipka dolu je stlacena tak se brzdi
+            if (ECar == ECar.InertiaForward && game.keyState.IsKeyDown(Keys.Down))
+            //Pokud je auto v setrvacnosti dopred a sipka dolu je stlacena tak se brzdi
             {
                 physics.Brake(gameTime);
                 Position();
             }
-            else if (ECar == ECar.InertiaBackward && game.keyState.IsKeyDown(Keys.Up))       //Pokud je auto v setrvacnosti vzad a sipka nahoru je stracena tak se brzdi
+            else if (ECar == ECar.InertiaBackward && game.keyState.IsKeyDown(Keys.Up))
+            //Pokud je auto v setrvacnosti vzad a sipka nahoru je stracena tak se brzdi
             {
                 physics.Brake(gameTime);
                 Position();
@@ -124,26 +143,36 @@ namespace Menu.GameFolder.Classes
 
         private void Inertia(GameTime gameTime)
         {
-            if ((game.keyState.IsKeyUp(Keys.Up) && game.keyState.IsKeyUp(Keys.Down) && physics.Velocity > 0))     //Pokud se nedrží tlačítko vpřed nebo vzad a auto je rozjeté
+            if ((game.keyState.IsKeyUp(Keys.Up) && game.keyState.IsKeyUp(Keys.Down) && physics.Velocity > 0))
+            //Pokud se nedrží tlačítko vpřed nebo vzad a auto je rozjeté
             {
-                if (ECar == ECar.Forward)           //pokud jelo auto dopřed tak setrvačnost dopředu
-                    ECar = ECar.InertiaForward;
-                else if (ECar == ECar.Backward)     //pokud jelo auto dozad tak setrvačnost dozadu
-                    ECar = ECar.InertiaBackward;
+                switch (ECar)
+                {
+                    case ECar.Forward:
+                        ECar = ECar.InertiaForward;
+                        break;
+                    case ECar.Backward:
+                        ECar = ECar.InertiaBackward;
+                        break;
+                }
                 physics.Inertia(gameTime);
                 Position();
             }
-            else if (game.keyState.IsKeyDown(Keys.Down) && game.keyState.IsKeyDown(Keys.Up))        //Pokud jsou obě tlačítka zmáčknuty tak se brzdí
+            else if (game.keyState.IsKeyDown(Keys.Down) && game.keyState.IsKeyDown(Keys.Up))
+            //Pokud jsou obě tlačítka zmáčknuty tak se brzdí
             {
                 physics.Brake(gameTime);
                 Position();
             }
         }
-        private void Position()     //Výpočet pozice
+
+        private void Position() //Výpočet pozice
         {
             Distance();
-            position.X = (float)(Math.Cos(angle) * Distance() + position.X);        //X = Cos(a) *ujeta vzdalenost + predchozi pozice
-            position.Y = (float)(Math.Sin(angle) * Distance() + position.Y);        //Y = Sin(a) *ujeta vzdalenost + predchozi pozice
+            position.X = (float)(Math.Cos(angle) * Distance() + position.X);
+            //X = Cos(a) *ujeta vzdalenost + predchozi pozice
+            position.Y = (float)(Math.Sin(angle) * Distance() + position.Y);
+            //Y = Sin(a) *ujeta vzdalenost + predchozi pozice
         }
 
         public double CurrentSpeed()
@@ -152,7 +181,10 @@ namespace Menu.GameFolder.Classes
             int speed = (int)velocity;
             return speed;
         }
-
+        public Enum GetCarState()
+        {
+            return ECar;
+        }
         public void DrawCar()
         {
             game.spriteBatch.Draw(game.spritCar, new Rectangle((int)position.X, (int)position.Y, game.spritCar.Width, game.spritCar.Height), null, Color.White, Rotation(), new Vector2(game.spritCar.Width / 2, game.spritCar.Height / 2), SpriteEffects.None, 0f);

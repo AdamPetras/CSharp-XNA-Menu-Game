@@ -11,7 +11,7 @@ namespace Menu.MenuFolder.Components
     /// </summary>
     public class ComponentGameMenu : DrawableGameComponent
     {
-        private IMenu menuItems;
+        private MenuItems menuItems;
         private Game game;
         private ComponentAbout about;
         private ComponentControls controls;
@@ -56,7 +56,7 @@ namespace Menu.MenuFolder.Components
             if (game.SingleClick(Keys.Enter))
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
-                switch (menuItems.menu.Text)
+                switch (menuItems.selected.Text)
                 {
                     case "Start":
                         theGame = new ComponentGame(game);

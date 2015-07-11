@@ -42,7 +42,7 @@ namespace Menu.MenuFolder.Components
             if (game.SingleClick(Keys.Enter))
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
-                switch (settings.menu.Text)
+                switch (settings.selected.Text)
                 {
                     case "Display mode:":
                         game.graphics.IsFullScreen = !game.graphics.IsFullScreen;

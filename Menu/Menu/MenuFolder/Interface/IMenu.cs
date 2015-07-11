@@ -2,9 +2,9 @@
 
 namespace Menu.MenuFolder.Interface
 {
-    public interface IMenu:IMenuItems
+    public interface IMenu
     {
-        Items menu { get; set; }
+        Items selected { get; set; }
         void Next();
         void Before();
     }

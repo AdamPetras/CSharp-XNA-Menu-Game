@@ -9,7 +9,7 @@ namespace Menu.MenuFolder.Classes
         public Vector2 Position { get; set; }
         public string Value { get; set; }
 
-        public Items(string text, Vector2 position,string value ="")
+        public Items(string text, Vector2 position, string value = "")
         {
             Text = text;
             Position = position;

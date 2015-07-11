@@ -1,34 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 
 namespace Menu.MenuFolder.Classes
 {
-    public class ControlItems: IMenuItems
+    public class ControlItems:DrawItems
     {
-        private Game game;
-        private List<Items> items;
-        private float height;
-        public ControlItems(Game game)
+        private new int height;
+        public ControlItems(Game game) : base(game)
         {
-            this.game = game;
-            height = 16;
-            items = new List<Items>();
-        }
-        public void AddItem(string text)
-        {
-            Vector2 posit = new Vector2(Game.width/2, Game.height / 2 + items.Count * height);  //určení pozice přidané položky
-            IItems controls = new Items(text,posit);
-            items.Add((Items) controls);        //vložení do listu
+            height = 18;
         }
 
-        public void Draw() //výpis controls cyklem foreach tzn... vypíše všechny položky controls
+        public new void AddItem(string text, string value = "")
         {
-            foreach (Items controls in items)
-            {
-                Color color = Color.Red;
-                game.spriteBatch.DrawString(game.normalFont, controls.Text, controls.Position, color);
+            Vector2 posit = new Vector2(Game.width / 2, Game.height / 2 + items.Count * height); //určení pozice přidané položky
+            IItems setting = new Items(text, posit, value);
+            items.Add((Items)setting);
+        }
+
+        public new void Draw()
+        {
+            foreach (Items setting in items)
+                game.spriteBatch.DrawString(game.normalFont, setting.Text + "          -           " + setting.Value, setting.Position, Color.Red);
             }
         }
     }
-}
+
