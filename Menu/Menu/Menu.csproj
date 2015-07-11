@@ -92,7 +92,6 @@
     <Compile Include="MenuFolder\Components\ComponentGameMenu.cs" />
     <Compile Include="GameFolder\Components\ComponentGame.cs" />
     <Compile Include="MenuFolder\Interface\IMenu.cs" />
-    <Compile Include="MenuFolder\Interface\IItems.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game.cs" />

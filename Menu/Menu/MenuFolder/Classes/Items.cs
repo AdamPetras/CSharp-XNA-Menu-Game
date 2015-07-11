@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Menu.MenuFolder.Classes
 {
-    public class Items : IItems
+    public class Items
     {
         public string Text { get; set; }
         public Vector2 Position { get; set; }

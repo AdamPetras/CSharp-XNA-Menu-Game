@@ -15,7 +15,7 @@ namespace Menu.MenuFolder.Classes
         public new void AddItem(string text, string value = "")
         {
             Vector2 posit = new Vector2(Game.width / 2, Game.height / 2 + items.Count * height); //určení pozice přidané položky
-            IItems setting = new Items(text, posit, value);
+            Items setting = new Items(text, posit, value);
             items.Add((Items)setting);
         }
 
