@@ -5,26 +5,32 @@ using Microsoft.Xna.Framework;
 
 namespace Menu.MenuFolder.Classes
 {
-    public class ControlItems:DrawItems
+    public class ControlItems : IDraw
     {
-        private new int height;
-        public ControlItems(Game game) : base(game)
+        public Items Selected { get; set; }
+        protected List<Items> items;
+        protected Game game;
+        public ControlItems(Game game)
         {
-            height = 18;
+            this.game = game;          
+            items = new List<Items>();
         }
 
-        public new void AddItem(string text, string value = "")
+        public void AddItem(string text, string value = "")
         {
-            Vector2 posit = new Vector2(Game.width / 2, Game.height / 2 + items.Count * height); //určení pozice přidané položky
-            Items setting = new Items(text, posit, value);
-            items.Add((Items)setting);
+            Vector2 posit = new Vector2(Game.width / 2, Game.height / 2 + items.Count * game.normalFont.MeasureString(text).Y); //určení pozice přidané položky
+            Items item = new Items(text, posit, value);
+            items.Add(item);
         }
 
-        public new void Draw()
+        public void Draw()
         {
-            foreach (Items setting in items)
-                game.spriteBatch.DrawString(game.normalFont, setting.Text + "          -           " + setting.Value, setting.Position, Color.Red);
+            foreach (Items item in items)
+            {
+                game.spriteBatch.DrawString(game.normalFont, item.Text, item.Position, Color.Red);
+                game.spriteBatch.DrawString(game.normalFont, item.Value, new Vector2(Game.width / 2 + 100,item.Position.Y), Color.Red);
             }
         }
     }
+}
 

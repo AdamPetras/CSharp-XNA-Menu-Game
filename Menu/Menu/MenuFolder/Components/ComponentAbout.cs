@@ -10,7 +10,8 @@ namespace Menu.MenuFolder.Components
     public class ComponentAbout : DrawableGameComponent
     {
         private Game game;
-        private AboutItems about;
+        private IDraw about;
+
         public ComponentAbout(Game game)
             : base(game)
         {

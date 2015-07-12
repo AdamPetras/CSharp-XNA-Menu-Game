@@ -6,7 +6,7 @@ namespace Menu.MenuFolder.Components
 {
     public class ComponentControls : DrawableGameComponent
     {
-        private ControlItems controlItems;
+        private IDraw controlItems;
         private Game game;
         public ComponentControls(Game game)
             : base(game)

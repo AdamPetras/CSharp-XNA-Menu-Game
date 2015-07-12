@@ -1,10 +1,14 @@
-﻿using Menu.MenuFolder.Classes;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Menu.MenuFolder.Classes;
 
 namespace Menu.MenuFolder.Interface
 {
-    public interface IMenu
+    public interface IMenu : IDraw
     {
-        Items selected { get; set; }
+        Items Selected { get; set; }
         void Next();
         void Before();
     }

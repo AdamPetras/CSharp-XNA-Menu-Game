@@ -14,20 +14,19 @@ namespace Menu
         public SpriteBatch spriteBatch;
         public KeyboardState keyState;
         public KeyboardState keyStateBefore;
+        public ComponentGameMenu menu;
 
+        #region Textury
         public Texture2D spritMenuBackground;
         public Texture2D spritAbout;
         public Texture2D spritGameBackground;
         public Texture2D spritCar;
         public Texture2D spritPauseBackground;
-        public Texture2D spritPauseMenu;
-
-        public ComponentGameMenu menu;
-        public ComponentSettings settings;
-
-
-        public SpriteFont font;
+        #endregion
+        #region Fonty
+        public SpriteFont bigFont;
         public SpriteFont normalFont;
+        #endregion
 
         public static int width = 1600, height = 900;
 
@@ -40,12 +39,15 @@ namespace Menu
 
         protected override void Initialize()
         {
-            //-----------------------------------------------------------------------------
-            //*******************************Definice Okna*********************************
+            #region DefiniceOkna
             graphics.PreferredBackBufferWidth = width;
             graphics.PreferredBackBufferHeight = height;
             graphics.ApplyChanges();
-            //-----------------------------------------------------------------------------
+            #endregion
+            #region NaèteníFontù
+            bigFont = Content.Load<SpriteFont>(@"Font");
+            normalFont = Content.Load<SpriteFont>(@"NormalFont");
+            #endregion
             //********************Inicializace komponenty pro menu*************************
             menu = new ComponentGameMenu(this);
             //-----------------------------------------------------------------------------
@@ -56,14 +58,13 @@ namespace Menu
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            font = Content.Load<SpriteFont>(@"Font");
-            normalFont = Content.Load<SpriteFont>(@"NormalFont");
+            #region Naètení spritù
             spritMenuBackground = Content.Load<Texture2D>(@"Sprits/backGround");
             spritAbout = Content.Load<Texture2D>(@"Sprits/About");
             spritGameBackground = Content.Load<Texture2D>(@"Sprits/grass");
             spritCar = Content.Load<Texture2D>(@"Sprits/car");
             spritPauseBackground = Content.Load<Texture2D>(@"Sprits/pauseBackground");
-            spritPauseMenu = Content.Load<Texture2D>(@"Sprits/pauseMenu");
+            #endregion
         }
 
         protected override void UnloadContent()
@@ -86,6 +87,12 @@ namespace Menu
         public bool SingleClick(Keys key)
         {
             return keyState.IsKeyDown(key) && keyStateBefore.IsKeyUp(key);
+        }
+        public void ComponentEnable(GameComponent component,bool active)
+        {
+            component.Enabled = active;
+            if (component is DrawableGameComponent)
+                ((DrawableGameComponent)component).Visible = active;
         }
     }
 }

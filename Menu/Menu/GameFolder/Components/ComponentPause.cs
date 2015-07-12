@@ -1,4 +1,6 @@
 using Menu.GameFolder.Classes;
+using Menu.MenuFolder.Components;
+using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -9,10 +11,10 @@ namespace Menu.GameFolder.Components
     /// </summary>
     public class ComponentPause : DrawableGameComponent
     {
-        private Pause pause;
+        private IMenu pause;
         private Game game;
         private ComponentCar car;
-        public ComponentPause(Game game,ComponentCar car)
+        public ComponentPause(Game game, ComponentCar car)
             : base(game)
         {
             this.game = game;
@@ -27,9 +29,9 @@ namespace Menu.GameFolder.Components
         {
             pause = new Pause(game);
             pause.AddItem("Back");
-            pause.AddItem("Settings");
             pause.AddItem("Menu");
             pause.AddItem("Exit");
+            pause.Next();
             base.Initialize();
         }
 
@@ -39,11 +41,27 @@ namespace Menu.GameFolder.Components
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            if (game.SingleClick(Keys.Escape))
+           if (game.SingleClick(Keys.Up))
+                pause.Before();
+            if (game.SingleClick(Keys.Down))
+                pause.Next();
+            if (game.SingleClick(Keys.Enter))
             {
-                car.Enabled = true;
-                Enabled = false;
-                Visible = false;
+                switch (pause.Selected.Text)
+                {
+                    case "Back":
+                        game.ComponentEnable(this,false);
+                        car.Enabled = true;
+                        break;
+                    case "Menu":
+                        game.ComponentEnable(this,false);
+                        game.ComponentEnable(car,false);;
+                        game.ComponentEnable(game.menu,true);
+                        break;
+                    case "Exit":
+                        Game.Exit();
+                        break;
+                }
             }
             base.Update(gameTime);
         }

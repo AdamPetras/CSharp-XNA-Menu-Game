@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
+﻿using System.Collections.Generic;
 using Menu.MenuFolder.Classes;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
@@ -11,42 +7,40 @@ namespace Menu.GameFolder.Classes
 {
     public class Pause:IMenu
     {
-        public Items selected { get; set; }
-        private Game game;
-        private Vector2 pauseMenuPosition;
-        private List<Items> items; 
+        public Items Selected { get; set; }
+        protected List<Items> items;
+        protected Game game; 
         public Pause(Game game)
         {
             this.game = game;
-            pauseMenuPosition = new Vector2(Game.width / 2 - game.spritPauseMenu.Width / 2, Game.height / 2 - game.spritPauseMenu.Height / 2);
             items = new List<Items>();
         }
-
-        public void AddItem(string text)
-        {
-            Vector2 posit = new Vector2(Game.width / 2 - game.font.MeasureString(text).X / 2, Game.height / 2 + items.Count * game.font.MeasureString(text).Y);  //určení pozice přidané položky
-            Items controls = new Items(text, posit);
-            items.Add((Items)controls); 
-        }
-
         public void Draw()
         {
-            game.spriteBatch.Draw(game.spritPauseBackground,new Vector2(0,0),Color.White *0.7f );
-            game.spriteBatch.Draw(game.spritPauseMenu, pauseMenuPosition, Color.White );
+            game.spriteBatch.Draw(game.spritPauseBackground, new Vector2(0, 0), Color.White * 0.7f);
             foreach (Items item in items)
             {
-                Color color = Color.Red;
-                game.spriteBatch.DrawString(game.font, item.Text, item.Position, color);
+                Color color = item == Selected ? Color.Red : Color.White;
+                game.spriteBatch.DrawString(game.bigFont, item.Text, item.Position, color);
             }
+        }
+
+        public void AddItem(string text, string value = "")
+        {
+            Vector2 posit = new Vector2(Game.width / 2 - game.bigFont.MeasureString(text).X / 2, Game.height / 2 + items.Count * game.bigFont.MeasureString(text).Y);  //určení pozice přidané položky
+            Items item = new Items(text, posit);
+            items.Add(item); 
         }
         public void Next()
         {
-            throw new NotImplementedException();
+            int index = items.IndexOf(Selected);
+            Selected = index < items.Count - 1 ? items[index + 1] : items[0];
         }
 
         public void Before()
         {
-            throw new NotImplementedException();
+            int index = items.IndexOf(Selected);
+            Selected = index > 0 ? items[index - 1] : items[items.Count - 1];
         }
     }
 }

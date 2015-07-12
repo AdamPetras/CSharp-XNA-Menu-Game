@@ -24,7 +24,6 @@ namespace Menu.MenuFolder.Components
             settings = new SettingItems(game);
             values = new SettingValues(game);
             settings.AddItem("Display mode:",values.IsFullScreen());
-            settings.AddItem("Resolution:");
             settings.AddItem("Back");
             settings.Next();
             base.Initialize();
@@ -42,21 +41,16 @@ namespace Menu.MenuFolder.Components
             if (game.SingleClick(Keys.Enter))
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
-                switch (settings.selected.Text)
+                switch (settings.Selected.Text)
                 {
                     case "Display mode:":
                         game.graphics.IsFullScreen = !game.graphics.IsFullScreen;
                         game.graphics.ApplyChanges();
                         settings.UpdateItem("Display mode:",0,values.IsFullScreen());
                         break;
-                    case "Resolution:":
-                        
-                        break;
                     case "Back":
-                        Enabled = false;
-                        Visible = false;
-                        componentGameMenu.Enabled = true;
-                        componentGameMenu.Visible = true;
+                        game.ComponentEnable(this,false);
+                        game.ComponentEnable(componentGameMenu,true);
                         break;
                 }
             }

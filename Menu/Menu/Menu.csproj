@@ -79,7 +79,6 @@
     <Compile Include="GameFolder\Components\ComponentCar.cs" />
     <Compile Include="GameFolder\Components\ComponentPause.cs" />
     <Compile Include="GameFolder\Interface\IPhysics.cs" />
-    <Compile Include="MenuFolder\Classes\DrawItems.cs" />
     <Compile Include="MenuFolder\Classes\Items.cs" />
     <Compile Include="MenuFolder\Classes\MenuItems.cs" />
     <Compile Include="MenuFolder\Classes\SettingItems.cs" />
@@ -91,6 +90,7 @@
     <Compile Include="MenuFolder\Components\ComponentControls.cs" />
     <Compile Include="MenuFolder\Components\ComponentGameMenu.cs" />
     <Compile Include="GameFolder\Components\ComponentGame.cs" />
+    <Compile Include="MenuFolder\Interface\IDraw.cs" />
     <Compile Include="MenuFolder\Interface\IMenu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

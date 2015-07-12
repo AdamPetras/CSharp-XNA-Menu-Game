@@ -10,12 +10,11 @@ namespace Menu.GameFolder.Components
         private Game game;
         private Car car;
         private Camera camera;
-        private ComponentPause componentPause;
-        public ComponentCar(Game game,ComponentPause componentPause)
+        
+        public ComponentCar(Game game)
             : base(game)
         {
             this.game = game;
-            this.componentPause = componentPause;
         }
         public override void Initialize()
         {
@@ -29,7 +28,7 @@ namespace Menu.GameFolder.Components
             car.Move(gameTime);
             if (game.SingleClick(Keys.Escape))
             {
-                componentPause = new ComponentPause(game, this);
+                ComponentPause componentPause = new ComponentPause(game, this);
                 Game.Components.Add(componentPause);
                 Enabled = false;
             }
@@ -43,7 +42,7 @@ namespace Menu.GameFolder.Components
                 for (int j = 0; j <= game.spritGameBackground.Height * 10; j += game.spritGameBackground.Height)
                     game.spriteBatch.Draw(game.spritGameBackground, new Vector2(i, j), Color.White);
             }
-            game.spriteBatch.DrawString(game.font, car.CurrentSpeed() + "km/h\n" + car.GetCarState(), new Vector2(camera.centering.X, camera.centering.Y), Color.White);
+            game.spriteBatch.DrawString(game.bigFont, car.CurrentSpeed() + "km/h\n" + car.GetCarState(), new Vector2(camera.centering.X, camera.centering.Y), Color.White);
             car.DrawCar();
             game.spriteBatch.End();
             base.Draw(gameTime);

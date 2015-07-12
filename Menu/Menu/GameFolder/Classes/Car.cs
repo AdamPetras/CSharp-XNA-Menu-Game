@@ -74,7 +74,7 @@ namespace Menu.GameFolder.Classes
                 if (game.keyState.IsKeyUp(Keys.Down) && ECar != ECar.Backward) //pokud neni záčknuto nahoru i dolu
                 {
                     ECar = ECar.Forward;
-                    Position();
+                    CurrentPosition();
                 }
                 else
                     physics.Velocity = CurrentSpeed() / 10;
@@ -89,7 +89,7 @@ namespace Menu.GameFolder.Classes
                 if (game.keyState.IsKeyUp(Keys.Up) && ECar != ECar.Forward) //pokud neni záčknuto nahoru i dolu
                 {
                     ECar = ECar.Backward;
-                    Position();
+                    CurrentPosition();
                 }
                 else
                     physics.Velocity = CurrentSpeed() / 10;
@@ -111,33 +111,19 @@ namespace Menu.GameFolder.Classes
             return rotationAngle;
         }
 
-        private double Distance() //zjištění ujeté vzdálenosti pro výpočet pozice
-        {
-            double distance = 0;
-            if (ECar == ECar.Forward || ECar == ECar.InertiaForward) //pokud jede dopřed nebo setrvačností dopřed
-            {
-                distance += physics.Velocity;
-            }
-            else if (ECar == ECar.Backward || ECar == ECar.InertiaBackward) //pokud jede vzad nebo setrvačností vzda
-            {
-                distance -= physics.Velocity;
-            }
-            return distance;
-        }
-
         private void Braking(GameTime gameTime)
         {
             if (ECar == ECar.InertiaForward && game.keyState.IsKeyDown(Keys.Down))
             //Pokud je auto v setrvacnosti dopred a sipka dolu je stlacena tak se brzdi
             {
                 physics.Brake(gameTime);
-                Position();
+                CurrentPosition();
             }
             else if (ECar == ECar.InertiaBackward && game.keyState.IsKeyDown(Keys.Up))
             //Pokud je auto v setrvacnosti vzad a sipka nahoru je stracena tak se brzdi
             {
                 physics.Brake(gameTime);
-                Position();
+                CurrentPosition();
             }
         }
 
@@ -156,23 +142,37 @@ namespace Menu.GameFolder.Classes
                         break;
                 }
                 physics.Inertia(gameTime);
-                Position();
+                CurrentPosition();
             }
             else if (game.keyState.IsKeyDown(Keys.Down) && game.keyState.IsKeyDown(Keys.Up))
             //Pokud jsou obě tlačítka zmáčknuty tak se brzdí
             {
                 physics.Brake(gameTime);
-                Position();
+                CurrentPosition();
             }
         }
 
-        private void Position() //Výpočet pozice
+        private double Distance() //zjištění ujeté vzdálenosti pro výpočet pozice
+        {
+            double distance = 0;
+            if (ECar == ECar.Forward || ECar == ECar.InertiaForward) //pokud jede dopřed nebo setrvačností dopřed
+            {
+                distance += physics.Velocity;
+            }
+            else if (ECar == ECar.Backward || ECar == ECar.InertiaBackward) //pokud jede vzad nebo setrvačností vzda
+            {
+                distance -= physics.Velocity;
+            }
+            return distance;
+        }
+
+        private void CurrentPosition() //Výpočet pozice
         {
             Distance();
             position.X = (float)(Math.Cos(angle) * Distance() + position.X);
-            //X = Cos(a) *ujeta vzdalenost + predchozi pozice
+            //X = Cos(uhlu) *ujeta vzdalenost + predchozi pozice
             position.Y = (float)(Math.Sin(angle) * Distance() + position.Y);
-            //Y = Sin(a) *ujeta vzdalenost + predchozi pozice
+            //Y = Sin(uhlu) *ujeta vzdalenost + predchozi pozice
         }
 
         public double CurrentSpeed()

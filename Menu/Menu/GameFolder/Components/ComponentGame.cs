@@ -7,7 +7,6 @@ namespace Menu.GameFolder.Components
     public class ComponentGame : DrawableGameComponent
     {
         private ComponentCar componentCar;
-        private ComponentPause componentPause;
         private Game game;
         public ComponentGame(Game game)
             : base(game)
@@ -17,7 +16,7 @@ namespace Menu.GameFolder.Components
 
         public override void Initialize()
         {
-            componentCar = new ComponentCar(game,componentPause);
+            componentCar = new ComponentCar(game);
             Game.Components.Add(componentCar);
             base.Initialize();
         }
