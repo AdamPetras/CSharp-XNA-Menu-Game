@@ -13,10 +13,10 @@ namespace Menu.MenuFolder.Components
     {
         private IMenu menuItems;
         private Game game;
-        private ComponentAbout about;
-        private ComponentControls controls;
-        private ComponentGame theGame;
-        private ComponentSettings settings;
+        private ComponentAbout componentAbout;
+        private ComponentControls componentControls;
+        private ComponentGame componenTheGame;
+        private ComponentSettings componentSettings;
         public ComponentGameMenu(Game game)
             : base(game)
         {
@@ -27,19 +27,19 @@ namespace Menu.MenuFolder.Components
             menuItems.AddItem("Settings");
             menuItems.AddItem("Controls");
             menuItems.AddItem("About");
-            menuItems.AddItem("End");
+            menuItems.AddItem("Exit");
             menuItems.Next();
         }
         public override void Initialize()
         {
-            controls = new ComponentControls(game);
-            about = new ComponentAbout(game);
+            componentControls = new ComponentControls(game);
+            componentAbout = new ComponentAbout(game);
 
-            Game.Components.Add(about);
-            Game.Components.Add(controls);
+            Game.Components.Add(componentAbout);
+            Game.Components.Add(componentControls);
 
-            game.ComponentEnable(controls,false);
-            game.ComponentEnable(about,false);
+            game.ComponentEnable(componentControls,false);
+            game.ComponentEnable(componentAbout,false);
             base.Initialize();
         }
 
@@ -59,30 +59,30 @@ namespace Menu.MenuFolder.Components
                 switch (menuItems.Selected.Text)
                 {
                     case "Start":
-                        theGame = new ComponentGame(game);
-                        Game.Components.Add(theGame);
+                        componenTheGame = new ComponentGame(game);
+                        Game.Components.Add(componenTheGame);
                         SetComponents(this, false);
                         break;
                     case "Settings":
-                        settings = new ComponentSettings(game, this);
-                        Game.Components.Add(settings);
+                        componentSettings = new ComponentSettings(game, this);
+                        Game.Components.Add(componentSettings);
                         SetComponents(this, false);
                         break;
                     case "Controls":
-                        SetComponents(controls,true);
+                        SetComponents(componentControls,true);
                         break;
                     case "About":
-                        SetComponents(about, true);
+                        SetComponents(componentAbout, true);
                         break;
-                    case "End":
+                    case "Exit":
                         game.Exit();
                         break;
                 }
             }
             if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.Up))
             {
-                SetComponents(controls,false);
-                SetComponents(about, false);
+                SetComponents(componentControls,false);
+                SetComponents(componentAbout, false);
             }
             base.Update(gameTime);
         }

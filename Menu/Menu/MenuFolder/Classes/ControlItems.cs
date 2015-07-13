@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 
@@ -18,7 +17,7 @@ namespace Menu.MenuFolder.Classes
 
         public void AddItem(string text, string value = "")
         {
-            Vector2 posit = new Vector2(Game.width / 2, Game.height / 2 + items.Count * game.normalFont.MeasureString(text).Y); //určení pozice přidané položky
+            Vector2 posit = new Vector2(Game.width / 2 -game.normalFont.MeasureString(text).X/2, Game.height / 2 + items.Count * game.normalFont.MeasureString(text).Y); //určení pozice přidané položky
             Items item = new Items(text, posit, value);
             items.Add(item);
         }

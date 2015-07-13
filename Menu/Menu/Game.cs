@@ -14,7 +14,7 @@ namespace Menu
         public SpriteBatch spriteBatch;
         public KeyboardState keyState;
         public KeyboardState keyStateBefore;
-        public ComponentGameMenu menu;
+        public ComponentGameMenu componentGameMenu;
 
         #region Textury
         public Texture2D spritMenuBackground;
@@ -49,9 +49,9 @@ namespace Menu
             normalFont = Content.Load<SpriteFont>(@"NormalFont");
             #endregion
             //********************Inicializace komponenty pro menu*************************
-            menu = new ComponentGameMenu(this);
+            componentGameMenu = new ComponentGameMenu(this);
             //-----------------------------------------------------------------------------
-            Components.Add(menu);
+            Components.Add(componentGameMenu);
             base.Initialize();
         }
 

@@ -1,5 +1,4 @@
 using Menu.GameFolder.Classes;
-using Menu.MenuFolder.Components;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -13,12 +12,12 @@ namespace Menu.GameFolder.Components
     {
         private IMenu pause;
         private Game game;
-        private ComponentCar car;
-        public ComponentPause(Game game, ComponentCar car)
+        private ComponentCar componentCar;
+        public ComponentPause(Game game, ComponentCar componentCar)
             : base(game)
         {
             this.game = game;
-            this.car = car;
+            this.componentCar = componentCar;
         }
 
         /// <summary>
@@ -51,12 +50,12 @@ namespace Menu.GameFolder.Components
                 {
                     case "Back":
                         game.ComponentEnable(this,false);
-                        car.Enabled = true;
+                        componentCar.Enabled = true;
                         break;
                     case "Menu":
                         game.ComponentEnable(this,false);
-                        game.ComponentEnable(car,false);;
-                        game.ComponentEnable(game.menu,true);
+                        game.ComponentEnable(componentCar,false);;
+                        game.ComponentEnable(game.componentGameMenu,true);
                         break;
                     case "Exit":
                         Game.Exit();
