@@ -5,42 +5,42 @@ using Microsoft.Xna.Framework;
 
 namespace Menu.GameFolder.Classes
 {
-    public class Pause:IMenu
+    public class Pause : IMenu
     {
         public Items Selected { get; set; }
-        protected List<Items> items;
-        protected Game game; 
+        protected List<Items> Items;
+        protected Game Game;
         public Pause(Game game)
         {
-            this.game = game;
-            items = new List<Items>();
+            Game = game;
+            Items = new List<Items>();
         }
         public void Draw()
         {
-            game.spriteBatch.Draw(game.spritPauseBackground, new Vector2(0, 0), Color.White * 0.7f);
-            foreach (Items item in items)
+            Game.spriteBatch.Draw(Game.spritPauseBackground, new Vector2(0, 0), Color.White * 0.7f);
+            foreach (Items item in Items)
             {
                 Color color = item == Selected ? Color.Red : Color.White;
-                game.spriteBatch.DrawString(game.bigFont, item.Text, item.Position, color);
+                Game.spriteBatch.DrawString(Game.bigFont, item.Text, new Vector2(item.Position.X, item.Position.Y - Items.Count * Game.bigFont.MeasureString(item.Text).Y / 2), color);
             }
         }
 
         public void AddItem(string text, string value = "")
         {
-            Vector2 posit = new Vector2(Game.width / 2 - game.bigFont.MeasureString(text).X / 2, Game.height / 2 + items.Count * game.bigFont.MeasureString(text).Y);  //určení pozice přidané položky
+            Vector2 posit = new Vector2(Game.width / 2 - Game.bigFont.MeasureString(text).X / 2, Game.height / 2 + Items.Count * Game.bigFont.MeasureString(text).Y);  //určení pozice přidané položky
             Items item = new Items(text, posit);
-            items.Add(item); 
+            Items.Add(item);
         }
         public void Next()
         {
-            int index = items.IndexOf(Selected);
-            Selected = index < items.Count - 1 ? items[index + 1] : items[0];
+            int index = Items.IndexOf(Selected);
+            Selected = index < Items.Count - 1 ? Items[index + 1] : Items[0];
         }
 
         public void Before()
         {
-            int index = items.IndexOf(Selected);
-            Selected = index > 0 ? items[index - 1] : items[items.Count - 1];
+            int index = Items.IndexOf(Selected);
+            Selected = index > 0 ? Items[index - 1] : Items[Items.Count - 1];
         }
     }
 }

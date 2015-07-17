@@ -6,13 +6,13 @@ namespace Menu.GameFolder.Classes
 {
     public class Camera
     {
-        public Matrix transform;
-        public Vector2 centering;
+        public Matrix Transform;
+        public Vector2 Centering;
         public void Update(Vector2 objPosition)
         {
-            centering = new Vector2(objPosition.X - Game.width / 2, objPosition.Y - Game.height / 2);
-            transform = Matrix.CreateScale(new Vector3(1, 1, 0)) *
-                        Matrix.CreateTranslation(new Vector3(-centering.X, -centering.Y, 0));
+            Centering = new Vector2(objPosition.X - Game.width / 2, objPosition.Y - Game.height / 2);
+            Transform = Matrix.CreateScale(new Vector3(1, 1, 0)) *
+                        Matrix.CreateTranslation(new Vector3(-Centering.X, -Centering.Y, 0));
         }
     }
 }

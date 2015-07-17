@@ -46,9 +46,6 @@ namespace Menu.GameFolder.Classes
                     //Podmínka, aby auto zatáčelo jen když jede vzad
                     angle += 0.02f;
             }
-            if (CurrentSpeed() == 0) //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
-                ECar = ECar.Stop;
-
             #endregion
 
             #region Doprava
@@ -62,22 +59,17 @@ namespace Menu.GameFolder.Classes
                     //Podmínka, aby auto zatáčelo jen když jede vzad
                     angle -= 0.02f;
             }
-            if (CurrentSpeed() == 0) //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
-                ECar = ECar.Stop;
-
             #endregion
 
             #region Dopředu
 
             if (game.keyState.IsKeyDown(Keys.Up) && ECar != ECar.InertiaBackward) //Pokud jede vpřed
             {
-                if (game.keyState.IsKeyUp(Keys.Down) && ECar != ECar.Backward) //pokud neni záčknuto nahoru i dolu
+                if (game.keyState.IsKeyUp(Keys.Down) && ECar != ECar.Backward) //pokud neni záčknuto dolu a auto nejede dozadu
                 {
                     ECar = ECar.Forward;
                     CurrentPosition();
                 }
-                else
-                    physics.Velocity = CurrentSpeed() / 10;
             }
 
             #endregion
@@ -86,20 +78,19 @@ namespace Menu.GameFolder.Classes
 
             if (game.keyState.IsKeyDown(Keys.Down) && ECar != ECar.InertiaForward) //Pokud jede vzad
             {
-                if (game.keyState.IsKeyUp(Keys.Up) && ECar != ECar.Forward) //pokud neni záčknuto nahoru i dolu
+                if (game.keyState.IsKeyUp(Keys.Up) && ECar != ECar.Forward) //pokud neni záčknuto nahoru a auto nejede dopředu
                 {
                     ECar = ECar.Backward;
                     CurrentPosition();
                 }
-                else
-                    physics.Velocity = CurrentSpeed() / 10;
             }
-
             #endregion
 
             Inertia(gameTime); //Setrvačnost
             Braking(gameTime); //Brždění
             physics.Speed(gameTime, ECar); //Rychlost
+            if (CurrentSpeed()==0) //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
+                ECar = ECar.Stop;
         }
 
         private float Rotation() //Zatáčení auta
@@ -175,7 +166,7 @@ namespace Menu.GameFolder.Classes
             //Y = Sin(uhlu) *ujeta vzdalenost + predchozi pozice
         }
 
-        public double CurrentSpeed()
+        public int CurrentSpeed()
         {
             double velocity = physics.Velocity * 10;
             int speed = (int)velocity;

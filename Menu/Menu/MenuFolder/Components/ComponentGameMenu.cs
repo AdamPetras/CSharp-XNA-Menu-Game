@@ -17,6 +17,7 @@ namespace Menu.MenuFolder.Components
         private ComponentControls componentControls;
         private ComponentGame componenTheGame;
         private ComponentSettings componentSettings;
+
         public ComponentGameMenu(Game game)
             : base(game)
         {
@@ -24,12 +25,14 @@ namespace Menu.MenuFolder.Components
             menuItems = new MenuItems(game);
             //pøidávání položek do menu
             menuItems.AddItem("Start");
+            menuItems.AddItem("Load");
             menuItems.AddItem("Settings");
             menuItems.AddItem("Controls");
             menuItems.AddItem("About");
             menuItems.AddItem("Exit");
             menuItems.Next();
         }
+
         public override void Initialize()
         {
             componentControls = new ComponentControls(game);
@@ -38,18 +41,18 @@ namespace Menu.MenuFolder.Components
             Game.Components.Add(componentAbout);
             Game.Components.Add(componentControls);
 
-            game.ComponentEnable(componentControls,false);
-            game.ComponentEnable(componentAbout,false);
+            game.ComponentEnable(componentControls, false);
+            game.ComponentEnable(componentAbout, false);
             base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (game.SingleClick(Keys.Up))
+            if (game.SingleClick(Keys.Up) || game.SingleClick(Keys.W))
             {
                 menuItems.Before();
             }
-            if (game.SingleClick(Keys.Down))
+            if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.S))
             {
                 menuItems.Next();
             }
@@ -63,13 +66,19 @@ namespace Menu.MenuFolder.Components
                         Game.Components.Add(componenTheGame);
                         SetComponents(this, false);
                         break;
+                    case "Load":
+                        ComponentLoad componentLoad= new ComponentLoad(game);
+                        Game.Components.Add(componentLoad);
+                        Enabled = false;
+                        Visible = false;
+                        break;
                     case "Settings":
                         componentSettings = new ComponentSettings(game, this);
                         Game.Components.Add(componentSettings);
                         SetComponents(this, false);
                         break;
                     case "Controls":
-                        SetComponents(componentControls,true);
+                        SetComponents(componentControls, true);
                         break;
                     case "About":
                         SetComponents(componentAbout, true);
@@ -79,9 +88,9 @@ namespace Menu.MenuFolder.Components
                         break;
                 }
             }
-            if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.Up))
+            if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.Up) || game.SingleClick(Keys.W)||game.SingleClick(Keys.S))
             {
-                SetComponents(componentControls,false);
+                SetComponents(componentControls, false);
                 SetComponents(componentAbout, false);
             }
             base.Update(gameTime);
@@ -90,7 +99,8 @@ namespace Menu.MenuFolder.Components
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
-            game.spriteBatch.Draw(game.spritMenuBackground, Vector2.Zero, Color.White); //vykreslení backgroundu pro menu
+            game.spriteBatch.Draw(game.spritMenuBackground, Vector2.Zero, Color.White);
+                //vykreslení backgroundu pro menu
             menuItems.Draw();
             game.spriteBatch.End();
             base.Draw(gameTime);
@@ -100,8 +110,9 @@ namespace Menu.MenuFolder.Components
         {
             component.Enabled = active;
             if (component is DrawableGameComponent)
-                ((DrawableGameComponent)component).Visible = active;
+                ((DrawableGameComponent) component).Visible = active;
         }
 
     }
 }
+

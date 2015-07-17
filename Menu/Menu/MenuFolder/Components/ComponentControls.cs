@@ -22,6 +22,7 @@ namespace Menu.MenuFolder.Components
             controlItems.AddItem("Brake", "Down_Arrow");
             controlItems.AddItem("Turn left", "Left_Arrow");
             controlItems.AddItem("Turn right", "Right_Arrow");
+            controlItems.AddItem("Pause", "Escape");
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

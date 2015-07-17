@@ -83,6 +83,7 @@
     <Compile Include="MenuFolder\Classes\MenuItems.cs" />
     <Compile Include="MenuFolder\Classes\SettingItems.cs" />
     <Compile Include="MenuFolder\Classes\SettingValues.cs" />
+    <Compile Include="MenuFolder\Components\ComponentLoad.cs" />
     <Compile Include="MenuFolder\Components\ComponentSettings.cs" />
     <Compile Include="MenuFolder\Classes\AboutItems.cs" />
     <Compile Include="MenuFolder\Classes\ControlItems.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="MenuFolder\Classes\SaveLoad.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

@@ -36,13 +36,13 @@ namespace Menu.GameFolder.Components
         }
         public override void Draw(GameTime gameTime)
         {
-            game.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.transform);
+            game.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             for (int i = 0; i <= game.spritGameBackground.Width * 10; i += game.spritGameBackground.Width)
             {
                 for (int j = 0; j <= game.spritGameBackground.Height * 10; j += game.spritGameBackground.Height)
                     game.spriteBatch.Draw(game.spritGameBackground, new Vector2(i, j), Color.White);
             }
-            game.spriteBatch.DrawString(game.bigFont, car.CurrentSpeed() + "km/h\n" + car.GetCarState(), new Vector2(camera.centering.X, camera.centering.Y), Color.White);
+            game.spriteBatch.DrawString(game.bigFont, car.CurrentSpeed() + "km/h\n" + car.GetCarState(), new Vector2(camera.Centering.X, camera.Centering.Y), Color.White);
             car.DrawCar();
             game.spriteBatch.End();
             base.Draw(gameTime);

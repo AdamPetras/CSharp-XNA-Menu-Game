@@ -1,4 +1,6 @@
+using System.ComponentModel;
 using Menu.GameFolder.Classes;
+using Menu.MenuFolder.Components;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -28,6 +30,7 @@ namespace Menu.GameFolder.Components
         {
             pause = new Pause(game);
             pause.AddItem("Back");
+            pause.AddItem("Save");
             pause.AddItem("Menu");
             pause.AddItem("Exit");
             pause.Next();
@@ -40,9 +43,9 @@ namespace Menu.GameFolder.Components
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-           if (game.SingleClick(Keys.Up))
+           if (game.SingleClick(Keys.Up)||game.SingleClick(Keys.W))
                 pause.Before();
-            if (game.SingleClick(Keys.Down))
+            if (game.SingleClick(Keys.Down)||game.SingleClick(Keys.S))
                 pause.Next();
             if (game.SingleClick(Keys.Enter))
             {
@@ -51,6 +54,12 @@ namespace Menu.GameFolder.Components
                     case "Back":
                         game.ComponentEnable(this,false);
                         componentCar.Enabled = true;
+                        break;
+                    case "Save":
+                        game.ComponentEnable(this,false);
+                        game.ComponentEnable(componentCar,false);;
+                        ComponentLoad load = new ComponentLoad(game);
+                        Game.Components.Add(load);                       
                         break;
                     case "Menu":
                         game.ComponentEnable(this,false);

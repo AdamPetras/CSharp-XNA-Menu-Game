@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Menu.MenuFolder.Classes;
 using Menu.MenuFolder.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -30,6 +32,8 @@ namespace Menu
 
         public static int width = 1600, height = 900;
 
+        public List<Items> saveList;
+
         public Game()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -52,6 +56,9 @@ namespace Menu
             componentGameMenu = new ComponentGameMenu(this);
             //-----------------------------------------------------------------------------
             Components.Add(componentGameMenu);
+            saveList= new List<Items>();
+            Items item = new Items("Tady", Vector2.Zero);
+            saveList.Add(item);
             base.Initialize();
         }
 

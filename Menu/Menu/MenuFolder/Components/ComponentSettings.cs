@@ -1,6 +1,4 @@
-using System;
 using Menu.MenuFolder.Classes;
-using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -30,11 +28,11 @@ namespace Menu.MenuFolder.Components
         }
         public override void Update(GameTime gameTime)
         {
-            if (game.SingleClick(Keys.Up))
+            if (game.SingleClick(Keys.Up)||game.SingleClick(Keys.W))
             {
                 settings.Before();
             }
-            if (game.SingleClick(Keys.Down))
+            if (game.SingleClick(Keys.Down)||game.SingleClick(Keys.S))
             {
                 settings.Next();
             }
@@ -47,6 +45,7 @@ namespace Menu.MenuFolder.Components
                         game.graphics.IsFullScreen = !game.graphics.IsFullScreen;
                         game.graphics.ApplyChanges();
                         settings.UpdateItem("Display mode:",0,values.IsFullScreen());
+                        settings.Next();
                         break;
                     case "Back":
                         game.ComponentEnable(this,false);
