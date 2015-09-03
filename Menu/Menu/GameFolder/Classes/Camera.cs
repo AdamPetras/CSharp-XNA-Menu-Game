@@ -8,6 +8,10 @@ namespace Menu.GameFolder.Classes
     {
         public Matrix Transform;
         public Vector2 Centering;
+        /// <summary>
+        /// Method to update camera and center to some position
+        /// </summary>
+        /// <param name="objPosition"></param>
         public void Update(Vector2 objPosition)
         {
             Centering = new Vector2(objPosition.X - Game.width / 2, objPosition.Y - Game.height / 2);
