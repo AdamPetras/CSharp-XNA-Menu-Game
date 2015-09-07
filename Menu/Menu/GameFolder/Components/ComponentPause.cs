@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Menu.GameFolder.Classes;
+using Menu.MenuFolder.Classes;
 using Menu.MenuFolder.Components;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
@@ -15,11 +16,13 @@ namespace Menu.GameFolder.Components
         private IMenu pause;
         private Game game;
         private ComponentCar componentCar;
-        public ComponentPause(Game game, ComponentCar componentCar)
+        private Car car;
+        public ComponentPause(Game game, ComponentCar componentCar, Car car)
             : base(game)
         {
             this.game = game;
             this.componentCar = componentCar;
+            this.car = car;
         }
 
         /// <summary>
@@ -28,8 +31,10 @@ namespace Menu.GameFolder.Components
         /// </summary>
         public override void Initialize()
         {
-            pause = new Pause(game);
+            game.EGameState = EGameState.Pause;
+            pause = new MenuItems(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 2), "middle");
             pause.AddItem("Back");
+            pause.AddItem("Load");
             pause.AddItem("Save");
             pause.AddItem("Menu");
             pause.AddItem("Exit");
@@ -43,28 +48,34 @@ namespace Menu.GameFolder.Components
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-           if (game.SingleClick(Keys.Up)||game.SingleClick(Keys.W))
+            if (game.SingleClick(Keys.Up) || game.SingleClick(Keys.W))
                 pause.Before();
-            if (game.SingleClick(Keys.Down)||game.SingleClick(Keys.S))
+            if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.S))
                 pause.Next();
             if (game.SingleClick(Keys.Enter))
             {
                 switch (pause.Selected.Text)
                 {
                     case "Back":
-                        game.ComponentEnable(this,false);
+                        game.ComponentEnable(this, false);
                         componentCar.Enabled = true;
                         break;
-                    case "Save":
+                    case "Load":
+                        game.EGameState = EGameState.LoadIngame;
+                        ComponentSaveLoad componentLoad = new ComponentSaveLoad(game,this,componentCar,car);
+                        game.Components.Add(componentLoad);
                         game.ComponentEnable(this,false);
-                        game.ComponentEnable(componentCar,false);;
-                        ComponentLoad load = new ComponentLoad(game);
-                        Game.Components.Add(load);                       
+                        break;
+                    case "Save":
+                        game.EGameState = EGameState.Save;
+                        ComponentSaveLoad componentSave = new ComponentSaveLoad(game, this,null,car);
+                        Game.Components.Add(componentSave);
+                        game.ComponentEnable(this, false);
                         break;
                     case "Menu":
-                        game.ComponentEnable(this,false);
-                        game.ComponentEnable(componentCar,false);;
-                        game.ComponentEnable(game.componentGameMenu,true);
+                        game.ComponentEnable(this, false);
+                        game.ComponentEnable(componentCar, false);
+                        game.ComponentEnable(game.componentGameMenu);
                         break;
                     case "Exit":
                         Game.Exit();
@@ -73,7 +84,10 @@ namespace Menu.GameFolder.Components
             }
             base.Update(gameTime);
         }
-
+        /// <summary>
+        /// Drawable method
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
