@@ -1,3 +1,4 @@
+using Menu.GameFolder.Classes;
 using Menu.GameFolder.Components;
 using Menu.MenuFolder.Classes;
 using Menu.MenuFolder.Interface;
@@ -15,14 +16,16 @@ namespace Menu.MenuFolder.Components
         private Game game;
         private ComponentAbout componentAbout;
         private ComponentControls componentControls;
-        private ComponentGame componenTheGame;
         private ComponentSettings componentSettings;
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="game"></param>
         public ComponentGameMenu(Game game)
             : base(game)
         {
             this.game = game;
-            menuItems = new MenuItems(game);
+            menuItems = new MenuItems(game,new Vector2(100,game.graphics.PreferredBackBufferHeight/2));
             //pøidávání položek do menu
             menuItems.AddItem("Start");
             menuItems.AddItem("Load");
@@ -32,20 +35,19 @@ namespace Menu.MenuFolder.Components
             menuItems.AddItem("Exit");
             menuItems.Next();
         }
-
+        /// <summary>
+        /// Initialiaze method implemets from IInitializable
+        /// </summary>
         public override void Initialize()
         {
-            componentControls = new ComponentControls(game);
+            game.EGameState = EGameState.Menu;
             componentAbout = new ComponentAbout(game);
-
-            Game.Components.Add(componentAbout);
-            Game.Components.Add(componentControls);
-
-            game.ComponentEnable(componentControls, false);
-            game.ComponentEnable(componentAbout, false);
             base.Initialize();
         }
-
+        /// <summary>
+        /// Updatable method
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
             if (game.SingleClick(Keys.Up) || game.SingleClick(Keys.W))
@@ -62,26 +64,33 @@ namespace Menu.MenuFolder.Components
                 switch (menuItems.Selected.Text)
                 {
                     case "Start":
-                        componenTheGame = new ComponentGame(game);
-                        Game.Components.Add(componenTheGame);
-                        SetComponents(this, false);
+                        SavedData savedData = new SavedData(Vector2.Zero, 0);
+                        ComponentCar car = new ComponentCar(game, savedData);
+                        Game.Components.Add(car);
+                        game.ComponentEnable(this, false);
                         break;
-                    case "Load":
-                        ComponentLoad componentLoad= new ComponentLoad(game);
+                   case "Load":
+                        game.EGameState = EGameState.Load;
+                        ComponentSaveLoad componentLoad= new ComponentSaveLoad(game);
                         Game.Components.Add(componentLoad);
-                        Enabled = false;
-                        Visible = false;
+                        game.ComponentEnable(this,false);
                         break;
                     case "Settings":
-                        componentSettings = new ComponentSettings(game, this);
+                        componentSettings = new ComponentSettings(game);
                         Game.Components.Add(componentSettings);
-                        SetComponents(this, false);
+                        game.ComponentEnable(this, false);
                         break;
                     case "Controls":
-                        SetComponents(componentControls, true);
+                        componentControls = new ComponentControls(game);
+                        Game.Components.Add(componentControls);
+                        game.ComponentEnable(this,false);
                         break;
                     case "About":
-                        SetComponents(componentAbout, true);
+                        if (!componentAbout.Visible)        // ošetøení pro vícenásobné spuštìní
+                        {
+                            componentAbout = new ComponentAbout(game);
+                            game.Components.Add(componentAbout);
+                        }
                         break;
                     case "Exit":
                         game.Exit();
@@ -90,29 +99,22 @@ namespace Menu.MenuFolder.Components
             }
             if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.Up) || game.SingleClick(Keys.W)||game.SingleClick(Keys.S))
             {
-                SetComponents(componentControls, false);
-                SetComponents(componentAbout, false);
+                game.ComponentEnable(componentAbout, false);
             }
             base.Update(gameTime);
         }
-
+        /// <summary>
+        /// Drawable method
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
             game.spriteBatch.Draw(game.spritMenuBackground, Vector2.Zero, Color.White);
-                //vykreslení backgroundu pro menu
             menuItems.Draw();
             game.spriteBatch.End();
             base.Draw(gameTime);
         }
-
-        private void SetComponents(GameComponent component, bool active)
-        {
-            component.Enabled = active;
-            if (component is DrawableGameComponent)
-                ((DrawableGameComponent) component).Visible = active;
-        }
-
     }
 }
 

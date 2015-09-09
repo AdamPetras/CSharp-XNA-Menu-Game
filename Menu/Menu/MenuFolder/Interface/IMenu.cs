@@ -11,5 +11,6 @@ namespace Menu.MenuFolder.Interface
         Items Selected { get; set; }
         void Next();
         void Before();
+        void UpdateItem(string text, int i, string value = "");
     }
 }

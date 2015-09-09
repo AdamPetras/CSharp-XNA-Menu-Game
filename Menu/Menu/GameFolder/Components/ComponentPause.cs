@@ -15,13 +15,17 @@ namespace Menu.GameFolder.Components
     {
         private IMenu pause;
         private Game game;
-        private ComponentCar componentCar;
         private Car car;
-        public ComponentPause(Game game, ComponentCar componentCar, Car car)
+        private ComponentCar componentCar;
+        private ComponentCharacter componentCharacter;
+        private Character character;
+        public ComponentPause(Game game, Car car, ComponentCar componentCar = null,ComponentCharacter componentCharacter = null,Character character = null)
             : base(game)
         {
             this.game = game;
             this.componentCar = componentCar;
+            this.componentCharacter = componentCharacter;
+            this.character = character;
             this.car = car;
         }
 
@@ -58,23 +62,43 @@ namespace Menu.GameFolder.Components
                 {
                     case "Back":
                         game.ComponentEnable(this, false);
+                        if(componentCar != null)
                         componentCar.Enabled = true;
+                        else if (componentCharacter != null)
+                            componentCharacter.Enabled = true;
                         break;
                     case "Load":
                         game.EGameState = EGameState.LoadIngame;
-                        ComponentSaveLoad componentLoad = new ComponentSaveLoad(game,this,componentCar,car);
-                        game.Components.Add(componentLoad);
+                        if (componentCar != null)
+                        {
+                            ComponentSaveLoad componentLoad = new ComponentSaveLoad(game, this, car, componentCar);
+                            game.Components.Add(componentLoad);
+                        }else if (componentCharacter != null)
+                        {
+                            ComponentSaveLoad componentLoad = new ComponentSaveLoad(game, this, car, null,componentCharacter,character);
+                            game.Components.Add(componentLoad);
+                        }
                         game.ComponentEnable(this,false);
                         break;
                     case "Save":
                         game.EGameState = EGameState.Save;
-                        ComponentSaveLoad componentSave = new ComponentSaveLoad(game, this,null,car);
-                        Game.Components.Add(componentSave);
+                        if (componentCar != null)
+                        {
+                            ComponentSaveLoad componentSave = new ComponentSaveLoad(game, this, car);
+                            Game.Components.Add(componentSave);
+                        }else if (componentCharacter != null)
+                        {
+                            ComponentSaveLoad componentSave = new ComponentSaveLoad(game, this, car, null, componentCharacter,character);
+                            game.Components.Add(componentSave);
+                        }
                         game.ComponentEnable(this, false);
                         break;
                     case "Menu":
                         game.ComponentEnable(this, false);
+                        if(componentCar != null)
                         game.ComponentEnable(componentCar, false);
+                        else if(componentCharacter != null)
+                            game.ComponentEnable(componentCharacter, false);
                         game.ComponentEnable(game.componentGameMenu);
                         break;
                     case "Exit":
