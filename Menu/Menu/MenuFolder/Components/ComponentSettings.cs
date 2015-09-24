@@ -1,10 +1,6 @@
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Menu.GameFolder.Classes;
 using Menu.MenuFolder.Classes;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Menu.MenuFolder.Components
@@ -14,7 +10,7 @@ namespace Menu.MenuFolder.Components
         private Game game;
         private SettingValues values;
         private IMenu settings;
-        private int index;
+        private int index;      //pomocná promìnná
         private bool IsResolutionChanged;
         /// <summary>
         /// Constuctor
@@ -32,7 +28,7 @@ namespace Menu.MenuFolder.Components
         /// </summary>
         public override void Initialize()
         {
-            settings = new MenuItems(game,new Vector2(100,game.graphics.PreferredBackBufferHeight/2));
+            settings = new MenuItems(game,new Vector2(100,game.graphics.PreferredBackBufferHeight/3),game.bigFont);
             values = new SettingValues(game);
             for (int i = 0; i<values.GetResolutionList().Count;i++)
             {
@@ -62,7 +58,7 @@ namespace Menu.MenuFolder.Components
             {
                 settings.Next();
             }
-            if (game.SingleClick(Keys.Enter))
+            if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && settings.CursorColision()))
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
                 switch (settings.Selected.Text)
@@ -73,6 +69,7 @@ namespace Menu.MenuFolder.Components
                         settings.UpdateItem("Display mode:",0,values.IsFullScreen());
                         break;
                     case "Resolution:":
+                        //index = index < values.GetResolutionList().Count-1 ? index++ : index = 0;       NEFUNGUJE???
                         if (index < values.GetResolutionList().Count - 1)
                             index++;
                         else index = 0;
@@ -82,7 +79,6 @@ namespace Menu.MenuFolder.Components
                         settings.UpdateItem("Back", 2);
                         settings.UpdateItem("Resolution:",1,values.GetResolution(index));
                         game.graphics.ApplyChanges();
-                        //index = index < values.GetResolutionList().Count ? index++ : index = 0;   Nefunguje...
                         game.componentGameMenu = new ComponentGameMenu(game);
                         IsResolutionChanged = true;
                         break;
@@ -94,7 +90,8 @@ namespace Menu.MenuFolder.Components
                             game.Components.Add(game.componentGameMenu);
                         break;
                 }
-            }
+            } 
+            settings.CursorPosition();
             base.Update(gameTime);
         }
         /// <summary>

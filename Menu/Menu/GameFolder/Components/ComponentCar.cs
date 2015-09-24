@@ -12,29 +12,31 @@ namespace Menu.GameFolder.Components
         private Game game;
         private Car car;
         private Camera camera;
+        private SavedData savedData;
+        private ColisionDetection colisionDetection;
         private GameGraphics gameGraphics;
         private float animation;
-        private SavedData savedData;
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="game"></param>
         /// <param name="savedData"></param>
-        public ComponentCar(Game game,SavedData savedData)
+        public ComponentCar(Game game, SavedData savedData)
             : base(game)
         {
             this.game = game;
             this.savedData = savedData;
-            animation = 0.0f;
-            car = new Car(game, savedData,103000,1770); // vytvoøní auta o výkonu 103kW a hmotnosti 1770kg
+            car = new Car(game, savedData, 103000, 1770); // vytvoøní auta o výkonu 103kW a hmotnosti 1770kg
+            animation = 0;
         }
         /// <summary>
         /// Initialiaze method implemets from IInitializable
         /// </summary>
         public override void Initialize()
         {
-            gameGraphics = new GameGraphics(game);
+            colisionDetection = new ColisionDetection();
             camera = new Camera(game);
+            gameGraphics = new GameGraphics(game);
             base.Initialize();
         }
         /// <summary>
@@ -45,26 +47,43 @@ namespace Menu.GameFolder.Components
         {
             camera.Update(car.Position);
             car.Move(gameTime);
-            if (game.SingleClick(Keys.Escape))
+            if (game.SingleClick(Keys.Escape))      //Pauza
             {
                 ComponentPause componentPause = new ComponentPause(game, car, this);
                 Game.Components.Add(componentPause);
                 Enabled = false;
+                Game.IsMouseVisible = true;
             }
-            if (game.SingleClick(Keys.E))
+            if (game.SingleClick(game.controlsList[(int)EKeys.E].Key) && car.CurrentSpeed()<10)     //Vystup z auta
             {
-                ComponentCharacter componentCharacter = new ComponentCharacter(game,car,savedData,gameGraphics);
+                ComponentCharacter componentCharacter = new ComponentCharacter(game, car, savedData, gameGraphics);
                 game.Components.Add(componentCharacter);
-                game.ComponentEnable(this,false);
+                game.ComponentEnable(this, false);
             }
-            if (gameGraphics.Colision(car.CarRectangle()))
+
+
+            if (colisionDetection.RectangleColision(gameGraphics.graphicsList, car.CarRectangle()))
             {
                 for (int i = 0; i < gameGraphics.graphicsList.ColisionList().Count; i++) //Kolize øešena pøes pixely
                 {
-                    car.PixelColision(car.CarRectangle(), car.CarData, gameGraphics.graphicsList.ColisionList()[i],
-                        gameGraphics.graphicsList.objectsData()[i]);
+                    Matrix ObjectTransform =
+                        Matrix.CreateTranslation(new Vector3(
+                            gameGraphics.graphicsList.ObjectTextureList()[i].Position.X,
+                            gameGraphics.graphicsList.ObjectTextureList()[i].Position.Y, 0.0f));
+                    if (
+                        colisionDetection.PixelColision(
+                            ObjectTransform,
+                            gameGraphics.graphicsList.ObjectTextureList()[i].Texture.Width,
+                            gameGraphics.graphicsList.ObjectTextureList()[i].Texture.Height,
+                            gameGraphics.graphicsList.ObjectDataList()[i],
+                            colisionDetection.ObjectAMatrix(car.OriginVector, car.Position, car.Angle),
+                            game.spritCar.Width, game.spritCar.Height, car.CarData))
+                    {
+                        car.colision = true;
+                    }
                 }
             }
+            else car.colision = false;
             base.Update(gameTime);
         }
         /// <summary>
@@ -74,15 +93,18 @@ namespace Menu.GameFolder.Components
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
+            gameGraphics.DrawNonColiadableGraphics();
+            game.gunsList.DrawGuns();
             car.DrawCar();
-            gameGraphics.DrawGraphics();
+            gameGraphics.DrawColiadableGraphics();
+
             if (car.GetCarState().Equals(ECar.Colision))
             {
                 if (animation < 1)
                     animation += 0.02f;
-                game.spriteBatch.Draw(game.spritExplosion, new Vector2(car.Position.X - game.spritExplosion.Width / 2, car.Position.Y - game.spritExplosion.Height / 2), Color.White*(0.1f+animation));
+                game.spriteBatch.Draw(game.spritExplosion, new Vector2(car.Position.X - game.spritExplosion.Width / 2, car.Position.Y - game.spritExplosion.Height / 2), Color.White * (0.1f + animation));
             }
-            game.spriteBatch.DrawString(game.bigFont, "Speed: " + car.CurrentSpeed()/2 + "\n" + car.GetCarState(), new Vector2(camera.Centering.X, camera.Centering.Y), Color.White);
+            game.spriteBatch.DrawString(game.bigFont, "Speed: " + car.CurrentSpeed() + "\n" + car.GetCarState(), new Vector2(camera.Centering.X, camera.Centering.Y), Color.White);
             game.spriteBatch.End();
             base.Draw(gameTime);
         }

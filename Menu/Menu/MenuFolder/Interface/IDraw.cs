@@ -1,6 +1,4 @@
-﻿using Menu.MenuFolder.Classes;
-
-namespace Menu.MenuFolder.Interface
+﻿namespace Menu.MenuFolder.Interface
 {
     public interface IDraw
     {

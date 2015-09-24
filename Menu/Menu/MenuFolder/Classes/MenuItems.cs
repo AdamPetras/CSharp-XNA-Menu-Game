@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,29 +8,31 @@ namespace Menu.MenuFolder.Classes
     public class MenuItems : IMenu
     {
         public Items Selected { get; set; }
-        protected List<Items> Items;
-        protected Game Game;
+        private List<Items> Items;
+        private Game Game;
         private Vector2 position;
         private string posit;
+        private SpriteFont font;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="game"></param>
-        public MenuItems(Game game, Vector2 position,string posit="left")
+        public MenuItems(Game game, Vector2 position,SpriteFont font,string posit="left")
         {
             Game = game;
             this.position = position;
             this.posit = posit;
-            Items = new List<Items>();
+            this.font = font;
+            Items = new List<Items>(); 
         }
 
         public void Position(string text)
         {
             if(posit == "left")
-            position = new Vector2(position.X, position.Y + Game.bigFont.MeasureString(text).Y);
+            position = new Vector2(position.X, position.Y + font.MeasureString(text).Y);
             else
-                position = new Vector2(Game.graphics.PreferredBackBufferWidth / 2 - Game.bigFont.MeasureString(text).X / 2, Game.graphics.PreferredBackBufferHeight / 2 + Items.Count * Game.bigFont.MeasureString(text).Y);
+                position = new Vector2(Game.graphics.PreferredBackBufferWidth / 2 - font.MeasureString(text).X / 2, Game.graphics.PreferredBackBufferHeight / 3 + Items.Count * font.MeasureString(text).Y);
         }
 
         /// <summary>
@@ -42,7 +43,7 @@ namespace Menu.MenuFolder.Classes
         public void AddItem(string text, string value = "")
         {
             Position(text);
-            Items item = new Items(text,position, value);
+            Items item = new Items(text,position,new Rectangle((int)position.X,(int)(position.Y),(int)font.MeasureString(text).X,(int)font.MeasureString(text).Y), value);            
             Items.Add(item);
         }
         /// <summary>
@@ -53,8 +54,8 @@ namespace Menu.MenuFolder.Classes
             foreach (Items item in Items)
             {
                 Color color = item == Selected ? Color.Red : Color.White;
-                Game.spriteBatch.DrawString(Game.bigFont, item.Text, new Vector2(item.Position.X, item.Position.Y - Items.Count * Game.bigFont.MeasureString(item.Text).Y / 2), color);
-                Game.spriteBatch.DrawString(Game.bigFont, item.Value, new Vector2(item.Position.X + 400, item.Position.Y - Items.Count * Game.bigFont.MeasureString(item.Text).Y / 2), Color.White);
+                Game.spriteBatch.DrawString(font, item.Text, new Vector2(item.Position.X, item.Position.Y), color);
+                Game.spriteBatch.DrawString(font, item.Value, new Vector2(item.Position.X + 500, item.Position.Y), Color.White);
             }
         }
         /// <summary>
@@ -76,10 +77,32 @@ namespace Menu.MenuFolder.Classes
 
         public void UpdateItem(string text, int i, string value = "")
         {
-            Items item = new Items(text, new Vector2(position.X, Game.graphics.PreferredBackBufferHeight / 2 + Game.bigFont.MeasureString(text).Y * (i + 1)), value);
+            Items item = new Items(text, new Vector2(position.X, Game.graphics.PreferredBackBufferHeight / 3 + font.MeasureString(text).Y * (i + 1)), new Rectangle((int)position.X, (int)(Game.graphics.PreferredBackBufferHeight / 3 + font.MeasureString(text).Y * (i + 1)), (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value);
             Items.Insert(i, item);
             Items.RemoveAt(i + 1);
             Selected = item;
+        }
+        public void CursorPosition()
+        {
+            foreach (Items item in Items)
+            {
+                if (item.Rectangle.Contains(new Point(Game.mouseState.X, Game.mouseState.Y)))
+                {
+                    CursorColision();
+                    Selected = item;
+                }
+            }
+        }
+        public bool CursorColision()
+        {
+            foreach (Items item in Items)
+            {
+                if (item.Rectangle.Contains(new Point(Game.mouseState.X, Game.mouseState.Y)))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

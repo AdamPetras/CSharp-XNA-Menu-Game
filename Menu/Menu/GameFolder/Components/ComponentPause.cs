@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Menu.GameFolder.Classes;
 using Menu.MenuFolder.Classes;
 using Menu.MenuFolder.Components;
@@ -36,7 +35,7 @@ namespace Menu.GameFolder.Components
         public override void Initialize()
         {
             game.EGameState = EGameState.Pause;
-            pause = new MenuItems(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 2), "middle");
+            pause = new MenuItems(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 2),game.bigFont, "middle");
             pause.AddItem("Back");
             pause.AddItem("Load");
             pause.AddItem("Save");
@@ -56,16 +55,17 @@ namespace Menu.GameFolder.Components
                 pause.Before();
             if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.S))
                 pause.Next();
-            if (game.SingleClick(Keys.Enter))
+            if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && pause.CursorColision()))
             {
                 switch (pause.Selected.Text)
                 {
                     case "Back":
-                        game.ComponentEnable(this, false);
                         if(componentCar != null)
                         componentCar.Enabled = true;
                         else if (componentCharacter != null)
                             componentCharacter.Enabled = true;
+                        game.ComponentEnable(this, false);
+                        Game.IsMouseVisible = false;
                         break;
                     case "Load":
                         game.EGameState = EGameState.LoadIngame;
@@ -94,18 +94,19 @@ namespace Menu.GameFolder.Components
                         game.ComponentEnable(this, false);
                         break;
                     case "Menu":
-                        game.ComponentEnable(this, false);
                         if(componentCar != null)
                         game.ComponentEnable(componentCar, false);
                         else if(componentCharacter != null)
                             game.ComponentEnable(componentCharacter, false);
                         game.ComponentEnable(game.componentGameMenu);
+                        game.ComponentEnable(this, false);
                         break;
                     case "Exit":
                         Game.Exit();
                         break;
                 }
             }
+            pause.CursorPosition();
             base.Update(gameTime);
         }
         /// <summary>

@@ -72,16 +72,20 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameFolder\Classes\Bullet.cs" />
     <Compile Include="GameFolder\Classes\Car.cs" />
     <Compile Include="GameFolder\Classes\Camera.cs" />
     <Compile Include="GameFolder\Classes\CarPhysics.cs" />
     <Compile Include="GameFolder\Classes\Character.cs" />
+    <Compile Include="GameFolder\Classes\ColisionDetection.cs" />
     <Compile Include="GameFolder\Classes\GameGraphics.cs" />
     <Compile Include="GameFolder\Classes\Graphics.cs" />
     <Compile Include="GameFolder\Classes\GraphicsList.cs" />
+    <Compile Include="GameFolder\Classes\Gun.cs" />
+    <Compile Include="GameFolder\Classes\GunsList.cs" />
+    <Compile Include="GameFolder\Classes\Holster.cs" />
     <Compile Include="GameFolder\Components\ComponentCar.cs" />
     <Compile Include="GameFolder\Components\ComponentCharacter.cs" />
-    <Compile Include="GameFolder\Components\ComponentGame.cs" />
     <Compile Include="GameFolder\Components\ComponentPause.cs" />
     <Compile Include="GameFolder\Interface\IPhysics.cs" />
     <Compile Include="MenuFolder\Classes\Items.cs" />

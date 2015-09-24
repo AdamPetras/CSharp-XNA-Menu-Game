@@ -40,7 +40,7 @@ namespace Menu.MenuFolder.Components
         /// </summary>
         public override void Initialize()
         {
-            load = new MenuItems(game,new Vector2(game.graphics.PreferredBackBufferWidth/2,game.graphics.PreferredBackBufferHeight/2),"middle");
+            load = new MenuItems(game,new Vector2(game.graphics.PreferredBackBufferWidth/2,game.graphics.PreferredBackBufferHeight/3),game.normalFont,"middle");
             for (int i = 1; i <= game.saveList.Count; i++)
             {
                 load.AddItem("Position " + i);
@@ -64,7 +64,7 @@ namespace Menu.MenuFolder.Components
             {
                 load.Next();
             }
-            if (game.SingleClick(Keys.Enter))
+            if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && load.CursorColision()))
             {
                 switch (load.Selected.Text)
                 {
@@ -88,6 +88,7 @@ namespace Menu.MenuFolder.Components
                         break;
                 }
             }
+            load.CursorPosition();
             base.Update(gameTime);
         }
         /// <summary>
@@ -135,12 +136,14 @@ namespace Menu.MenuFolder.Components
                     {
                         ComponentCar newComponentCar = new ComponentCar(game, savedData);
                         Game.Components.Add(newComponentCar);
+                        Game.IsMouseVisible = false;
                     }
                     else if (!savedData.InTheCar)   //Pokud save neni v autì tak
                     {
                         GameGraphics gameGraphics = new GameGraphics(game);    // naètení grafiky
                         ComponentCharacter newComponentCharacter = new ComponentCharacter(game,new Car(game,savedData,103000,1770), savedData,gameGraphics);
                         Game.Components.Add(newComponentCharacter);
+                        Game.IsMouseVisible = false;
                     }
                     game.ComponentEnable(this, false);
                 }
@@ -154,7 +157,7 @@ namespace Menu.MenuFolder.Components
                 }
                 else if (character != null)     //Save pro character
                 {
-                    game.saveList.Insert(index, new SavedData(car.Position, car.Angle,character.Position,character.Angle, false, DateTime.Now.ToString()));
+                    game.saveList.Insert(index, new SavedData(car.Position, car.Angle,character.CharacterPosition,character.Angle, false, DateTime.Now.ToString()));
                     game.saveList.RemoveAt(index + 1);
                 }
             }
@@ -165,7 +168,7 @@ namespace Menu.MenuFolder.Components
         private void DrawStats()
         {
             for (int i = 0; i < game.saveList.Count; i++)
-                game.spriteBatch.DrawString(game.normalFont, game.saveList[i].Time, new Vector2(game.graphics.PreferredBackBufferWidth / 2 + 250, game.graphics.PreferredBackBufferHeight / 2 + i * game.bigFont.MeasureString(game.saveList[i].Time).Y - game.bigFont.MeasureString(game.saveList[i].Time).Y * 3), Color.White);
+                game.spriteBatch.DrawString(game.normalFont, game.saveList[i].Time, new Vector2(game.graphics.PreferredBackBufferWidth / 2 + 250, game.graphics.PreferredBackBufferHeight / 3 + i * game.normalFont.MeasureString(game.saveList[i].Time).Y), Color.White);
         }
     }
 }

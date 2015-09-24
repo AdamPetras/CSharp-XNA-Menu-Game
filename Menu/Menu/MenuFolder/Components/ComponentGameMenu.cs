@@ -1,4 +1,3 @@
-using Menu.GameFolder.Classes;
 using Menu.GameFolder.Components;
 using Menu.MenuFolder.Classes;
 using Menu.MenuFolder.Interface;
@@ -25,7 +24,7 @@ namespace Menu.MenuFolder.Components
             : base(game)
         {
             this.game = game;
-            menuItems = new MenuItems(game,new Vector2(100,game.graphics.PreferredBackBufferHeight/2));
+            menuItems = new MenuItems(game,new Vector2(100,game.graphics.PreferredBackBufferHeight/3),game.bigFont);
             //pøidávání položek do menu
             menuItems.AddItem("Start");
             menuItems.AddItem("Load");
@@ -58,16 +57,20 @@ namespace Menu.MenuFolder.Components
             {
                 menuItems.Next();
             }
-            if (game.SingleClick(Keys.Enter))
+            if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && menuItems.CursorColision()))
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
                 switch (menuItems.Selected.Text)
                 {
                     case "Start":
-                        SavedData savedData = new SavedData(Vector2.Zero, 0);
-                        ComponentCar car = new ComponentCar(game, savedData);
-                        Game.Components.Add(car);
-                        game.ComponentEnable(this, false);
+                        SavedData savedData = new SavedData(Vector2.Zero,0f);
+                        game.gunsList.AddGun(new Vector2(200, 200), 1);
+                        game.gunsList.AddGun(new Vector2(300, 200), 2);
+                        game.gunsList.AddGun(new Vector2(400, 200), 3);
+                        ComponentCar componentCar = new ComponentCar(game,savedData);
+                        Game.Components.Add(componentCar);
+                        game.ComponentEnable(this,false);
+                        Game.IsMouseVisible = false;
                         break;
                    case "Load":
                         game.EGameState = EGameState.Load;
@@ -97,10 +100,11 @@ namespace Menu.MenuFolder.Components
                         break;
                 }
             }
-            if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.Up) || game.SingleClick(Keys.W)||game.SingleClick(Keys.S))
+            if (menuItems.Selected.Text !="About")
             {
                 game.ComponentEnable(componentAbout, false);
             }
+            menuItems.CursorPosition();
             base.Update(gameTime);
         }
         /// <summary>

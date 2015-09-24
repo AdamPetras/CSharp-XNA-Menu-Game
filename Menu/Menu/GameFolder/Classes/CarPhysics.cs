@@ -10,8 +10,8 @@ namespace Menu.GameFolder.Classes
         private const double GRAVITY = 9.81;                    //konstanta gravitace
         private const double COEFFCIENTOFRESISTANCE = 0.4;      //koeficient odporu auta
         private const double AREAOFTHECAR = 2*1.5;              //plocha auta zepředu
-        private const double DENSITYOFENVIROMENT = 1.2;        //hustota vzduchu při 20°C
-        private const double FLYWHEELRADIUS = 0.12;              //poloměr setrvačníku v metrech
+        private const double DENSITYOFENVIROMENT = 1.2;         //hustota vzduchu při 20°C
+        private const double FLYWHEELRADIUS = 0.12;             //poloměr setrvačníku v metrech
         /// <summary>
         /// 
         /// </summary>

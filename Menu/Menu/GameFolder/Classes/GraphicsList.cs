@@ -6,7 +6,7 @@ namespace Menu.GameFolder.Classes
 {
     public class GraphicsList
     {
-        private List<Graphics> objects;
+        private List<Graphics> objectList;
         private Game game;
         /// <summary>
         /// Constructor
@@ -15,7 +15,7 @@ namespace Menu.GameFolder.Classes
         public GraphicsList(Game game)
         {
             this.game = game;
-            objects = new List<Graphics>();
+            objectList = new List<Graphics>();
         }
         /// <summary>
         /// Universal method to add graphics with colision or without colision
@@ -23,10 +23,10 @@ namespace Menu.GameFolder.Classes
         /// <param name="position"></param>
         /// <param name="texture"></param>
         /// <param name="colision"></param>
-        public void AddGraphics(Vector2 position, Texture2D texture, bool colision = true)
+        public void AddGraphics(Vector2 position, Texture2D texture,float angle=0f, bool colision = true)
         {
-            Graphics graphics = new Graphics(position, texture, colision);
-            objects.Add(graphics);
+            Graphics graphics = new Graphics(position, texture, colision,angle);
+            objectList.Add(graphics);
         }
         /// <summary>
         /// Method which add graphics with colisions to list of colisions
@@ -35,21 +35,32 @@ namespace Menu.GameFolder.Classes
         public List<Rectangle> ColisionList()
         {
             List<Rectangle> colision = new List<Rectangle>();
-            foreach (Graphics graphics in objects)
+            foreach (Graphics graphics in objectList)
             {
                 if (graphics.Colision)
                     colision.Add(new Rectangle((int)graphics.Position.X, (int)graphics.Position.Y, graphics.Texture.Width, graphics.Texture.Height));
             }
             return colision;
         }
+
+        public List<Graphics> ObjectTextureList()
+        {   
+            List<Graphics> objectTextureList = new List<Graphics>();
+            foreach (Graphics graphics in objectList)
+            {
+                if (graphics.Colision)
+                    objectTextureList.Add(graphics);
+            }
+            return objectTextureList;
+        }
         /// <summary>
         /// Method which add data of texture of graphics
         /// </summary>
         /// <returns></returns>
-        public List<Color[]> objectsData()
+        public List<Color[]> ObjectDataList()
         {
             List<Color[]> objectsData = new List<Color[]>();
-            foreach (Graphics graphics in objects)
+            foreach (Graphics graphics in objectList)
             {
                 if (graphics.Colision)
                 {
@@ -63,11 +74,34 @@ namespace Menu.GameFolder.Classes
         /// <summary>
         /// Method to draw all graphics
         /// </summary>
-        public void DrawGraphics()
+        public void DrawColiadableGraphics()
         {
-            foreach (Graphics graphics in objects)
+            foreach (Graphics graphics in objectList)
             {
-                game.spriteBatch.Draw(graphics.Texture, graphics.Position, Color.White);
+                if (graphics.Colision)
+                {
+                    game.spriteBatch.Draw(graphics.Texture,
+                        new Rectangle((int) graphics.Position.X + graphics.Texture.Width/2,
+                            (int) graphics.Position.Y + graphics.Texture.Height/2, graphics.Texture.Width,
+                            graphics.Texture.Height), null, Color.White, graphics.Angle,
+                        new Vector2(graphics.Texture.Width/2, graphics.Texture.Height/2), SpriteEffects.None, 0f);
+                    game.spriteBatch.Draw(game.spritPauseBackground, ColisionList()[0], Color.White*0);
+                }
+            }
+        }
+        public void DrawNonColiadableGraphics()
+        {
+            foreach (Graphics graphics in objectList)
+            {
+                if (!graphics.Colision)
+                {
+                    game.spriteBatch.Draw(graphics.Texture,
+                        new Rectangle((int)graphics.Position.X + graphics.Texture.Width / 2,
+                            (int)graphics.Position.Y + graphics.Texture.Height / 2, graphics.Texture.Width,
+                            graphics.Texture.Height), null, Color.White, graphics.Angle,
+                        new Vector2(graphics.Texture.Width / 2, graphics.Texture.Height / 2), SpriteEffects.None, 0f);
+                    game.spriteBatch.Draw(game.spritPauseBackground, ColisionList()[0], Color.White*0);
+                }
             }
         }
     }
