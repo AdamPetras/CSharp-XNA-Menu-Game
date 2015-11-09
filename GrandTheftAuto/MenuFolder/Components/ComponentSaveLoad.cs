@@ -20,23 +20,21 @@ namespace GrandTheftAuto.MenuFolder.Components
     {
         private IMenu load;
         private GameClass game;
-        private ComponentPause componentPause;
         private ComponentCar componentCar;
         private ComponentCharacter componentCharacter;
         private ComponentEnemy componentEnemy;
         private Car car;
-        private Character character;
-        private Holster holster;
-        public ComponentSaveLoad(GameClass game, ComponentPause componentPause = null, Car car = null, ComponentCar componentCar = null, ComponentCharacter componentCharacter = null, Character character = null, Holster holster = null, ComponentEnemy componentEnemy = null)
+        private ComponentGameGraphics componentGameGraphics;
+        private ComponentGuns componentGuns;
+        public ComponentSaveLoad(GameClass game, Car car = null, ComponentCar componentCar = null,ComponentGameGraphics componentGameGraphics=null,ComponentGuns componentGuns=null, ComponentCharacter componentCharacter = null, ComponentEnemy componentEnemy = null)
             : base(game)
         {
             this.game = game;
-            this.componentPause = componentPause;
             this.componentCar = componentCar;
             this.componentCharacter = componentCharacter;
-            this.character = character;
             this.car = car;
-            this.holster = holster;
+            this.componentGuns = componentGuns;
+            this.componentGameGraphics = componentGameGraphics;
             this.componentEnemy = componentEnemy;
         }
 
@@ -114,13 +112,13 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// </summary>
         public void Back()
         {
-            game.ComponentEnable(this, false);
             if (game.EGameState == EGameState.Load)
                 game.ComponentEnable(game.componentGameMenu);
             else if (game.EGameState == EGameState.LoadIngame || game.EGameState == EGameState.Save)
             {
-                game.ComponentEnable(componentPause);
+                game.EGameState = EGameState.Pause;
             }
+            game.ComponentEnable(this, false);
         }
         /// <summary>
         /// Method to know if save or load
@@ -137,42 +135,34 @@ namespace GrandTheftAuto.MenuFolder.Components
                         game.ComponentEnable(componentCar, false);
                     else if (game.EGameState == EGameState.LoadIngame && componentCharacter != null)    // Pokud je EGameState Ingameload a componenta character existuje
                         game.ComponentEnable(componentCharacter, false);
-                    SavedData savedData = new SavedData(game.saveList[index].Position, game.saveList[index].Angle, game.saveList[index].CharacterPosition, game.saveList[index].CharacterAngle, game.saveList[index].InTheCar, game.saveList[index].Holster, game.saveList[index].GunsList, game.saveList[index].CarHp, game.saveList[index].EnemyList);
+                    SavedData savedData = new SavedData(game.saveList[index].CharacterPosition, game.saveList[index].CharacterAngle,game.saveList[index].CarList, game.saveList[index].InTheCar, game.saveList[index].Holster, game.saveList[index].GunsList, game.saveList[index].EnemyList, game.saveList[index].Score);
                     if (savedData.InTheCar) // Pokud je save v aute tak
-                    {
-                        ComponentCar newComponentCar = new ComponentCar(game, savedData);
-                        Game.Components.Add(newComponentCar);
-                        Game.IsMouseVisible = false;
-                    }
-                    else if (!savedData.InTheCar)   //Pokud save neni v autì tak
-                    {
-                        GameGraphics gameGraphics = new GameGraphics(game);    // naètení grafiky
-                        ComponentCharacter newComponentCharacter = new ComponentCharacter(game, new Car(game, savedData, 103000, 1770), savedData, gameGraphics);
-                        Game.Components.Add(newComponentCharacter);
-                        Game.IsMouseVisible = false;
-                    }
+                        game.EGameState =EGameState.InGameCar;
+                    else
+                        game.EGameState = EGameState.InGameOut;
+                    componentCharacter.Character.CharacterPosition = savedData.CharacterPosition;
+                    componentCharacter.Character.Angle = savedData.CharacterAngle;
+                    game.carList = savedData.CarList;
+                    componentGuns.CharacterUsingGuns.Holster.HolsterList = savedData.Holster;
+                    game.gunsOptions.GunList = savedData.GunsList;
+                    componentEnemy.enemyService.EnemyList.Clear();                  //vyèištìní enemylistu
+                    componentEnemy.enemyService.EnemyList = savedData.EnemyList;    //naplnìní uloženám listem
+                    componentEnemy.enemyService.Score = savedData.Score;
+                    game.ComponentEnable(componentEnemy);
+                    game.ComponentEnable(componentCar);
+                    game.ComponentEnable(componentCharacter);
+                    game.ComponentEnable(componentGameGraphics);
+                    game.ComponentEnable(componentGuns);
+                    Game.IsMouseVisible = false;
                     game.ComponentEnable(this, false);
-                    if(componentEnemy!= null)
-                    game.ComponentEnable(componentEnemy,false);
                 }
             }
             #endregion
             #region !!!*SAVE*!!!
             else if (game.EGameState == EGameState.Save)    //Pokud je Egamestate save pro detekci jestli load nebo save
             {
-                if (car != null && character == null)    //Save pro auto
-                {
-                    if (holster != null && game.gunsOptions != null)
-                        game.saveList.Insert(index, new SavedData(car.Position, car.Angle, Vector2.Zero, 0, true, holster.GetHolster(), game.gunsOptions.GetGunsList(), car.Hp, componentEnemy.enemyService.EnemyList, DateTime.Now.ToString()));
-                    else
-                        game.saveList.Insert(index, new SavedData(car.Position, car.Angle, Vector2.Zero, 0, true, null, null, car.Hp, componentEnemy.enemyService.EnemyList, DateTime.Now.ToString()));
+                    game.saveList.Insert(index, new SavedData(componentCharacter.Character.CharacterPosition, componentCharacter.Character.Angle, game.carList,game.EGameState.Equals(EGameState.InGameCar), componentGuns.CharacterUsingGuns.Holster.HolsterList, game.gunsOptions.GunList, componentEnemy.enemyService.EnemyList, componentEnemy.enemyService.Score, DateTime.Now.ToString()));
                     game.saveList.RemoveAt(index + 1);
-                }
-                else if (character != null)     //Save pro character
-                {
-                    game.saveList.Insert(index, new SavedData(car.Position, car.Angle, character.CharacterPosition, character.Angle, false, holster.GetHolster(), game.gunsOptions.GetGunsList(), car.Hp, componentEnemy.enemyService.EnemyList, DateTime.Now.ToString()));
-                    game.saveList.RemoveAt(index + 1);
-                }
             }
             #endregion
         }

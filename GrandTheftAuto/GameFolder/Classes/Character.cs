@@ -3,20 +3,26 @@ using GrandTheftAuto.MenuFolder;
 using GrandTheftAuto.MenuFolder.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input.Touch;
 
 namespace GrandTheftAuto.GameFolder.Classes
 {
     public class Character
     {
         private GameClass game;
+        public bool Alive { get; private set; }
+        public int Energy { get; private set; }
         public Vector2 CharacterPosition { get; set; }
         public float Angle { get; set; }
         public int Hp { get; set; }
-        public bool Alive { get; private set; }
 
+
+        private double speed;
         private double distance;
-        private float animationTimer;       //timer pro animace postavy
-        private const double interval = 150;    //interval na animaci postavy
+        private double animationTimer;       //timer pro animace postavy
+        private double interval = 150;    //interval na animaci postavy
+        private double energyDrainRegenerateTimer;
+        private bool regeneration;
         private int currentFrame;
 
 
@@ -27,21 +33,18 @@ namespace GrandTheftAuto.GameFolder.Classes
         /// <param name="savedData"></param>
         /// <param name="position"></param>
         /// <param name="angle"></param>
-        public Character(GameClass game, SavedData savedData, Vector2 position, float angle)
+        public Character(GameClass game, SavedData savedData)
         {
             this.game = game;
             Hp = 100;
+            Energy = 100;
+            speed = 1;
             Alive = true;
+            regeneration = false;
             if (!savedData.InTheCar)
             {
                 CharacterPosition = savedData.CharacterPosition;
                 Angle = savedData.CharacterAngle;
-            }
-            else
-            {
-                CharacterPosition = position;
-                Angle = angle;
-                GetOutOfCar();
             }
             currentFrame = 0;
         }
@@ -54,13 +57,13 @@ namespace GrandTheftAuto.GameFolder.Classes
             #region Chůze
             if (game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Up].Key) && Alive)
             {
-                distance++;
+                distance += speed;
                 CharacterAnimation(gameTime);
                 CharacterPosition = game.CalculatePosition(CharacterPosition, Angle, ref distance);
             }
             if (game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Down].Key) && Alive)
             {
-                distance--;
+                distance -= speed;
                 CharacterAnimation(gameTime);
                 CharacterPosition = game.CalculatePosition(CharacterPosition, Angle, ref distance);
             }
@@ -75,7 +78,35 @@ namespace GrandTheftAuto.GameFolder.Classes
                 Angle += 0.05f;
             }
             #endregion
-
+            #region Běh
+            if (game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Shift].Key) && Alive && Energy > 0 && !regeneration)
+            {
+                speed = 1.5;
+                interval = 120;
+                energyDrainRegenerateTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (energyDrainRegenerateTimer > 100)
+                {
+                    Energy -= 1;
+                    energyDrainRegenerateTimer = 0;
+                }
+                if (Energy == 0)
+                    speed = 1;
+            }
+            else if(Energy<100)
+            {
+                regeneration = true;
+                speed = 1;
+                interval = 150;
+                energyDrainRegenerateTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (energyDrainRegenerateTimer > 200 && Energy < 100)
+                {
+                    Energy += 1;
+                    energyDrainRegenerateTimer = 0;
+                }
+                if (Energy >= 40)
+                    regeneration = false;
+            }
+            #endregion
             //-------------Pokud nechodí nebo je zmáčknuto dopředu i dozadu tak se nastaví obrázek stop-------------
             if (game.keyState.IsKeyUp(game.controlsList[(int)EKeys.Down].Key) &&
                 game.keyState.IsKeyUp(game.controlsList[(int)EKeys.Up].Key) ||
@@ -87,7 +118,7 @@ namespace GrandTheftAuto.GameFolder.Classes
 
         public void Live()
         {
-                Alive = Hp > 0;
+            Alive = Hp > 0;
         }
 
         /// <summary>
@@ -96,7 +127,7 @@ namespace GrandTheftAuto.GameFolder.Classes
         /// <param name="gameTime"></param>
         private void CharacterAnimation(GameTime gameTime)
         {
-            animationTimer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            animationTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
             if (animationTimer > interval)
             {
                 // Show the next frame
@@ -108,18 +139,6 @@ namespace GrandTheftAuto.GameFolder.Classes
             {
                 currentFrame = 0;
             }
-        }
-        /// <summary>
-        /// Method to get position if i wanna get out of car
-        /// </summary>
-        private void GetOutOfCar()
-        {
-            Vector2 position = CharacterPosition;
-            position.X = (float)(Math.Cos(Angle + 1.5) * game.spritCharacter[currentFrame].Width + CharacterPosition.X);
-            //X = Cos(uhlu) *šířka charakteru + predchozi pozice
-            position.Y = (float)(Math.Sin(Angle + 1.5) * game.spritCharacter[currentFrame].Height + CharacterPosition.Y);
-            //Y = Sin(uhlu) *šířka charakteru + predchozi pozice
-            CharacterPosition = position;
         }
         /// <summary>
         /// Method to get rectangle of character

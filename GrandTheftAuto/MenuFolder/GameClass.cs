@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using GrandTheftAuto.GameFolder.Classes.CarFolder;
 using GrandTheftAuto.GameFolder.Classes.Gun;
 using GrandTheftAuto.MenuFolder.Classes;
 using Microsoft.Xna.Framework;
@@ -19,7 +20,8 @@ namespace GrandTheftAuto.MenuFolder
         Save,
         InGameCar,
         InGameOut,
-        Reloading
+        Reloading,
+        GameOver
     }
     public enum EKeys
     {
@@ -30,7 +32,8 @@ namespace GrandTheftAuto.MenuFolder
         Space,
         E,
         R,
-        Q
+        Q,
+        Shift
     }
 
     /// <summary>
@@ -64,6 +67,9 @@ namespace GrandTheftAuto.MenuFolder
         public Texture2D[] spritHouse;              //300x300 //300x300 //500x250
         public Texture2D[] spritGuns;
         public Texture2D[] spritEnemy;
+        public Texture2D spritHealthBar;
+        public Texture2D spritGameOver;
+        public Texture2D spritBlood;
         public Texture2D spritBullet;
         #endregion
         #region Fonty
@@ -76,6 +82,7 @@ namespace GrandTheftAuto.MenuFolder
 
         public List<SavedData> saveList;
         public List<SavedControls> controlsList;
+        public List<Car> carList; 
 
         public GunsOptions gunsOptions;
         /// <summary>
@@ -115,6 +122,7 @@ namespace GrandTheftAuto.MenuFolder
             {
                 saveList.Add(new SavedData(Vector2.Zero, 0));
             }
+            carList = new List<Car>();
             controlsList.Add(new SavedControls("throttle", Keys.W));
             controlsList.Add(new SavedControls("brake", Keys.S));
             controlsList.Add(new SavedControls("turn left", Keys.A));
@@ -123,6 +131,7 @@ namespace GrandTheftAuto.MenuFolder
             controlsList.Add(new SavedControls("enter/leave car", Keys.E));
             controlsList.Add(new SavedControls("reload gun", Keys.R));
             controlsList.Add(new SavedControls("change gun", Keys.Q));
+            controlsList.Add(new SavedControls("run", Keys.LeftShift));
             spritEnemy = new Texture2D[3];
             spritCharacter = new Texture2D[5];
             spritHouse = new Texture2D[3];
@@ -145,6 +154,7 @@ namespace GrandTheftAuto.MenuFolder
             spritPauseBackground = Content.Load<Texture2D>(@"Sprits/pauseBackground");
             spritTree = Content.Load<Texture2D>(@"Sprits/tree");
             spritExplosion = Content.Load<Texture2D>(@"Sprits/explosion");
+            spritGameOver = Content.Load<Texture2D>(@"Sprits/gameover");
 
             spritRoad = Content.Load<Texture2D>(@"Sprits/Road/road");
             spritCrossRoad = Content.Load<Texture2D>(@"Sprits/Road/crossroad");
@@ -164,11 +174,12 @@ namespace GrandTheftAuto.MenuFolder
             #endregion
 
             spritEnemy[0] = Content.Load<Texture2D>(@"Sprits/Enemy/zombie");
+            spritHealthBar = Content.Load<Texture2D>(@"Sprits/Enemy/health bar");
+            spritBlood = Content.Load<Texture2D>(@"Sprits/Enemy/Blood");
             #region Zbranì
             spritGuns[0] = Content.Load<Texture2D>(@"Sprits/Guns/M4A1");
             spritBullet = Content.Load<Texture2D>(@"Sprits/Guns/bullet");
             #endregion
-
         }
 
         protected override void UnloadContent()

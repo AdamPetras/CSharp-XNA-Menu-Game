@@ -10,6 +10,7 @@ namespace GrandTheftAuto.GameFolder.Classes
     {
         public Vector2 Start { get; private set; }
         public Vector2 Finish { get; private set; }
+        public Rectangle Obstactle { get; private set; }
         public float F { get; private set; } 
 
         public Pathfinding(Vector2 start,Vector2 finish)
@@ -17,6 +18,11 @@ namespace GrandTheftAuto.GameFolder.Classes
             Start = start;
             Finish = finish;
             F = (Math.Abs(start.X - finish.X) + Math.Abs(start.Y - finish.Y)) + F;
+        }
+
+        public Pathfinding(Rectangle obstactle)
+        {
+            Obstactle = obstactle;
         }
     }
 }

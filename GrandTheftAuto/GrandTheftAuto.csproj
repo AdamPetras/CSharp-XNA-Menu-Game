@@ -53,6 +53,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GameFolder\Classes\DiedEnemy.cs" />
     <Compile Include="GameFolder\Classes\Enemy.cs" />
     <Compile Include="GameFolder\Classes\EnemyAI.cs" />
     <Compile Include="GameFolder\Classes\EnemyOption.cs" />
@@ -74,6 +75,9 @@
     <Compile Include="GameFolder\Components\ComponentCar.cs" />
     <Compile Include="GameFolder\Components\ComponentCharacter.cs" />
     <Compile Include="GameFolder\Components\ComponentEnemy.cs" />
+    <Compile Include="GameFolder\Components\ComponentGameGraphics.cs" />
+    <Compile Include="GameFolder\Components\ComponentGUI.cs" />
+    <Compile Include="GameFolder\Components\ComponentGuns.cs" />
     <Compile Include="GameFolder\Components\ComponentPause.cs" />
     <Compile Include="GameFolder\Interface\IPhysics.cs" />
     <Compile Include="MenuFolder\Classes\DrawItems.cs" />
@@ -130,10 +134,19 @@
     <Content Include="Content\Sprits\Character\characterStop.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Sprits\Enemy\blood.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Enemy\health bar.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Sprits\Enemy\zombie.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\explosion.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\gameover.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\grass.jpg">

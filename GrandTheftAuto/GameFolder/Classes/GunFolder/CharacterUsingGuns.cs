@@ -12,9 +12,9 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
     {
         public Holster Holster { get; private set; }
         public List<Bullet> BulletList { get; private set; }
+        public Gun SelectedGun { get; set; }
         private GameClass game;
         private int index;
-        private GunFolder.Gun selectedGun;
         private float shotTimer;                //timer pro střílení 
         private float reloadTimer;              //timer pro nabíjení
         private const int reloading = 2000;     //konstanta pro určení doby nabíjení
@@ -38,9 +38,9 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
             EventChangeGun = ChangeGun;     //Event na změnu zbraně
             Holster = new Holster(game.gunsOptions, character, savedData);
             BulletList = new List<Bullet>();
-            selectedGun = null;
-            if (Holster.GetHolster().Count != 0)
-                selectedGun = Holster.GetHolster().First();
+            SelectedGun = null;
+            if (Holster.HolsterList.Count != 0)
+                SelectedGun = Holster.HolsterList.First();
             shotTimer = 0;
             reloadTimer = 0;
             index = 0;
@@ -48,17 +48,17 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
 
         public void PickUpGun()
         {
-            Holster.PickUpGun(ref selectedGun);
+            Holster.PickUpGun(this);
         }
 
         public void Reloading(GameTime gameTime)
         {
-            if (selectedGun != null && character.Alive)
+            if (SelectedGun != null && character.Alive)
             {
                 if (game.SingleClick(game.controlsList[(int)EKeys.R].Key) &&
-                    selectedGun.Magazine != selectedGun.MaxMagazine && selectedGun.Ammo > 0)
+                    SelectedGun.Magazine != SelectedGun.MaxMagazine && SelectedGun.Ammo > 0)
                 {
-                    Holster.Reload(selectedGun);
+                    Holster.Reload(SelectedGun);
                     game.EGameState = EGameState.Reloading;
                 }
                 if (game.EGameState == EGameState.Reloading)
@@ -75,16 +75,16 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
 
         public void Shooting(GameTime gameTime)
         {
-            if (selectedGun != null && game.mouseState.LeftButton == ButtonState.Pressed && selectedGun.Magazine != 0 && game.EGameState != EGameState.Reloading && character.Alive)    // střílení
+            if (SelectedGun != null && game.mouseState.LeftButton == ButtonState.Pressed && SelectedGun.Magazine != 0 && game.EGameState != EGameState.Reloading && character.Alive)    // střílení
             {
                 shotTimer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                if (selectedGun.FireRate < shotTimer)
+                if (SelectedGun.FireRate < shotTimer)
                 {
-                    selectedGun.Magazine--;
+                    SelectedGun.Magazine--;
                     double d = 20;
                     Bullet bullet =
                         new Bullet(game.CalculatePosition(character.CharacterPosition, character.Angle + 1f, ref d),
-                        game.spritBullet, character.Angle, selectedGun.Damage, selectedGun.FireRange);
+                        game.spritBullet, character.Angle, SelectedGun.Damage, SelectedGun.FireRange,SelectedGun.DamageRange);
                     BulletList.Add(bullet);
                     shotTimer = 0;
                 }
@@ -142,29 +142,24 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
             }
             if (game.EGameState == EGameState.Reloading)
             {
-                game.spriteBatch.Draw(selectedGun.Texture, new Rectangle((int)character.CharacterPosition.X, (int)character.CharacterPosition.Y, selectedGun.Texture.Width, selectedGun.Texture.Height), null, Color.White, character.Angle + 1.5f, new Vector2(-12, selectedGun.Texture.Height / 1.2f), SpriteEffects.None, 0f);
-                game.spriteBatch.DrawString(game.normalFont, selectedGun.EGun + "\nReloading", new Vector2(camera.Centering.X, camera.Centering.Y), Color.White);
+                game.spriteBatch.Draw(SelectedGun.Texture, new Rectangle((int)character.CharacterPosition.X, (int)character.CharacterPosition.Y, SelectedGun.Texture.Width, SelectedGun.Texture.Height), null, Color.White, character.Angle + 1.5f, new Vector2(-12, SelectedGun.Texture.Height / 1.2f), SpriteEffects.None, 0f);
             }
-            else if (selectedGun != null)
+            else if (SelectedGun != null)
             {
-                game.spriteBatch.Draw(selectedGun.Texture, new Rectangle((int)character.CharacterPosition.X, (int)character.CharacterPosition.Y, selectedGun.Texture.Width, selectedGun.Texture.Height), null, Color.White, character.Angle + 1.5f, new Vector2(-12, selectedGun.Texture.Height / 1.2f), SpriteEffects.None, 0f);
-                game.spriteBatch.DrawString(game.normalFont, selectedGun.EGun + "\n" + selectedGun.Magazine + "/" + selectedGun.Ammo, new Vector2(camera.Centering.X, camera.Centering.Y), Color.White);
+                game.spriteBatch.Draw(SelectedGun.Texture, new Rectangle((int)character.CharacterPosition.X, (int)character.CharacterPosition.Y, SelectedGun.Texture.Width, SelectedGun.Texture.Height), null, Color.White, character.Angle + 1.5f, new Vector2(-12, SelectedGun.Texture.Height / 1.2f), SpriteEffects.None, 0f);
             }
-            else
-                game.spriteBatch.DrawString(game.normalFont, "No Gun",
-                    new Vector2(camera.Centering.X, camera.Centering.Y), Color.White);
         }
 
         private void ChangeGun()
         {
-            if (game.SingleClick(game.controlsList[(int)EKeys.Q].Key) && Holster.GetHolster().Count != 0)
+            if (game.SingleClick(game.controlsList[(int)EKeys.Q].Key) && Holster.HolsterList.Count != 0)
             {
-                index = Holster.GetHolster().IndexOf(selectedGun);
-                selectedGun = index > 0 ? Holster.GetHolster()[index - 1] : Holster.GetHolster()[Holster.GetHolster().Count - 1];
+                index = Holster.HolsterList.IndexOf(SelectedGun);
+                SelectedGun = index > 0 ? Holster.HolsterList[index - 1] : Holster.HolsterList[Holster.HolsterList.Count - 1];
             }
         }
 
-        protected virtual void OnEventChangeGun()
+        protected virtual void OnEventChangeGun()       
         {
             if (EventChangeGun != null) EventChangeGun();
         }

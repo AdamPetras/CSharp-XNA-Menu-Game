@@ -19,7 +19,7 @@ namespace GrandTheftAuto.GameFolder.Classes.Gun
             M98B
         }
         private GameClass game;
-        private List<GunFolder.Gun> gunList;
+        public List<GunFolder.Gun> GunList { get; set; }
         private EGuns eGuns;
         private float rotation;
         /// <summary>
@@ -29,7 +29,7 @@ namespace GrandTheftAuto.GameFolder.Classes.Gun
         public GunsOptions(GameClass game)
         {
             this.game = game;
-            gunList = new List<GunFolder.Gun>();
+            GunList = new List<GunFolder.Gun>();
             rotation = 0;
         }
         /// <summary>
@@ -46,13 +46,14 @@ namespace GrandTheftAuto.GameFolder.Classes.Gun
             int ammo = 0;
             int magazine = 0;
             int maxMagazine = 0;
+            int damageRange = 0;
             eGuns = (EGuns)weapon;
             TypeOfWeapon(ref texture, ref fireRange, ref fireRate, ref damage, ref ammo, ref magazine,
-                ref maxMagazine);
+                ref maxMagazine,ref damageRange);
             GunFolder.Gun gun = new GunFolder.Gun(position, texture,
                 new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height), fireRange,
-                fireRate, damage, ammo, magazine, maxMagazine, eGuns);
-            gunList.Add(gun);
+                fireRate, damage, ammo, magazine, maxMagazine,damageRange, eGuns);
+            GunList.Add(gun);
         }
         /// <summary>
         /// Method to get type of gun and values
@@ -64,7 +65,7 @@ namespace GrandTheftAuto.GameFolder.Classes.Gun
         /// <param name="ammo"></param>
         /// <param name="magazine"></param>
         /// <param name="maxMagazine"></param>
-        private void TypeOfWeapon(ref Texture2D texture, ref int fireRange, ref int fireRate, ref int damage, ref int ammo, ref int magazine, ref int maxMagazine)
+        private void TypeOfWeapon(ref Texture2D texture, ref int fireRange, ref int fireRate, ref int damage, ref int ammo, ref int magazine, ref int maxMagazine,ref int damageRange)
         {
             if (eGuns == EGuns.M9)
             {
@@ -72,6 +73,7 @@ namespace GrandTheftAuto.GameFolder.Classes.Gun
                 fireRange = 300;
                 fireRate = 250;
                 damage = 13;
+                damageRange = 3;
                 ammo = 9;
                 magazine = 9;
                 maxMagazine = 9;
@@ -82,6 +84,7 @@ namespace GrandTheftAuto.GameFolder.Classes.Gun
                 fireRange = 600;
                 fireRate = 100;
                 damage = 16;
+                damageRange = 5;
                 ammo = 50;
                 magazine = 50;
                 maxMagazine = 50;
@@ -92,6 +95,7 @@ namespace GrandTheftAuto.GameFolder.Classes.Gun
                 fireRange = 800;
                 fireRate = 150;
                 damage = 24;
+                damageRange = 7;
                 ammo = 30;
                 magazine = 30;
                 maxMagazine = 30;
@@ -102,6 +106,7 @@ namespace GrandTheftAuto.GameFolder.Classes.Gun
                 fireRange = 850;
                 fireRate = 180;
                 damage = 26;
+                damageRange = 8;
                 ammo = 30;
                 magazine = 30;
                 maxMagazine = 30;
@@ -112,25 +117,18 @@ namespace GrandTheftAuto.GameFolder.Classes.Gun
                 fireRange = 1500;
                 fireRate = 2000;
                 damage = 100;
+                damageRange = 50;
                 ammo = 10;
                 magazine = 10;
                 maxMagazine = 10;
             }
         }
         /// <summary>
-        /// Method to get gunlist
-        /// </summary>
-        /// <returns></returns>
-        public List<GunFolder.Gun> GetGunsList()
-        {
-            return gunList;
-        }
-        /// <summary>
         /// Method to draw guns in list
         /// </summary>
         public void DrawGuns()
         {
-            foreach (GunFolder.Gun gun in gunList)
+            foreach (GunFolder.Gun gun in GunList)
             {
                 if (game.EGameState != EGameState.Pause)
                     rotation += 0.01f;

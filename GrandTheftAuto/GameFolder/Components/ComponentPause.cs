@@ -1,6 +1,5 @@
 using GrandTheftAuto.GameFolder.Classes;
 using GrandTheftAuto.GameFolder.Classes.CarFolder;
-using GrandTheftAuto.GameFolder.Classes.Gun;
 using GrandTheftAuto.GameFolder.Classes.GunFolder;
 using GrandTheftAuto.MenuFolder;
 using GrandTheftAuto.MenuFolder.Classes;
@@ -17,6 +16,7 @@ namespace GrandTheftAuto.GameFolder.Components
     public class ComponentPause : DrawableGameComponent
     {
         private IMenu pause;
+        public EGameState eGameStateBefore;
         private GameClass game;
         private Car car;
         private ComponentCar componentCar;
@@ -24,7 +24,11 @@ namespace GrandTheftAuto.GameFolder.Components
         private ComponentEnemy componentEnemy;
         private Character character;
         private Holster holster;
-        public ComponentPause(GameClass game, Car car, ComponentCar componentCar = null, ComponentCharacter componentCharacter = null,ComponentEnemy componentEnemy = null, Character character = null, Holster holster = null)
+        private ComponentGameGraphics componentGameGraphics;
+        private ComponentGuns componentGuns;
+        private ComponentGUI componentGui;
+        private double keyboardFlickerTimer;
+        public ComponentPause(GameClass game, Car car, ComponentCar componentCar, ComponentCharacter componentCharacter, ComponentEnemy componentEnemy, ComponentGameGraphics componentGameGraphics, ComponentGuns componentGuns, ComponentGUI componentGui, Character character, Holster holster)
             : base(game)
         {
             this.game = game;
@@ -34,6 +38,9 @@ namespace GrandTheftAuto.GameFolder.Components
             this.character = character;
             this.car = car;
             this.holster = holster;
+            this.componentGameGraphics = componentGameGraphics;
+            this.componentGuns = componentGuns;
+            this.componentGui = componentGui;
         }
 
         /// <summary>
@@ -42,8 +49,7 @@ namespace GrandTheftAuto.GameFolder.Components
         /// </summary>
         public override void Initialize()
         {
-            game.EGameState = EGameState.Pause;
-            pause = new MenuItems(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 2),game.bigFont, "middle");
+            pause = new MenuItems(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 2), game.bigFont, "middle");
             pause.AddItem("Back");
             pause.AddItem("Load");
             pause.AddItem("Save");
@@ -59,89 +65,87 @@ namespace GrandTheftAuto.GameFolder.Components
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            if (game.SingleClick(Keys.Up) || game.SingleClick(Keys.W))
-                pause.Before();
-            if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.S))
-                pause.Next();
-            if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && pause.CursorColision()))
+            if (game.EGameState == EGameState.Pause)
             {
-                switch (pause.Selected.Text)
+                componentGuns.Enabled = false;
+                componentEnemy.Enabled = false;
+                keyboardFlickerTimer += gameTime.ElapsedGameTime.Milliseconds;
+                if (game.SingleClick(Keys.Up) || game.SingleClick(Keys.W))
+                    pause.Before();
+                if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.S))
+                    pause.Next();
+                if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && pause.CursorColision()))
                 {
-                    case "Back":
-                        if (componentCar != null)
-                        {
-                            game.EGameState = EGameState.InGameCar;
-                            componentCar.Enabled = true;
-                            componentEnemy.Enabled = true;
-                        }
-                        else if (componentCharacter != null)
-                        {
-                            game.EGameState = EGameState.InGameOut;
-                            componentCharacter.Enabled = true;
-                            componentEnemy.Enabled = true;
-                        }
-                        game.ComponentEnable(this, false);
-                        Game.IsMouseVisible = false;
-                        break;
-                    case "Load":
-                        game.EGameState = EGameState.LoadIngame;
-                        if (componentCar != null)
-                        {
-                            ComponentSaveLoad componentLoad = new ComponentSaveLoad(game, this, car, componentCar,null,null,null,componentEnemy);
+                    switch (pause.Selected.Text)
+                    {
+                        case "Back":
+                            if (eGameStateBefore == EGameState.InGameCar)
+                            {
+                                game.EGameState = EGameState.InGameCar;
+                                componentCar.Enabled = true;
+                                componentEnemy.Enabled = true;
+                                componentGuns.Enabled = true;
+                            }
+                            else if (eGameStateBefore == EGameState.InGameOut)
+                            {
+                                game.EGameState = EGameState.InGameOut;
+                                componentCharacter.Enabled = true;
+                                componentEnemy.Enabled = true;
+                                componentGuns.Enabled = true;
+                            }
+                            Game.IsMouseVisible = false;
+                            break;
+                        case "Load":
+                            game.EGameState = EGameState.LoadIngame;
+                            ComponentSaveLoad componentLoad = new ComponentSaveLoad(game, car, componentCar, componentGameGraphics, componentGuns, componentCharacter, componentEnemy);
                             game.Components.Add(componentLoad);
-                        }else if (componentCharacter != null)
-                        {
-                            ComponentSaveLoad componentLoad = new ComponentSaveLoad(game, this, car, null,componentCharacter,character,holster,componentEnemy);
-                            game.Components.Add(componentLoad);
-                        }
-                        game.ComponentEnable(this,false);
-                        break;
-                    case "Save":
-                        game.EGameState = EGameState.Save;
-                        if (componentCar != null)
-                        {
-                            ComponentSaveLoad componentSave = new ComponentSaveLoad(game, this, car,null,null,null,null,componentEnemy);
+                            break;
+                        case "Save":
+                            game.EGameState = EGameState.Save;
+                            ComponentSaveLoad componentSave = new ComponentSaveLoad(game, car, componentCar, componentGameGraphics, componentGuns, componentCharacter, componentEnemy);
                             Game.Components.Add(componentSave);
-                        }else if (componentCharacter != null)
-                        {
-                            ComponentSaveLoad componentSave = new ComponentSaveLoad(game, this, car, null, componentCharacter,character,holster,componentEnemy);
-                            game.Components.Add(componentSave);
-                        }
-                        game.ComponentEnable(this, false);
-                        break;
-                    case "Menu":
-                        if(componentCar != null)
-                        game.ComponentEnable(componentCar, false);
-                        else if(componentCharacter != null)
-                            game.ComponentEnable(componentCharacter, false);
-                        game.ComponentEnable(game.componentGameMenu);
-                        game.ComponentEnable(componentEnemy,false);
-                        game.ComponentEnable(this, false);
-                        break;
-                    case "Exit":
-                        Game.Exit();
-                        break;
+                            break;
+                        case "Menu":
+                            game.Components.Remove(componentCar);
+                            game.carList.Clear();
+                            game.Components.Remove(componentGui);
+                            game.Components.Remove(componentEnemy);
+                            game.Components.Remove(componentCharacter);
+                            game.Components.Remove(componentGuns);
+                            game.Components.Remove(componentGameGraphics);
+                            game.Components.Remove(this);
+                            game.ComponentEnable(game.componentGameMenu);
+                            game.ComponentEnable(this, false);
+                            break;
+                        case "Exit":
+                            Game.Exit();
+                            break;
+                    }
                 }
-            }
-            if (game.SingleClick(Keys.Escape))
-            {
-                if (componentCar != null)
+                if (game.SingleClick(Keys.Escape) && keyboardFlickerTimer > 50)
                 {
-                    game.EGameState = EGameState.InGameCar;
-                    componentCar.Enabled = true;
-                    componentEnemy.Enabled = true;
+                    keyboardFlickerTimer = 0;
+                    if (eGameStateBefore == EGameState.InGameCar)
+                    {
+                        game.EGameState = EGameState.InGameCar;
+                        componentCar.Enabled = true;
+                        componentEnemy.Enabled = true;
+                        componentGuns.Enabled = true;
+                    }
+                    else if (eGameStateBefore == EGameState.InGameOut)
+                    {
+                        game.EGameState = EGameState.InGameOut;
+                        componentCharacter.Enabled = true;
+                        componentEnemy.Enabled = true;
+                        componentGuns.Enabled = true;
+                    }
+                    Game.IsMouseVisible = false;
                 }
-                else if (componentCharacter != null)
-                {
-                    game.EGameState = EGameState.InGameOut;
-                    componentCharacter.Enabled = true;
-                    componentEnemy.Enabled = true;
-                }
-                game.ComponentEnable(this, false);
-                Game.IsMouseVisible = false;
+                pause.CursorPosition();
+                game.SplashDisplay();       //èištìní displeje
             }
-            pause.CursorPosition();
-            game.SplashDisplay();       //èištìní displeje
+            else if (game.EGameState == EGameState.InGameOut || game.EGameState == EGameState.InGameCar)
+                eGameStateBefore = game.EGameState;
             base.Update(gameTime);
         }
         /// <summary>
@@ -151,8 +155,12 @@ namespace GrandTheftAuto.GameFolder.Components
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
-            pause.Draw();
-            DrawOrder = 9;
+            if (game.EGameState == EGameState.Pause)
+            {
+                pause.Draw();
+                DrawOrder = 9;
+                game.spriteBatch.DrawString(game.normalFont, eGameStateBefore.ToString(), new Vector2(0, 0), Color.White);
+            }
             game.spriteBatch.End();
             base.Draw(gameTime);
         }

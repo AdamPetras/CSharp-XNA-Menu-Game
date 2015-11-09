@@ -12,56 +12,58 @@ namespace GrandTheftAuto.GameFolder.Components
 {
     public class ComponentEnemy : DrawableGameComponent
     {
-        private GameClass game;
-        public Car car;
         public EnemyService enemyService;
-        public Camera camera;
-        public Character character;
-        public CharacterUsingGuns characterUsingGuns;
+        private readonly GameClass game;
+        private readonly ComponentCar componentCar;
+        private readonly Camera camera;
+        private readonly Character character;
+        private readonly CharacterUsingGuns characterUsingGuns;
 
-        public ComponentEnemy(GameClass game,SavedData savedData,List<Rectangle> obstactleList=null,Camera camera = null, Car car = null,
+        public ComponentEnemy(GameClass game, SavedData savedData, List<Rectangle> obstactleList = null,
+            Camera camera = null, ComponentCar componentCar = null,
             CharacterUsingGuns characterUsingGuns = null, Character character = null)
             : base(game)
         {
             this.game = game;
             this.character = character;
             this.characterUsingGuns = characterUsingGuns;
-            this.car = car;
+            this.componentCar = componentCar;
             this.camera = camera;
-            enemyService = new EnemyService(game,obstactleList);
-            if(savedData.EnemyList!=null)
-            enemyService.EnemyList = savedData.EnemyList;
+            enemyService = new EnemyService(game, obstactleList);
+            if (savedData.EnemyList != null)
+            {
+                enemyService.EnemyList = savedData.EnemyList;
+            }
+            enemyService.Score = savedData.Score;
         }
 
         public override void Initialize()
         {
-
             base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
-            enemyService.GeneratingEnemies(gameTime,camera);
-            if (character != null && character.Alive)
+            if (game.EGameState == EGameState.InGameOut || game.EGameState == EGameState.Reloading && character.Alive)
             {
+                enemyService.GeneratingEnemies(gameTime, camera, character.CharacterRectangle());
                 enemyService.PathFinding(character.CharacterPosition, character.CharacterRectangle());
                 int hp = character.Hp;
-                enemyService.Attack(ref hp,character.CharacterRectangle(), gameTime);
+                enemyService.Attack(ref hp, character.CharacterRectangle(), gameTime,camera);
                 character.Hp = hp;
-                enemyService.RotationOfEnemy(character.CharacterPosition,character);
-                camera.Update(character.CharacterPosition);
+                enemyService.RotationOfEnemy(character.CharacterPosition, character);
             }
-            else if (car != null && character == null)
+            else if (game.EGameState == EGameState.InGameCar)
             {
-                enemyService.PathFinding(car.Position,Rectangle.Empty,car.CarRectangle());
-                enemyService.RotationOfEnemy(car.Position,character);
-                int damaged = car.Hp;
-                enemyService.Attack(ref damaged,car.CarRectangle(),gameTime);
-                car.Hp = damaged;
-                camera.Update(car.Position);
+                enemyService.GeneratingEnemies(gameTime, camera, componentCar.SelectedCar.CarRectangle());
+                enemyService.PathFinding(componentCar.SelectedCar.Position, Rectangle.Empty, componentCar.SelectedCar.CarRectangle());
+                enemyService.RotationOfEnemy(componentCar.SelectedCar.Position, character);
+                int damaged = componentCar.SelectedCar.Hp;
+                enemyService.Attack(ref damaged, componentCar.SelectedCar.CarRectangle(), gameTime,camera);
+                componentCar.SelectedCar.Hp = damaged;
             }
             if (characterUsingGuns != null)
-                enemyService.GetDamage(characterUsingGuns.BulletList);
+                enemyService.GetDamage(characterUsingGuns.BulletList,camera);
             base.Update(gameTime);
         }
 
@@ -69,8 +71,7 @@ namespace GrandTheftAuto.GameFolder.Components
         {
             game.spriteBatch.Begin();
             DrawOrder = 1;
-            enemyService.DrawEnemy(camera);
-            game.spriteBatch.DrawString(game.normalFont, "Score: " + enemyService.Score(), new Vector2(game.graphics.PreferredBackBufferWidth - game.normalFont.MeasureString("Score: " + enemyService.Score()).X,game.normalFont.MeasureString("Score: " + enemyService.Score()).Y), Color.White);
+            enemyService.DrawEnemy(camera,gameTime);
             game.spriteBatch.End();
             base.Draw(gameTime);
         }

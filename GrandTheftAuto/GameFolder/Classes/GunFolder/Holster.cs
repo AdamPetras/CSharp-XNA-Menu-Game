@@ -7,51 +7,53 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
 {
     public class Holster
     {
+        public List<Gun> HolsterList { get; set; }
         private GunsOptions gunsOptions;
         private Character character;
-        private List<GunFolder.Gun> holsterList;
+
+
         /// <summary>
-        /// Constructor
+        /// Constructor of Holster
         /// </summary>
-        /// <param name="gunsList"></param>
+        /// <param name="gunsOptions"></param>
         /// <param name="character"></param>
         /// <param name="savedData"></param>
         public Holster(GunsOptions gunsOptions,Character character,SavedData savedData)
         {
             this.gunsOptions = gunsOptions;
             this.character = character;
-            holsterList = new List<GunFolder.Gun>();
+            HolsterList = new List<Gun>();
             if (savedData.Holster != null)
-                holsterList = savedData.Holster;
+                HolsterList = savedData.Holster;
         }
+
         /// <summary>
         /// Method if character colide with gun
         /// </summary>
-        /// <param name="selectedGun"></param>
-        public void PickUpGun(ref GunFolder.Gun selectedGun)
+        public void PickUpGun(CharacterUsingGuns characterUsing)
         {
-            for (int i=0; i<gunsOptions.GetGunsList().Count;i++)
+            for (int i=0; i<gunsOptions.GunList.Count;i++)
             {
-                if (character.CharacterRectangle().Intersects(gunsOptions.GetGunsList()[i].Rectangle))
+                if (character.CharacterRectangle().Intersects(gunsOptions.GunList[i].Rectangle))
                 {
-                    if (holsterList.Any(s=> s.EGun.Equals(gunsOptions.GetGunsList()[i].EGun))) //pokud holster obsahuje zbraň
+                    if (HolsterList.Any(s=> s.EGun.Equals(gunsOptions.GunList[i].EGun))) //pokud holster obsahuje zbraň
                     {
-                        int index = holsterList.FindIndex(s => s.EGun.Equals(gunsOptions.GetGunsList()[i].EGun));  // najde index v holstru podle sebrané zbraně
-                        AddAmmo(gunsOptions.GetGunsList()[i], holsterList[index]);
-                        holsterList.Insert(index, gunsOptions.GetGunsList()[i]);
-                        holsterList.RemoveAt(index + 1);
-                        gunsOptions.GetGunsList().Remove(gunsOptions.GetGunsList()[i]);
+                        int index = HolsterList.FindIndex(s => s.EGun.Equals(gunsOptions.GunList[i].EGun));  // najde index v holstru podle sebrané zbraně
+                        AddAmmo(gunsOptions.GunList[i], HolsterList[index]);
+                        HolsterList.Insert(index, gunsOptions.GunList[i]);
+                        HolsterList.RemoveAt(index + 1);
+                        gunsOptions.GunList.Remove(gunsOptions.GunList[i]);
                         //Aktualizace držící zbraně
-                        if (selectedGun !=null)
-                        if (selectedGun.EGun.Equals(holsterList[index].EGun))
+                        if (characterUsing.SelectedGun !=null)
+                            if (characterUsing.SelectedGun.EGun.Equals(HolsterList[index].EGun))
                         {
-                            selectedGun = holsterList[index];
+                            characterUsing.SelectedGun = HolsterList[index];
                         }
                     }
-                    else if(!holsterList.Contains(gunsOptions.GetGunsList()[i]))   //pokud holster ještě neobsahuje zbraň
+                    else if(!HolsterList.Contains(gunsOptions.GunList[i]))   //pokud holster ještě neobsahuje zbraň
                     {
-                        holsterList.Add(gunsOptions.GetGunsList()[i]);
-                        gunsOptions.GetGunsList().Remove(gunsOptions.GetGunsList()[i]);
+                        HolsterList.Add(gunsOptions.GunList[i]);
+                        gunsOptions.GunList.Remove(gunsOptions.GunList[i]);
                     }
                 }
             }
@@ -60,7 +62,7 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
         /// Method to reload gun
         /// </summary>
         /// <param name="selectedGun"></param>
-        public void Reload(GunFolder.Gun selectedGun)
+        public void Reload(Gun selectedGun)
         {
             if (selectedGun != null)
             {
@@ -82,19 +84,10 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
         /// </summary>
         /// <param name="groundGun"></param>
         /// <param name="holsterGun"></param>
-        private void AddAmmo(GunFolder.Gun groundGun, GunFolder.Gun holsterGun)
+        private void AddAmmo(Gun groundGun, Gun holsterGun)
         {
             groundGun.Magazine = holsterGun.Magazine;
             groundGun.Ammo += holsterGun.Ammo;
-        }
-
-        /// <summary>
-        /// Method to get holster
-        /// </summary>
-        /// <returns></returns>
-        public List<GunFolder.Gun> GetHolster()
-        {
-            return holsterList;
         }
     }
 }

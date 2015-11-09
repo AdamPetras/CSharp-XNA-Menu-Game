@@ -10,7 +10,9 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
         public float Angle { get; private set; }
         public int Damage { get; private set; }
         public int MaxFireRange { get; private set; }
+        public int DamageRange { get; private set; }
         public int FireRange { get; set; }
+
 
         /// <summary>
         /// Constructor
@@ -20,13 +22,14 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
         /// <param name="angle"></param>
         /// <param name="maxFireRange"></param>
         /// <param name="fireRange"></param>
-        public Bullet(Vector2 position,Texture2D texture,float angle, int damage, int maxFireRange,int fireRange = 0)
+        public Bullet(Vector2 position,Texture2D texture,float angle, int damage, int maxFireRange,int damageRange,int fireRange = 0)
         {
             Position = position;
             Texture = texture;
             Angle = angle;
             Damage = damage;
             MaxFireRange = maxFireRange;
+            DamageRange = damageRange;
             FireRange = fireRange;
         }
 

@@ -14,6 +14,7 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
         public int Damage { get; private set; }
         public int MaxMagazine { get; private set; }
         public Enum EGun { get; private set; }
+        public int DamageRange { get; private set; }
 
         public int Ammo { get; set; }
         public int Magazine { get; set; }
@@ -31,7 +32,7 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
         /// <param name="magazine"></param>
         /// <param name="maxMagazine"></param>
         /// <param name="eGun"></param>
-        public Gun(Vector2 position,Texture2D texture,Rectangle rectangle,int fireRange, int fireRate, int damage, int ammo,int magazine,int maxMagazine, Enum eGun)
+        public Gun(Vector2 position,Texture2D texture,Rectangle rectangle,int fireRange, int fireRate, int damage, int ammo,int magazine,int maxMagazine,int damageRange, Enum eGun)
         {
             Position = position;
             Texture = texture;
@@ -42,6 +43,7 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
             Ammo = ammo;
             Magazine = magazine;
             MaxMagazine = maxMagazine;
+            DamageRange = damageRange;
             EGun = eGun;
         }
     }

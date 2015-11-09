@@ -1,3 +1,5 @@
+using GrandTheftAuto.GameFolder.Classes;
+using GrandTheftAuto.GameFolder.Classes.CarFolder;
 using GrandTheftAuto.GameFolder.Components;
 using GrandTheftAuto.MenuFolder.Classes;
 using Menu.MenuFolder.Interface;
@@ -63,8 +65,12 @@ namespace GrandTheftAuto.MenuFolder.Components
                 switch (menuItems.Selected.Text)
                 {
                     case "Start":
-                        SavedData savedData = new SavedData(new Vector2(100, 100), 0f,Vector2.Zero,0f,true,null,null,1000);
-                        game.gunsOptions.GetGunsList().Clear();        // vyèištìní listu se zbranìmi
+                        GameGraphics gameGraphics = new GameGraphics(game);
+                        Camera camera = new Camera(game);
+                        ComponentGameGraphics componentGameGraphics = new ComponentGameGraphics(game,gameGraphics,camera);
+                        game.Components.Add(componentGameGraphics);
+                        SavedData savedData = new SavedData(new Vector2(100,100), 0f,game.carList,false);
+                        game.gunsOptions.GunList.Clear();        // vyèištìní listu se zbranìmi
                         game.gunsOptions.AddGun(new Vector2(200, 200), 1);
                         game.gunsOptions.AddGun(new Vector2(200, 100), 1);
                         game.gunsOptions.AddGun(new Vector2(200, 100), 2);
@@ -72,8 +78,20 @@ namespace GrandTheftAuto.MenuFolder.Components
                         game.gunsOptions.AddGun(new Vector2(100, 200), 2);
                         game.gunsOptions.AddGun(new Vector2(400, 200), 2);
                         game.gunsOptions.AddGun(new Vector2(300, 500), 4);
-                        ComponentCar componentCar = new ComponentCar(game, savedData);   // vytvoøení nové komponenty auta
-                        Game.Components.Add(componentCar);
+                        ComponentCharacter componentCharacter = new ComponentCharacter(game,savedData,gameGraphics,camera);
+                        Game.Components.Add(componentCharacter);
+                        game.carList.Add(new Car(game, new Vector2(0, 0), 103000, 1770));
+                        game.carList.Add(new Car(game, new Vector2(200, 0), 103000, 1770));
+                        ComponentCar componentCar = new ComponentCar(game,camera,componentCharacter);
+                        game.Components.Add(componentCar);
+                        ComponentGuns componentGuns = new ComponentGuns(game,gameGraphics,componentCharacter.Character,savedData,camera);
+                        game.Components.Add(componentGuns);
+                        ComponentEnemy componentEnemy = new ComponentEnemy(game, savedData, gameGraphics.graphicsList.ColisionList(), camera,componentCar,componentGuns.CharacterUsingGuns, componentCharacter.Character);
+                        game.Components.Add(componentEnemy);
+                        ComponentGUI componentGui = new ComponentGUI(game,camera,componentCharacter.Character,componentGuns.CharacterUsingGuns,componentEnemy.enemyService);
+                        game.Components.Add(componentGui);
+                        ComponentPause componentPause = new ComponentPause(game,componentCar.SelectedCar,componentCar,componentCharacter,componentEnemy,componentGameGraphics,componentGuns,componentGui,componentCharacter.Character,componentGuns.CharacterUsingGuns.Holster);
+                        game.Components.Add(componentPause);
                         game.ComponentEnable(this, false);
                         Game.IsMouseVisible = false;
                         break;

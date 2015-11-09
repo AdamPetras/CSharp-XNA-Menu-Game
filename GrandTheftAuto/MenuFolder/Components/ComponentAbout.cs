@@ -33,6 +33,9 @@ namespace GrandTheftAuto.MenuFolder.Components
             about.AddItem("");
             about.AddItem("Main graphics: ");
             about.AddItem("Adam Petráš");
+            about.AddItem("");
+            about.AddItem("Other graphics: ");
+            about.AddItem("Jiří Mrhálek");
             base.Initialize();
         }
         /// <summary>

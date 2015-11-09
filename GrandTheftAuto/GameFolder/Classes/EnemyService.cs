@@ -1,66 +1,120 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
-using GrandTheftAuto.GameFolder.Classes.Gun;
 using GrandTheftAuto.GameFolder.Classes.GunFolder;
 using GrandTheftAuto.MenuFolder;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 
 namespace GrandTheftAuto.GameFolder.Classes
 {
     public class EnemyService
     {
+        private enum EHit
+        {
+            EnemyHit,
+            BulletHit,
+            CriticalHit,
+            None
+        }
         public List<Enemy> EnemyList { get; set; }
+        public List<DiedEnemy> DiedList { get; set; }
+        public Enemy EnemyTarget { get; private set; }
+        public int Score { get; set; }
         private GameClass game;
         private EnemyAi enemyAi;
-        private Enemy enemy;
-        private float attackTimer;
-        private float spawnTimer;
-        private int score;
-        public EnemyService(GameClass game,List<Rectangle> obstactleList)
+        private double attackTimer;
+        private double spawnTimer;
+        private double hitTimer;
+        private Vector2 hitVector;
+        private Random rnd;
+        private int enemyHitDamage;
+        private int bulletHitDamage;
+        private int cryticalHitDamage;
+        private EHit eHit;
+        public EnemyService(GameClass game, List<Rectangle> obstactleList)
         {
             this.game = game;
             EnemyList = new List<Enemy>();
+            DiedList = new List<DiedEnemy>();
             enemyAi = new EnemyAi(obstactleList);
-            score = 0;
+            Score = 0;
+            hitVector = Vector2.Zero;
+            enemyHitDamage = 0;
+            cryticalHitDamage = 0;
+            bulletHitDamage = 0;
+            
+            rnd = new Random();
         }
 
         private void AddEnemy(int enemySet, Vector2 position)
         {
+            string name = "";
             int hp = 0;
             float speed = 0;
             int damage = 0;
             float angle = 0;
             int score = 0;
+            double chanceToMiss = 0;
             Texture2D texture = game.spritCharacter[0];
             EnemyOption enemyOption = new EnemyOption(game);
-            enemyOption.GetEnemy(enemySet, ref hp, ref damage, ref speed, ref texture, ref score);
-            enemy = new Enemy(hp, damage, speed, texture, position, angle, score);
+            enemyOption.GetEnemy(ref name,enemySet, ref hp, ref damage, ref speed, ref texture, ref score, ref chanceToMiss);
+            Enemy enemy = new Enemy(name, hp, damage, speed, texture, position, angle, score, chanceToMiss);
             EnemyList.Add(enemy);
         }
 
-        public void RemoveEnemy(Enemy enemy)
+        public void DrawEnemyHp()
         {
-            EnemyList.Remove(enemy);
+            foreach (Enemy enemy in EnemyList)
+            {
+                //Grafické vykreslení
+                game.spriteBatch.Draw(game.spritHealthBar, new Rectangle((int)enemy.Position.X - game.spritEnemy[0].Width / 2, (int)enemy.Position.Y, (int)((enemy.Hp / enemy.MaxHp) * game.spritEnemy[0].Width), 5), Color.White);
+                //Vykreslený hodnoty
+                game.spriteBatch.DrawString(game.smallFont, enemy.Hp.ToString(), new Vector2(enemy.Position.X - game.smallFont.MeasureString(enemy.Hp.ToString()).X / 2, enemy.Position.Y - game.smallFont.MeasureString(enemy.Hp.ToString()).Y), Color.Red);
+            }
         }
 
-        public void Attack(ref int Hp,Rectangle attackedRectangle, GameTime gameTime)
+        public void Attack(ref int hp, Rectangle attackedRectangle, GameTime gameTime, Camera camera)
         {
-            if (Hp > 0)
+            if (hp > 0)
                 foreach (Enemy enemy in EnemyList.Where(enemy => attackedRectangle.Intersects(enemy.Rectangle)))
                 {
-                    attackTimer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                    if (1000 < attackTimer)
+                    attackTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (1000 < attackTimer)     //attack timer pro řízení úderů od enemy
                     {
+                        HitMethod(camera, enemy.Position, game.spritCharacter[0], false);
                         attackTimer = 0;
-                        Hp -= enemy.Damage;
+                        if (rnd.Next(0, 100) > enemy.ChanceToMiss)  //podmínka pokud je random číslo větší než chance to miss tak zaútočí jinak je úder vedle
+                        {
+                            enemyHitDamage = enemy.Damage + rnd.Next(-5, 5);
+                            hp -= enemyHitDamage;
+                        }
+                        else enemyHitDamage = 0;
                     }
-                }
-            else Hp = 0;
-        }
 
-        public void GetDamage(List<Bullet> bulletList)
+                }
+            else
+            {
+                hp = 0;
+                game.EGameState = EGameState.GameOver;
+            }
+        }
+        /*
+        public void CarKill(Rectangle car,int speed)
+        {           
+            foreach (Enemy enemy in EnemyList)
+            {
+                if (enemy.Rectangle.Contains(car.Location))
+                {
+                    enemy.Hp = 0;
+                    enemy.Alive = false;
+                }
+            }
+        }
+        */
+        public void GetDamage(List<Bullet> bulletList, Camera camera)
         {
             for (int i = 0; i <= EnemyList.Count - 1; i++)
             {
@@ -69,22 +123,30 @@ namespace GrandTheftAuto.GameFolder.Classes
                     if (EnemyList[i].Rectangle.Contains(bulletList[j].Position.X, bulletList[j].Position.Y))
                     {
                         EnemyList[i].IsAngry = true;
-                        EnemyList[i].Hp -= bulletList[j].Damage;
+                        bulletHitDamage = bulletList[j].Damage + rnd.Next(-bulletList[j].DamageRange, bulletList[j].DamageRange);
+                        EnemyList[i].Hp -= bulletHitDamage;
+                        cryticalHitDamage = bulletList[j].Damage + bulletList[j].DamageRange-1;
+                        HitMethod(camera, EnemyList[i].Position, EnemyList[i].Texture);
+                        EnemyTarget = EnemyList[i];
                         bulletList.Remove(bulletList[j]);
                     }
                 }
                 if (EnemyList[i].Hp <= 0)
                 {
                     EnemyList[i].Alive = false;
-                    score += EnemyList[i].Score;
+                    Score += EnemyList[i].Score;
+                    DiedList.Add(new DiedEnemy(EnemyList[i].Position, game.spritBlood, EnemyList[i].Angle));
                     EnemyList.Remove(EnemyList[i]);
                 }
             }
         }
 
-        public int Score()
+        public void HitMethod(Camera camera, Vector2 position, Texture2D texture, bool bulletHit = true)
         {
-            return score;
+            eHit = bulletHit ? EHit.BulletHit : EHit.EnemyHit;
+            Random rnd = new Random();
+            hitVector = new Vector2(rnd.Next((int)(position.X - texture.Width / 2), (int)(position.X + texture.Width / 2)) - camera.Centering.X
+                , rnd.Next((int)(position.Y - texture.Height / 2), (int)(position.Y + texture.Height / 2)) - camera.Centering.Y);
         }
 
         public void PathFinding(Vector2 characterPosition, Rectangle characterRectangle = default(Rectangle), Rectangle carRectangle = default(Rectangle))
@@ -98,13 +160,13 @@ namespace GrandTheftAuto.GameFolder.Classes
             }
         }
 
-        public void GeneratingEnemies(GameTime gameTime, Camera camera)
+        public void GeneratingEnemies(GameTime gameTime, Camera camera, Rectangle characterRectangle)
         {
-            spawnTimer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            spawnTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
             if (10000 < spawnTimer)
             {
                 Random rand = new Random();
-                AddEnemy(rand.Next(0, Enum.GetNames(typeof(EEnemies)).Length), new Vector2(rand.Next(0, 1000), rand.Next(0, 1000)));
+                AddEnemy(rand.Next(0, Enum.GetNames(typeof(EEnemies)).Length), enemyAi.GeneratePosition(rand, characterRectangle));
                 spawnTimer = 0;
             }
         }
@@ -143,11 +205,36 @@ namespace GrandTheftAuto.GameFolder.Classes
             }
         }
 
-        public void DrawEnemy(Camera camera)
+        public void DrawEnemy(Camera camera, GameTime gameTime)
         {
+            foreach (DiedEnemy diedEnemy in DiedList)
+            {
+                game.spriteBatch.Draw(diedEnemy.Texture, new Rectangle((int)(diedEnemy.Position.X - camera.Centering.X - diedEnemy.Texture.Width / 2), (int)(diedEnemy.Position.Y - camera.Centering.Y - diedEnemy.Texture.Height / 2), diedEnemy.Texture.Width, diedEnemy.Texture.Height), Color.White);
+            }
             foreach (Enemy enemy in EnemyList)
             {
                 game.spriteBatch.Draw(enemy.Texture, new Rectangle((int)(enemy.Position.X - camera.Centering.X), (int)(enemy.Position.Y - camera.Centering.Y), enemy.Texture.Width, enemy.Texture.Height), null, Color.White, enemy.Angle, new Vector2(enemy.Texture.Width / 2, enemy.Texture.Height / 2), SpriteEffects.None, 0f);
+            }
+            DrawDamageDone(gameTime);
+        }
+        private void DrawDamageDone(GameTime gameTime)
+        {
+            if (eHit != EHit.None)
+            {
+                string enemyDamage = enemyHitDamage != 0 ? enemyHitDamage.ToString() : "MISS";
+                string bulletDamage = bulletHitDamage < cryticalHitDamage ? bulletHitDamage.ToString() : bulletHitDamage + " CriticalHit!!";
+                Color color = eHit == EHit.EnemyHit ? Color.Red : Color.White;
+                if (eHit == EHit.BulletHit)
+                    game.spriteBatch.DrawString(game.smallFont, bulletDamage, hitVector, color);
+                if (eHit == EHit.EnemyHit)
+                    game.spriteBatch.DrawString(game.smallFont, enemyDamage, hitVector, color);
+                hitTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (hitTimer > 500)
+                {
+                    eHit = EHit.None;
+                    hitTimer = 0;
+                }
+
             }
         }
     }

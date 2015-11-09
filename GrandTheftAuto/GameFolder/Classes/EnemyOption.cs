@@ -24,18 +24,20 @@ namespace GrandTheftAuto.GameFolder.Classes
             this.game = game;
         }
 
-        public void GetEnemy(int enemy, ref int hp, ref int damage, ref float speed,ref Texture2D texture,ref int score)
+        public void GetEnemy(ref string name,int enemy, ref int hp, ref int damage, ref float speed,ref Texture2D texture,ref int score,ref double chanceToMiss)
         {
             eEnemies = (EEnemies) enemy;
-            TypeOfEnemy(ref hp,ref damage,ref speed, ref texture, ref score);
+            TypeOfEnemy(ref name,ref hp,ref damage,ref speed, ref texture, ref score,ref chanceToMiss);
         }
 
-        private void TypeOfEnemy(ref int hp,ref int damage,ref float speed, ref Texture2D texture,ref int score)
+        private void TypeOfEnemy(ref string name, ref int hp,ref int damage,ref float speed, ref Texture2D texture,ref int score,ref double chanceToMiss)
         {
+            name = eEnemies.ToString();
             if (eEnemies == EEnemies.Speed)
             {
                 hp = 80;
                 damage = 20;
+                chanceToMiss = 12;
                 speed = 1.2f;
                 texture = game.spritEnemy[0];
                 score = 15;
@@ -44,6 +46,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             {
                 hp = 200;
                 damage = 25;
+                chanceToMiss = 10;
                 speed = 0.5f;
                 texture = game.spritEnemy[0];
                 score = 15;
@@ -52,6 +55,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             {
                 hp = 100;
                 damage = 35;
+                chanceToMiss = 15;
                 speed = 0.7f;
                 texture = game.spritEnemy[0];
                 score = 15;
@@ -60,6 +64,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             {
                 hp = 350;
                 damage = 30;
+                chanceToMiss = 8;
                 speed = 0.6f;
                 texture = game.spritEnemy[0];
                 score = 30;
@@ -68,6 +73,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             {
                 hp = 200;
                 damage = 60;
+                chanceToMiss = 10;
                 speed = 0.8f;
                 texture = game.spritEnemy[0];
                 score = 30;
@@ -76,6 +82,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             {
                 hp = 700;
                 damage = 40;
+                chanceToMiss = 12;
                 speed = 0.6f;
                 texture = game.spritEnemy[0];
                 score = 100;
@@ -83,7 +90,8 @@ namespace GrandTheftAuto.GameFolder.Classes
             else if (eEnemies == EEnemies.BossDamage)
             {
                 hp = 450;
-                damage = 100;
+                damage = 90;
+                chanceToMiss = 12;
                 speed = 0.7f;
                 texture = game.spritEnemy[0];
                 score = 100;
