@@ -23,10 +23,12 @@ namespace GrandTheftAuto.GameFolder.Classes
                 closedList.Add(new Pathfinding(rectangle));
             }
         }
+
         /// <summary>
         /// Method to generate position without colision
         /// </summary>
         /// <param name="rand"></param>
+        /// <param name="charRectangle"></param>
         /// <returns></returns>
         public Vector2 GeneratePosition(Random rand, Rectangle charRectangle)
         {

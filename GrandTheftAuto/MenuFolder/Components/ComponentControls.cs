@@ -1,3 +1,4 @@
+using System.Linq;
 using GrandTheftAuto.MenuFolder.Classes;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
@@ -32,7 +33,7 @@ namespace GrandTheftAuto.MenuFolder.Components
             for (int i = 0; i < game.controlsList.Count; i++)
                 controlItems.AddItem(game.controlsList[i].Text, game.controlsList[i].Key.ToString());
             controlItems.AddItem("Back");
-            controlItems.Next();
+            controlItems.Selected = controlItems.Items.First();
             EventChangeKey += ClickedOn;
             EventChangeKey += GetKey;
             base.Initialize();
@@ -43,14 +44,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            if (game.SingleClick(Keys.Up) || game.SingleClick(Keys.W))
-            {
-                controlItems.Before();
-            }
-            if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.S))
-            {
-                controlItems.Next();
-            }
+            controlItems.Moving(Keys.W,Keys.S);
             if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && controlItems.CursorColision()))
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
@@ -119,18 +113,19 @@ namespace GrandTheftAuto.MenuFolder.Components
 
         private void GetKey(string text, int index)
         {
-            if (game.keyState.GetPressedKeys().Length != 0)
-            {               
-                Keys[] keys = game.keyState.GetPressedKeys();
-                if (keys.GetValue(0) != (object) Keys.Enter)
-                {
-                    savedControls = new SavedControls(text, (Keys) keys.GetValue(0));
-                    game.controlsList.Insert(index, savedControls);
-                    game.controlsList.RemoveAt(index + 1);
-                    controlItems.UpdateItem(text, index, savedControls.Key.ToString());
-                    Enabled = true;
-                }
+            while (game.keyState.GetPressedKeys().Length == 0)
+            {
             }
+            Keys[] keys = game.keyState.GetPressedKeys();
+            if (keys.GetValue(0) != (object)Keys.Enter)
+            {
+                savedControls = new SavedControls(text, (Keys)keys.GetValue(0));
+                game.controlsList.Insert(index, savedControls);
+                game.controlsList.RemoveAt(index + 1);
+                controlItems.UpdateItem(text, index, savedControls.Key.ToString());
+                Enabled = true;
+            }
+
         }
     }
 }

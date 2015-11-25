@@ -56,12 +56,12 @@ namespace GrandTheftAuto.GameFolder.Components
                         if (game.SingleClick(game.controlsList[(int)EKeys.E].Key) && getOutOfCarTimer > 250)
                         //vystoupení z auta
                         {
-                            componentCharacter.Character.CharacterPosition = car.Position;
+                            componentCharacter.CharacterService.Character.Position = car.Position;
                             getOutOfCarTimer = 0;
                             car.Selected = false;
                             car.ResetProperty();
-                            componentCharacter.Character.CharacterPosition = car.GetOutOfCar();
-                            componentCharacter.Character.Angle = car.Angle;
+                            componentCharacter.CharacterService.Character.Position = car.GetOutOfCar();
+                            componentCharacter.CharacterService.Character.Angle = car.Angle;
                             game.EGameState = EGameState.InGameOut;
                             game.ComponentEnable(componentCharacter);
                         }

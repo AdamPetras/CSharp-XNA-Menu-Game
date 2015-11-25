@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using GrandTheftAuto.GameFolder.Classes.CarFolder;
-using GrandTheftAuto.GameFolder.Classes.Gun;
+using GrandTheftAuto.GameFolder.Classes.GunFolder;
 using GrandTheftAuto.MenuFolder.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Framework;
 using GrandTheftAuto.MenuFolder.Components;
 namespace GrandTheftAuto.MenuFolder
 {
@@ -25,15 +23,19 @@ namespace GrandTheftAuto.MenuFolder
     }
     public enum EKeys
     {
-        Up = 0,
-        Down,
-        Left,
-        Right,
-        Space,
-        E,
-        R,
-        Q,
-        Shift
+        Up = 0, //go up
+        Down,   //go down
+        Left,   //go left
+        Right,  //go right
+        Space,  //handbrake
+        E,      //enter the car
+        R,      //reload gun
+        Q,      //change gun
+        Shift,  //run
+        C,      //open character stats
+        T,      //open talent list
+        F,      //talk with NPCs
+        I       //quest info
     }
 
     /// <summary>
@@ -67,22 +69,35 @@ namespace GrandTheftAuto.MenuFolder
         public Texture2D[] spritHouse;              //300x300 //300x300 //500x250
         public Texture2D[] spritGuns;
         public Texture2D[] spritEnemy;
-        public Texture2D spritHealthBar;
+        public Texture2D spritCharacterHealth;
+        public Texture2D spritCharacterEnergy;
+        public Texture2D spritHealthAndEnergyBar;
+        public Texture2D spritEnemyHealthBar;
         public Texture2D spritGameOver;
         public Texture2D spritBlood;
         public Texture2D spritBullet;
+        public Texture2D spritAmmo;
+        public Texture2D spritExperienceBar;
+        public Texture2D spritExperienceCharge;
+        public Texture2D[] spritPergamen;
+        public Texture2D spritTalent;
+        public Texture2D spritArrow;
+        public Texture2D spritQuestion;
+        public Texture2D spritActiveQuestion;
+
         #endregion
         #region Fonty
         public SpriteFont bigFont;
         public SpriteFont normalFont;
         public SpriteFont smallFont;
+        public SpriteFont smallestFont;
         #endregion
 
         public static int width = 1600, height = 900;
 
         public List<SavedData> saveList;
         public List<SavedControls> controlsList;
-        public List<Car> carList; 
+        public List<Car> carList;
 
         public GunsOptions gunsOptions;
         /// <summary>
@@ -110,6 +125,7 @@ namespace GrandTheftAuto.MenuFolder
             bigFont = Content.Load<SpriteFont>(@"Font");
             normalFont = Content.Load<SpriteFont>(@"NormalFont");
             smallFont = Content.Load<SpriteFont>(@"SmallFont");
+            smallestFont = Content.Load<SpriteFont>(@"smallestFont");
             #endregion
             //********************Inicializace komponenty pro menu*************************
             componentGameMenu = new ComponentGameMenu(this);
@@ -132,21 +148,29 @@ namespace GrandTheftAuto.MenuFolder
             controlsList.Add(new SavedControls("reload gun", Keys.R));
             controlsList.Add(new SavedControls("change gun", Keys.Q));
             controlsList.Add(new SavedControls("run", Keys.LeftShift));
+            controlsList.Add(new SavedControls("stats", Keys.C));
+            controlsList.Add(new SavedControls("skills", Keys.T));
+            controlsList.Add(new SavedControls("talk", Keys.F));
+            controlsList.Add(new SavedControls("questinfo", Keys.I));
             spritEnemy = new Texture2D[3];
             spritCharacter = new Texture2D[5];
             spritHouse = new Texture2D[3];
             spritGuns = new Texture2D[1];
+            spritPergamen = new Texture2D[2];
             gunsOptions = new GunsOptions(this);
             IsMouseVisible = true;
             base.Initialize();
         }
+
         /// <summary>
         /// Method to load all contents
         /// </summary>
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
             #region Naètení spritù
+
             spritMenuBackground = Content.Load<Texture2D>(@"Sprits/backGround");
             spritAbout = Content.Load<Texture2D>(@"Sprits/About");
             spritGameBackground = Content.Load<Texture2D>(@"Sprits/grass");
@@ -164,22 +188,39 @@ namespace GrandTheftAuto.MenuFolder
             spritHouse[0] = Content.Load<Texture2D>(@"Sprits/Houses/house1");
             spritHouse[1] = Content.Load<Texture2D>(@"Sprits/Houses/house2");
             spritHouse[2] = Content.Load<Texture2D>(@"Sprits/Houses/house3");
+
             #endregion
+
             #region Sprity Character
+
             spritCharacter[0] = Content.Load<Texture2D>(@"Sprits/Character/characterStop");
             spritCharacter[1] = Content.Load<Texture2D>(@"Sprits/Character/characterGoOne");
             spritCharacter[2] = Content.Load<Texture2D>(@"Sprits/Character/characterGoTwo");
             spritCharacter[3] = Content.Load<Texture2D>(@"Sprits/Character/characterGoThree");
             spritCharacter[4] = Content.Load<Texture2D>(@"Sprits/Character/characterGoFour");
+            spritExperienceBar = Content.Load<Texture2D>(@"Sprits/Character/ExperienceBar");
+            spritExperienceCharge = Content.Load<Texture2D>(@"Sprits/Character/ExperienceCharge");
             #endregion
 
-            spritEnemy[0] = Content.Load<Texture2D>(@"Sprits/Enemy/zombie");
-            spritHealthBar = Content.Load<Texture2D>(@"Sprits/Enemy/health bar");
+            spritEnemy[0] = Content.Load<Texture2D>(@"Sprits/Enemy/zombie");            
             spritBlood = Content.Load<Texture2D>(@"Sprits/Enemy/Blood");
+            spritEnemyHealthBar = Content.Load<Texture2D>(@"Sprits/Enemy/enemyHealthBar");
+
             #region Zbranì
+
             spritGuns[0] = Content.Load<Texture2D>(@"Sprits/Guns/M4A1");
             spritBullet = Content.Load<Texture2D>(@"Sprits/Guns/bullet");
+            spritAmmo = Content.Load<Texture2D>(@"Sprits/Guns/Ammo");
             #endregion
+            spritPergamen[0] = Content.Load<Texture2D>(@"Sprits/TalentsAndStats/pergamen");
+            spritPergamen[1] = Content.Load<Texture2D>(@"Sprits/Quest/pergamen2");
+            spritTalent = Content.Load<Texture2D>(@"Sprits/TalentsAndStats/talent");
+            spritArrow = Content.Load<Texture2D>(@"Sprits/TalentsAndStats/arrow");
+            spritHealthAndEnergyBar = Content.Load<Texture2D>(@"Sprits/HealthAndEnergyBar/Bar");
+            spritCharacterHealth = Content.Load<Texture2D>(@"Sprits/HealthAndEnergyBar/Health");
+            spritCharacterEnergy = Content.Load<Texture2D>(@"Sprits/HealthAndEnergyBar/Energy");
+            spritQuestion = Content.Load<Texture2D>(@"Sprits/Quest/vykricnik");
+            spritActiveQuestion = Content.Load<Texture2D>(@"Sprits/Quest/otaznik");
         }
 
         protected override void UnloadContent()
@@ -230,7 +271,7 @@ namespace GrandTheftAuto.MenuFolder
             if (component is DrawableGameComponent)
                 ((DrawableGameComponent)component).Visible = active;
         }
-        public Vector2 CalculatePosition(Vector2 position, float angle,ref double distance)
+        public Vector2 CalculatePosition(Vector2 position, float angle, ref double distance)
         {
             position.X = (float)(Math.Cos(angle) * distance + position.X);
             //X = Cos(uhlu) *ujeta vzdalenost + predchozi pozice
@@ -257,6 +298,12 @@ namespace GrandTheftAuto.MenuFolder
         public void SplashDisplay(Color color = default(Color))
         {
             graphics.GraphicsDevice.Clear(color);
+        }
+
+        public void LoadBar(Texture2D[] texture,string trace,int numberOfTexture)
+        {
+            for (int i=0;i<=numberOfTexture;i++)
+            texture[i] = Content.Load<Texture2D>(trace+i);
         }
     }
 }

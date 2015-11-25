@@ -8,6 +8,7 @@ namespace GrandTheftAuto.MenuFolder.Classes
         public Vector2 Position { get; set; }
         public string Value { get; set; }
         public Rectangle Rectangle { get; set; }
+        public bool NonClick { get; set; }
 
         /// <summary>
         /// Constructor
@@ -16,12 +17,14 @@ namespace GrandTheftAuto.MenuFolder.Classes
         /// <param name="position"></param>
         /// <param name="rectangle"></param>
         /// <param name="value"></param>
-        public Items(string text, Vector2 position,Rectangle rectangle = default (Rectangle), string value = "" )
+        /// <param name="nonClick"></param>
+        public Items(string text, Vector2 position,Rectangle rectangle = default (Rectangle), string value = "" ,bool nonClick =false)
         {
             Text = text;
             Position = position;
             Rectangle = rectangle;
             Value = value;
+            NonClick = nonClick;
         }
     }
 }

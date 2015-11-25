@@ -1,25 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using GrandTheftAuto.MenuFolder;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GrandTheftAuto.GameFolder.Classes.Gun
+namespace GrandTheftAuto.GameFolder.Classes.GunFolder
 {
+    public enum EGuns
+        {
+            M9,
+            P90,
+            M4A1,
+            Ak47,
+            M98B
+        }
     public class GunsOptions
     {
         /// <summary>
         /// Enum of guns
         /// </summary>
-        private enum EGuns
-        {
-            M9,
-            P90,
-            M4A1,
-            AK47,
-            M98B
-        }
         private GameClass game;
-        public List<GunFolder.Gun> GunList { get; set; }
+        public List<Gun> GunList { get; set; }
         private EGuns eGuns;
         private float rotation;
         /// <summary>
@@ -29,7 +31,7 @@ namespace GrandTheftAuto.GameFolder.Classes.Gun
         public GunsOptions(GameClass game)
         {
             this.game = game;
-            GunList = new List<GunFolder.Gun>();
+            GunList = new List<Gun>();
             rotation = 0;
         }
         /// <summary>
@@ -49,10 +51,10 @@ namespace GrandTheftAuto.GameFolder.Classes.Gun
             int damageRange = 0;
             eGuns = (EGuns)weapon;
             TypeOfWeapon(ref texture, ref fireRange, ref fireRate, ref damage, ref ammo, ref magazine,
-                ref maxMagazine,ref damageRange);
-            GunFolder.Gun gun = new GunFolder.Gun(position, texture,
+                ref maxMagazine, ref damageRange);
+            Gun gun = new Gun(position, texture,
                 new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height), fireRange,
-                fireRate, damage, ammo, magazine, maxMagazine,damageRange, eGuns);
+                fireRate, damage, ammo, magazine, maxMagazine, damageRange, eGuns);
             GunList.Add(gun);
         }
         /// <summary>
@@ -65,7 +67,7 @@ namespace GrandTheftAuto.GameFolder.Classes.Gun
         /// <param name="ammo"></param>
         /// <param name="magazine"></param>
         /// <param name="maxMagazine"></param>
-        private void TypeOfWeapon(ref Texture2D texture, ref int fireRange, ref int fireRate, ref int damage, ref int ammo, ref int magazine, ref int maxMagazine,ref int damageRange)
+        private void TypeOfWeapon(ref Texture2D texture, ref int fireRange, ref int fireRate, ref int damage, ref int ammo, ref int magazine, ref int maxMagazine, ref int damageRange)
         {
             if (eGuns == EGuns.M9)
             {
@@ -100,7 +102,7 @@ namespace GrandTheftAuto.GameFolder.Classes.Gun
                 magazine = 30;
                 maxMagazine = 30;
             }
-            else if (eGuns == EGuns.AK47)
+            else if (eGuns == EGuns.Ak47)
             {
                 texture = game.spritGuns[0];
                 fireRange = 850;

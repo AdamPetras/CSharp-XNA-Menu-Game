@@ -1,8 +1,5 @@
 using System;
-using GrandTheftAuto.GameFolder.Classes;
-using GrandTheftAuto.GameFolder.Classes.CarFolder;
-using GrandTheftAuto.GameFolder.Classes.Gun;
-using GrandTheftAuto.GameFolder.Classes.GunFolder;
+using System.Linq;
 using GrandTheftAuto.GameFolder.Components;
 using GrandTheftAuto.MenuFolder.Classes;
 using Menu.MenuFolder.Interface;
@@ -23,19 +20,22 @@ namespace GrandTheftAuto.MenuFolder.Components
         private ComponentCar componentCar;
         private ComponentCharacter componentCharacter;
         private ComponentEnemy componentEnemy;
-        private Car car;
         private ComponentGameGraphics componentGameGraphics;
         private ComponentGuns componentGuns;
-        public ComponentSaveLoad(GameClass game, Car car = null, ComponentCar componentCar = null,ComponentGameGraphics componentGameGraphics=null,ComponentGuns componentGuns=null, ComponentCharacter componentCharacter = null, ComponentEnemy componentEnemy = null)
+        public ComponentSaveLoad(GameClass game, ComponentCar componentCar, ComponentGameGraphics componentGameGraphics, ComponentGuns componentGuns, ComponentCharacter componentCharacter, ComponentEnemy componentEnemy)
             : base(game)
         {
             this.game = game;
             this.componentCar = componentCar;
             this.componentCharacter = componentCharacter;
-            this.car = car;
             this.componentGuns = componentGuns;
             this.componentGameGraphics = componentGameGraphics;
             this.componentEnemy = componentEnemy;
+        }
+
+        public ComponentSaveLoad(GameClass game) : base(game)
+        {
+            this.game = game;
         }
 
         /// <summary>
@@ -44,13 +44,13 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// </summary>
         public override void Initialize()
         {
-            load = new MenuItems(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 3), game.normalFont, "middle");
+            load = new MenuItems(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 3), game.normalFont);
             for (int i = 1; i <= game.saveList.Count; i++)
             {
                 load.AddItem("Position " + i);
             }
             load.AddItem("Back");
-            load.Next();
+            load.Selected = load.Items.First();
             base.Initialize();
         }
 
@@ -60,14 +60,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            if (game.SingleClick(Keys.Up) || game.SingleClick(Keys.W))
-            {
-                load.Before();
-            }
-            if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.S))
-            {
-                load.Next();
-            }
+            load.Moving(Keys.W, Keys.S);
             if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && load.CursorColision()))
             {
                 switch (load.Selected.Text)
@@ -135,15 +128,15 @@ namespace GrandTheftAuto.MenuFolder.Components
                         game.ComponentEnable(componentCar, false);
                     else if (game.EGameState == EGameState.LoadIngame && componentCharacter != null)    // Pokud je EGameState Ingameload a componenta character existuje
                         game.ComponentEnable(componentCharacter, false);
-                    SavedData savedData = new SavedData(game.saveList[index].CharacterPosition, game.saveList[index].CharacterAngle,game.saveList[index].CarList, game.saveList[index].InTheCar, game.saveList[index].Holster, game.saveList[index].GunsList, game.saveList[index].EnemyList, game.saveList[index].Score);
+                    SavedData savedData = new SavedData(game.saveList[index].CharacterPosition, game.saveList[index].CharacterAngle, game.saveList[index].CarList, game.saveList[index].InTheCar, game.saveList[index].Holster, game.saveList[index].GunsList, game.saveList[index].EnemyList, game.saveList[index].Score);
                     if (savedData.InTheCar) // Pokud je save v aute tak
-                        game.EGameState =EGameState.InGameCar;
+                        game.EGameState = EGameState.InGameCar;
                     else
                         game.EGameState = EGameState.InGameOut;
-                    componentCharacter.Character.CharacterPosition = savedData.CharacterPosition;
-                    componentCharacter.Character.Angle = savedData.CharacterAngle;
+                    componentCharacter.CharacterService.Character.Position = savedData.CharacterPosition;
+                    componentCharacter.CharacterService.Character.Angle = savedData.CharacterAngle;
                     game.carList = savedData.CarList;
-                    componentGuns.CharacterUsingGuns.Holster.HolsterList = savedData.Holster;
+                    componentGuns.GunService.Holster.HolsterList = savedData.Holster;
                     game.gunsOptions.GunList = savedData.GunsList;
                     componentEnemy.enemyService.EnemyList.Clear();                  //vyèištìní enemylistu
                     componentEnemy.enemyService.EnemyList = savedData.EnemyList;    //naplnìní uloženám listem
@@ -161,8 +154,8 @@ namespace GrandTheftAuto.MenuFolder.Components
             #region !!!*SAVE*!!!
             else if (game.EGameState == EGameState.Save)    //Pokud je Egamestate save pro detekci jestli load nebo save
             {
-                    game.saveList.Insert(index, new SavedData(componentCharacter.Character.CharacterPosition, componentCharacter.Character.Angle, game.carList,game.EGameState.Equals(EGameState.InGameCar), componentGuns.CharacterUsingGuns.Holster.HolsterList, game.gunsOptions.GunList, componentEnemy.enemyService.EnemyList, componentEnemy.enemyService.Score, DateTime.Now.ToString()));
-                    game.saveList.RemoveAt(index + 1);
+                game.saveList.Insert(index, new SavedData(componentCharacter.CharacterService.Character.Position, componentCharacter.CharacterService.Character.Angle, game.carList, game.EGameState.Equals(EGameState.InGameCar), componentGuns.GunService.Holster.HolsterList, game.gunsOptions.GunList, componentEnemy.enemyService.EnemyList, componentEnemy.enemyService.Score, DateTime.Now.ToString()));
+                game.saveList.RemoveAt(index + 1);
             }
             #endregion
         }

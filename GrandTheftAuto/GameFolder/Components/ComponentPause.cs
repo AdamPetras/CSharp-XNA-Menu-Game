@@ -1,6 +1,4 @@
-using GrandTheftAuto.GameFolder.Classes;
-using GrandTheftAuto.GameFolder.Classes.CarFolder;
-using GrandTheftAuto.GameFolder.Classes.GunFolder;
+using System.Linq;
 using GrandTheftAuto.MenuFolder;
 using GrandTheftAuto.MenuFolder.Classes;
 using GrandTheftAuto.MenuFolder.Components;
@@ -18,26 +16,20 @@ namespace GrandTheftAuto.GameFolder.Components
         private IMenu pause;
         public EGameState eGameStateBefore;
         private GameClass game;
-        private Car car;
         private ComponentCar componentCar;
         private ComponentCharacter componentCharacter;
         private ComponentEnemy componentEnemy;
-        private Character character;
-        private Holster holster;
         private ComponentGameGraphics componentGameGraphics;
         private ComponentGuns componentGuns;
         private ComponentGUI componentGui;
         private double keyboardFlickerTimer;
-        public ComponentPause(GameClass game, Car car, ComponentCar componentCar, ComponentCharacter componentCharacter, ComponentEnemy componentEnemy, ComponentGameGraphics componentGameGraphics, ComponentGuns componentGuns, ComponentGUI componentGui, Character character, Holster holster)
+        public ComponentPause(GameClass game, ComponentCar componentCar, ComponentCharacter componentCharacter, ComponentEnemy componentEnemy, ComponentGameGraphics componentGameGraphics, ComponentGuns componentGuns, ComponentGUI componentGui)
             : base(game)
         {
             this.game = game;
             this.componentCar = componentCar;
             this.componentCharacter = componentCharacter;
             this.componentEnemy = componentEnemy;
-            this.character = character;
-            this.car = car;
-            this.holster = holster;
             this.componentGameGraphics = componentGameGraphics;
             this.componentGuns = componentGuns;
             this.componentGui = componentGui;
@@ -49,13 +41,13 @@ namespace GrandTheftAuto.GameFolder.Components
         /// </summary>
         public override void Initialize()
         {
-            pause = new MenuItems(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 2), game.bigFont, "middle");
+            pause = new MenuItems(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 2), game.bigFont);
             pause.AddItem("Back");
             pause.AddItem("Load");
             pause.AddItem("Save");
             pause.AddItem("Menu");
             pause.AddItem("Exit");
-            pause.Next();
+            pause.Selected = pause.Items.First();
             base.Initialize();
         }
 
@@ -70,10 +62,8 @@ namespace GrandTheftAuto.GameFolder.Components
                 componentGuns.Enabled = false;
                 componentEnemy.Enabled = false;
                 keyboardFlickerTimer += gameTime.ElapsedGameTime.Milliseconds;
-                if (game.SingleClick(Keys.Up) || game.SingleClick(Keys.W))
-                    pause.Before();
-                if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.S))
-                    pause.Next();
+
+                pause.Moving(Keys.W, Keys.S);
                 if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && pause.CursorColision()))
                 {
                     switch (pause.Selected.Text)
@@ -97,12 +87,12 @@ namespace GrandTheftAuto.GameFolder.Components
                             break;
                         case "Load":
                             game.EGameState = EGameState.LoadIngame;
-                            ComponentSaveLoad componentLoad = new ComponentSaveLoad(game, car, componentCar, componentGameGraphics, componentGuns, componentCharacter, componentEnemy);
+                            ComponentSaveLoad componentLoad = new ComponentSaveLoad(game, componentCar, componentGameGraphics, componentGuns, componentCharacter, componentEnemy);
                             game.Components.Add(componentLoad);
                             break;
                         case "Save":
                             game.EGameState = EGameState.Save;
-                            ComponentSaveLoad componentSave = new ComponentSaveLoad(game, car, componentCar, componentGameGraphics, componentGuns, componentCharacter, componentEnemy);
+                            ComponentSaveLoad componentSave = new ComponentSaveLoad(game, componentCar, componentGameGraphics, componentGuns, componentCharacter, componentEnemy);
                             Game.Components.Add(componentSave);
                             break;
                         case "Menu":
@@ -157,6 +147,7 @@ namespace GrandTheftAuto.GameFolder.Components
             game.spriteBatch.Begin();
             if (game.EGameState == EGameState.Pause)
             {
+                game.spriteBatch.Draw(game.spritPauseBackground,Vector2.Zero,Color.White*0.6f);
                 pause.Draw();
                 DrawOrder = 9;
                 game.spriteBatch.DrawString(game.normalFont, eGameStateBefore.ToString(), new Vector2(0, 0), Color.White);

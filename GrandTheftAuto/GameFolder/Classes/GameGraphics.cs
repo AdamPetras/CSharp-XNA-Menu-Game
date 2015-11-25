@@ -18,7 +18,6 @@ namespace GrandTheftAuto.GameFolder.Classes
             graphicsList = new GraphicsList(game);
             //background
             graphicsList.AddGraphics(new Vector2(0, 0), game.spritGameBackground, 0f, false);
-
             #region Road
             graphicsList.AddGraphics(new Vector2(0, 300), game.spritRoad, 0f, false);
             graphicsList.AddGraphics(new Vector2(0, 600), game.spritRoad, 0f, false);

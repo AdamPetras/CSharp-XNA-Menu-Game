@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using GrandTheftAuto.GameFolder.Classes.Gun;
 using GrandTheftAuto.MenuFolder.Classes;
 
 namespace GrandTheftAuto.GameFolder.Classes.GunFolder
@@ -30,11 +29,11 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
         /// <summary>
         /// Method if character colide with gun
         /// </summary>
-        public void PickUpGun(CharacterUsingGuns characterUsing)
+        public void PickUpGun(GunService characterUsing)
         {
             for (int i=0; i<gunsOptions.GunList.Count;i++)
             {
-                if (character.CharacterRectangle().Intersects(gunsOptions.GunList[i].Rectangle))
+                if (character.Rectangle.Intersects(gunsOptions.GunList[i].Rectangle))
                 {
                     if (HolsterList.Any(s=> s.EGun.Equals(gunsOptions.GunList[i].EGun))) //pokud holster obsahuje zbraň
                     {

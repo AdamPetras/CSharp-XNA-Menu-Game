@@ -24,13 +24,13 @@ namespace GrandTheftAuto.GameFolder.Classes
             this.game = game;
         }
 
-        public void GetEnemy(ref string name,int enemy, ref int hp, ref int damage, ref float speed,ref Texture2D texture,ref int score,ref double chanceToMiss)
+        public void GetEnemy(ref string name,int enemy, ref int hp, ref int damage, ref float speed,ref Texture2D texture,ref int score,ref double chanceToMiss,ref int exp)
         {
             eEnemies = (EEnemies) enemy;
-            TypeOfEnemy(ref name,ref hp,ref damage,ref speed, ref texture, ref score,ref chanceToMiss);
+            TypeOfEnemy(ref name,ref hp,ref damage,ref speed, ref texture, ref score,ref chanceToMiss,ref exp);
         }
 
-        private void TypeOfEnemy(ref string name, ref int hp,ref int damage,ref float speed, ref Texture2D texture,ref int score,ref double chanceToMiss)
+        private void TypeOfEnemy(ref string name, ref int hp,ref int damage,ref float speed, ref Texture2D texture,ref int score,ref double chanceToMiss,ref int exp)
         {
             name = eEnemies.ToString();
             if (eEnemies == EEnemies.Speed)
@@ -41,6 +41,7 @@ namespace GrandTheftAuto.GameFolder.Classes
                 speed = 1.2f;
                 texture = game.spritEnemy[0];
                 score = 15;
+                exp = 90;
             }
             else if (eEnemies == EEnemies.Tank)
             {
@@ -50,6 +51,7 @@ namespace GrandTheftAuto.GameFolder.Classes
                 speed = 0.5f;
                 texture = game.spritEnemy[0];
                 score = 15;
+                exp = 90;
             }
             else if(eEnemies == EEnemies.Damage)
             {
@@ -59,6 +61,7 @@ namespace GrandTheftAuto.GameFolder.Classes
                 speed = 0.7f;
                 texture = game.spritEnemy[0];
                 score = 15;
+                exp = 90;
             }
             else if (eEnemies == EEnemies.EliteTank)
             {
@@ -68,6 +71,7 @@ namespace GrandTheftAuto.GameFolder.Classes
                 speed = 0.6f;
                 texture = game.spritEnemy[0];
                 score = 30;
+                exp = 140;
             }
             else if (eEnemies == EEnemies.EliteDamage)
             {
@@ -77,6 +81,7 @@ namespace GrandTheftAuto.GameFolder.Classes
                 speed = 0.8f;
                 texture = game.spritEnemy[0];
                 score = 30;
+                exp = 140;
             }
             else if (eEnemies == EEnemies.BossTank)
             {
@@ -86,6 +91,7 @@ namespace GrandTheftAuto.GameFolder.Classes
                 speed = 0.6f;
                 texture = game.spritEnemy[0];
                 score = 100;
+                exp = 250;
             }
             else if (eEnemies == EEnemies.BossDamage)
             {
@@ -95,6 +101,7 @@ namespace GrandTheftAuto.GameFolder.Classes
                 speed = 0.7f;
                 texture = game.spritEnemy[0];
                 score = 100;
+                exp = 250;
             }
         }
     }

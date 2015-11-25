@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using GrandTheftAuto.GameFolder.Classes;
 using GrandTheftAuto.GameFolder.Classes.CarFolder;
-using GrandTheftAuto.GameFolder.Classes.Gun;
 using GrandTheftAuto.GameFolder.Classes.GunFolder;
 using Microsoft.Xna.Framework;
 

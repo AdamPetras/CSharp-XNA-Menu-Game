@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GrandTheftAuto.MenuFolder;
 using GrandTheftAuto.MenuFolder.Classes;
@@ -8,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GrandTheftAuto.GameFolder.Classes.GunFolder
 {
-    public class CharacterUsingGuns
+    public class GunService
     {
         public Holster Holster { get; private set; }
         public List<Bullet> BulletList { get; private set; }
@@ -17,9 +18,9 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
         private int index;
         private float shotTimer;                //timer pro střílení 
         private float reloadTimer;              //timer pro nabíjení
+        private double spawnTimer;              //timer pro objevení zbraně
         private const int reloading = 2000;     //konstanta pro určení doby nabíjení
         private Character character;
-        private Camera camera;
 
         public delegate void ChangeGunHandle();
         public event ChangeGunHandle EventChangeGun;
@@ -30,10 +31,9 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
         /// <param name="character"></param>
         /// <param name="camera"></param>
         /// <param name="savedData"></param>
-        public CharacterUsingGuns(GameClass game, Character character, Camera camera, SavedData savedData)
+        public GunService(GameClass game, Character character, SavedData savedData)
         {
             this.game = game;
-            this.camera = camera;
             this.character = character;
             EventChangeGun = ChangeGun;     //Event na změnu zbraně
             Holster = new Holster(game.gunsOptions, character, savedData);
@@ -72,7 +72,25 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
                 }
             }
         }
-
+        public void GeneratingGuns(GameTime gameTime, List<Rectangle> graphicsRectangles)
+        {
+            spawnTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (20000 < spawnTimer)
+            {
+                Random rand = new Random();
+                game.gunsOptions.AddGun(GeneratePosition(rand, graphicsRectangles), rand.Next(0, Enum.GetNames(typeof(EGuns)).Length));
+                spawnTimer = 0;
+            }
+        }
+        private Vector2 GeneratePosition(Random rand, List<Rectangle> graphicsRectangles)
+        {
+            Vector2 position;
+            do
+            {
+                position = new Vector2(rand.Next(0, 1000), rand.Next(0, 1000));
+            } while (graphicsRectangles.Any(s => s.Contains(position)));
+            return position;
+        }
         public void Shooting(GameTime gameTime)
         {
             if (SelectedGun != null && game.mouseState.LeftButton == ButtonState.Pressed && SelectedGun.Magazine != 0 && game.EGameState != EGameState.Reloading && character.Alive)    // střílení
@@ -83,7 +101,7 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
                     SelectedGun.Magazine--;
                     double d = 20;
                     Bullet bullet =
-                        new Bullet(game.CalculatePosition(character.CharacterPosition, character.Angle + 1f, ref d),
+                        new Bullet(game.CalculatePosition(character.Position, character.Angle + 1f, ref d),
                         game.spritBullet, character.Angle, SelectedGun.Damage, SelectedGun.FireRange,SelectedGun.DamageRange);
                     BulletList.Add(bullet);
                     shotTimer = 0;
@@ -142,11 +160,11 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
             }
             if (game.EGameState == EGameState.Reloading)
             {
-                game.spriteBatch.Draw(SelectedGun.Texture, new Rectangle((int)character.CharacterPosition.X, (int)character.CharacterPosition.Y, SelectedGun.Texture.Width, SelectedGun.Texture.Height), null, Color.White, character.Angle + 1.5f, new Vector2(-12, SelectedGun.Texture.Height / 1.2f), SpriteEffects.None, 0f);
+                game.spriteBatch.Draw(SelectedGun.Texture, new Rectangle((int)character.Position.X, (int)character.Position.Y, SelectedGun.Texture.Width, SelectedGun.Texture.Height), null, Color.White, character.Angle + 1.5f, new Vector2(-12, SelectedGun.Texture.Height / 1.2f), SpriteEffects.None, 0f);
             }
             else if (SelectedGun != null)
             {
-                game.spriteBatch.Draw(SelectedGun.Texture, new Rectangle((int)character.CharacterPosition.X, (int)character.CharacterPosition.Y, SelectedGun.Texture.Width, SelectedGun.Texture.Height), null, Color.White, character.Angle + 1.5f, new Vector2(-12, SelectedGun.Texture.Height / 1.2f), SpriteEffects.None, 0f);
+                game.spriteBatch.Draw(SelectedGun.Texture, new Rectangle((int)character.Position.X, (int)character.Position.Y, SelectedGun.Texture.Width, SelectedGun.Texture.Height), null, Color.White, character.Angle + 1.5f, new Vector2(-12, SelectedGun.Texture.Height / 1.2f), SpriteEffects.None, 0f);
             }
         }
 

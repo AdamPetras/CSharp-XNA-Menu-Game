@@ -25,7 +25,7 @@ namespace GrandTheftAuto.GameFolder.Classes.CarFolder
         public Vector2 OriginVector { get; private set; }
         public float Angle { get; private set; }
         public Color[] CarData { get; private set; }
-        public int Hp { get; set; }
+        public double Hp { get; set; }
         public bool Colision { get; set; }
         public bool Selected { get; set; }
         private double velocity;

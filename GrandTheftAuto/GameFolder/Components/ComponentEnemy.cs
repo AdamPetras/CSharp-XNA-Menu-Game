@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GrandTheftAuto.GameFolder.Classes;
-using GrandTheftAuto.GameFolder.Classes.CarFolder;
-using GrandTheftAuto.GameFolder.Classes.Gun;
 using GrandTheftAuto.GameFolder.Classes.GunFolder;
 using GrandTheftAuto.MenuFolder;
 using GrandTheftAuto.MenuFolder.Classes;
@@ -16,16 +13,16 @@ namespace GrandTheftAuto.GameFolder.Components
         private readonly GameClass game;
         private readonly ComponentCar componentCar;
         private readonly Camera camera;
-        private readonly Character character;
-        private readonly CharacterUsingGuns characterUsingGuns;
+        private readonly CharacterService characterService;
+        private readonly GunService characterUsingGuns;
 
         public ComponentEnemy(GameClass game, SavedData savedData, List<Rectangle> obstactleList = null,
             Camera camera = null, ComponentCar componentCar = null,
-            CharacterUsingGuns characterUsingGuns = null, Character character = null)
+            GunService characterUsingGuns = null, CharacterService characterService = null)
             : base(game)
         {
             this.game = game;
-            this.character = character;
+            this.characterService = characterService;
             this.characterUsingGuns = characterUsingGuns;
             this.componentCar = componentCar;
             this.camera = camera;
@@ -43,27 +40,27 @@ namespace GrandTheftAuto.GameFolder.Components
         }
 
         public override void Update(GameTime gameTime)
-        {
-            if (game.EGameState == EGameState.InGameOut || game.EGameState == EGameState.Reloading && character.Alive)
+        {/*
+            if (game.EGameState == EGameState.InGameOut || game.EGameState == EGameState.Reloading && characterService.Character.Alive)
             {
-                enemyService.GeneratingEnemies(gameTime, camera, character.CharacterRectangle());
-                enemyService.PathFinding(character.CharacterPosition, character.CharacterRectangle());
-                int hp = character.Hp;
-                enemyService.Attack(ref hp, character.CharacterRectangle(), gameTime,camera);
-                character.Hp = hp;
-                enemyService.RotationOfEnemy(character.CharacterPosition, character);
+                enemyService.GeneratingEnemies(gameTime, camera, characterService.Character.Rectangle);
+                enemyService.PathFinding(characterService.Character.Position, characterService.Character.Rectangle);
+                double hp = characterService.Character.Hp;
+                enemyService.Attack(ref hp, characterService.Character.Rectangle, gameTime, camera);
+                characterService.Character.Hp = hp;
+                enemyService.RotationOfEnemy(characterService.Character.Position, characterService.Character);
             }
             else if (game.EGameState == EGameState.InGameCar)
             {
                 enemyService.GeneratingEnemies(gameTime, camera, componentCar.SelectedCar.CarRectangle());
                 enemyService.PathFinding(componentCar.SelectedCar.Position, Rectangle.Empty, componentCar.SelectedCar.CarRectangle());
-                enemyService.RotationOfEnemy(componentCar.SelectedCar.Position, character);
-                int damaged = componentCar.SelectedCar.Hp;
+                enemyService.RotationOfEnemy(componentCar.SelectedCar.Position, characterService.Character);
+                double damaged = componentCar.SelectedCar.Hp;
                 enemyService.Attack(ref damaged, componentCar.SelectedCar.CarRectangle(), gameTime,camera);
                 componentCar.SelectedCar.Hp = damaged;
             }
             if (characterUsingGuns != null)
-                enemyService.GetDamage(characterUsingGuns.BulletList,camera);
+                enemyService.GetDamage(characterUsingGuns.BulletList,camera,characterService.Character);*/
             base.Update(gameTime);
         }
 
@@ -71,7 +68,7 @@ namespace GrandTheftAuto.GameFolder.Components
         {
             game.spriteBatch.Begin();
             DrawOrder = 1;
-            enemyService.DrawEnemy(camera,gameTime);
+            //enemyService.DrawEnemy(camera,gameTime);
             game.spriteBatch.End();
             base.Draw(gameTime);
         }

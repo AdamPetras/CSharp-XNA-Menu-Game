@@ -1,3 +1,4 @@
+using System.Linq;
 using GrandTheftAuto.GameFolder.Classes;
 using GrandTheftAuto.GameFolder.Classes.CarFolder;
 using GrandTheftAuto.GameFolder.Components;
@@ -34,7 +35,7 @@ namespace GrandTheftAuto.MenuFolder.Components
             menuItems.AddItem("Controls");
             menuItems.AddItem("About");
             menuItems.AddItem("Exit");
-            menuItems.Next();
+            menuItems.Selected = menuItems.Items.First();
         }
         /// <summary>
         /// Initialiaze method implemets from IInitializable
@@ -51,14 +52,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            if (game.SingleClick(Keys.Up) || game.SingleClick(Keys.W))
-            {
-                menuItems.Before();
-            }
-            if (game.SingleClick(Keys.Down) || game.SingleClick(Keys.S))
-            {
-                menuItems.Next();
-            }
+            menuItems.Moving(Keys.W, Keys.S);
             if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && menuItems.CursorColision()))
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
@@ -84,13 +78,15 @@ namespace GrandTheftAuto.MenuFolder.Components
                         game.carList.Add(new Car(game, new Vector2(200, 0), 103000, 1770));
                         ComponentCar componentCar = new ComponentCar(game,camera,componentCharacter);
                         game.Components.Add(componentCar);
-                        ComponentGuns componentGuns = new ComponentGuns(game,gameGraphics,componentCharacter.Character,savedData,camera);
+                        ComponentGuns componentGuns = new ComponentGuns(game,gameGraphics,componentCharacter.CharacterService.Character,savedData,camera);
                         game.Components.Add(componentGuns);
-                        ComponentEnemy componentEnemy = new ComponentEnemy(game, savedData, gameGraphics.graphicsList.ColisionList(), camera,componentCar,componentGuns.CharacterUsingGuns, componentCharacter.Character);
+                        ComponentEnemy componentEnemy = new ComponentEnemy(game, savedData, gameGraphics.graphicsList.ColisionList(), camera,componentCar,componentGuns.GunService, componentCharacter.CharacterService);
                         game.Components.Add(componentEnemy);
-                        ComponentGUI componentGui = new ComponentGUI(game,camera,componentCharacter.Character,componentGuns.CharacterUsingGuns,componentEnemy.enemyService);
+                        ComponentQuestSystem componentQuestSystem = new ComponentQuestSystem(game,componentCharacter.CharacterService.Character,camera);
+                        game.Components.Add(componentQuestSystem);
+                        ComponentGUI componentGui = new ComponentGUI(game,camera,componentCharacter.CharacterService.Character,componentGuns.GunService,componentEnemy.enemyService);
                         game.Components.Add(componentGui);
-                        ComponentPause componentPause = new ComponentPause(game,componentCar.SelectedCar,componentCar,componentCharacter,componentEnemy,componentGameGraphics,componentGuns,componentGui,componentCharacter.Character,componentGuns.CharacterUsingGuns.Holster);
+                        ComponentPause componentPause = new ComponentPause(game,componentCar,componentCharacter,componentEnemy,componentGameGraphics,componentGuns,componentGui);
                         game.Components.Add(componentPause);
                         game.ComponentEnable(this, false);
                         Game.IsMouseVisible = false;
@@ -154,7 +150,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
-            game.spriteBatch.Draw(game.spritMenuBackground, Vector2.Zero, Color.White);
+            game.spriteBatch.Draw(game.spritMenuBackground, new Rectangle(0,0,game.graphics.PreferredBackBufferWidth,game.graphics.PreferredBackBufferHeight), Color.White);
             menuItems.Draw();
             game.spriteBatch.End();
             base.Draw(gameTime);

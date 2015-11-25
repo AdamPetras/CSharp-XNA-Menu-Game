@@ -1,159 +1,95 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using GrandTheftAuto.MenuFolder;
 using GrandTheftAuto.MenuFolder.Classes;
+using GrandTheftAuto.MenuFolder.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input.Touch;
 
 namespace GrandTheftAuto.GameFolder.Classes
 {
-    public class Character
+    public class Character:Stats
     {
-        private GameClass game;
-        public bool Alive { get; private set; }
-        public int Energy { get; private set; }
-        public Vector2 CharacterPosition { get; set; }
-        public float Angle { get; set; }
-        public int Hp { get; set; }
+        public bool Regeneration { get; set; }
+        public int CurrentFrame { get; set; }
+        public float DefaultSpeed { get; private set; }
 
+        public int Vitality { get; set; }       //životy
+        public int Intelect { get; set; }       //energie
+        public int Spirit { get; set; }     //vyčerpání energie
+        public int Stamina { get; set; }      //regenerace životů
+        public int Agility { get; set; }     //rychlost
+        public int Energy { get; set; }      //energie
+        public double EnergyRegen { get; set; }
+        public double HpRegen { get; set; }
+        public double MaxHp { get; private set; }
+        public int MaxEnergy { get; private set; }
+        public int Level { get; set; }
+        public int ActualExperiences { get; set; }
+        public int LevelUpExperience { get; set; }
+        public int SkillPoints { get; set; }
+        public int ActualSkillLevel { get; set; }
+        public List<Quest> QuestList { get; set; }
 
-        private double speed;
-        private double distance;
-        private double animationTimer;       //timer pro animace postavy
-        private double interval = 150;    //interval na animaci postavy
-        private double energyDrainRegenerateTimer;
-        private bool regeneration;
-        private int currentFrame;
-
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="game"></param>
-        /// <param name="savedData"></param>
-        /// <param name="position"></param>
-        /// <param name="angle"></param>
-        public Character(GameClass game, SavedData savedData)
+        private const int VITALITY = 10;
+        private const int ENERGY = 5;
+        private const int MINENERGYREGEN = 100;
+        private const double ENERGYREGENERATION = 5;
+        private const int MINHPREGEN = 5000;
+        private const int MINSPEED = 1;
+        private const double SPEED = 0.02;
+        private const double HPREGENERATION = 20;
+        public Character(Vector2 position, Texture2D texture,int level = 0, bool alive = true, float angle = 0, int currentFrame = 0, bool regeneration = false)
         {
-            this.game = game;
-            Hp = 100;
-            Energy = 100;
-            speed = 1;
-            Alive = true;
-            regeneration = false;
-            if (!savedData.InTheCar)
-            {
-                CharacterPosition = savedData.CharacterPosition;
-                Angle = savedData.CharacterAngle;
-            }
-            currentFrame = 0;
-        }
-        /// <summary>
-        /// Updatable method to detect keypress and then call the other method
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public void Move(GameTime gameTime)
-        {
-            #region Chůze
-            if (game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Up].Key) && Alive)
-            {
-                distance += speed;
-                CharacterAnimation(gameTime);
-                CharacterPosition = game.CalculatePosition(CharacterPosition, Angle, ref distance);
-            }
-            if (game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Down].Key) && Alive)
-            {
-                distance -= speed;
-                CharacterAnimation(gameTime);
-                CharacterPosition = game.CalculatePosition(CharacterPosition, Angle, ref distance);
-            }
-            #endregion
-            #region Otáčení
-            if (game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Left].Key) && Alive)
-            {
-                Angle -= 0.05f;
-            }
-            if (game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Right].Key) && Alive)
-            {
-                Angle += 0.05f;
-            }
-            #endregion
-            #region Běh
-            if (game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Shift].Key) && Alive && Energy > 0 && !regeneration)
-            {
-                speed = 1.5;
-                interval = 120;
-                energyDrainRegenerateTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
-                if (energyDrainRegenerateTimer > 100)
-                {
-                    Energy -= 1;
-                    energyDrainRegenerateTimer = 0;
-                }
-                if (Energy == 0)
-                    speed = 1;
-            }
-            else if(Energy<100)
-            {
-                regeneration = true;
-                speed = 1;
-                interval = 150;
-                energyDrainRegenerateTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
-                if (energyDrainRegenerateTimer > 200 && Energy < 100)
-                {
-                    Energy += 1;
-                    energyDrainRegenerateTimer = 0;
-                }
-                if (Energy >= 40)
-                    regeneration = false;
-            }
-            #endregion
-            //-------------Pokud nechodí nebo je zmáčknuto dopředu i dozadu tak se nastaví obrázek stop-------------
-            if (game.keyState.IsKeyUp(game.controlsList[(int)EKeys.Down].Key) &&
-                game.keyState.IsKeyUp(game.controlsList[(int)EKeys.Up].Key) ||
-                game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Down].Key) &&
-                game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Up].Key))
-                currentFrame = 0;
-
+            Vitality = 9;
+            Intelect = 9;
+            Position = position;
+            Texture = texture;
+            Alive = alive;
+            Angle = angle;
+            CurrentFrame = currentFrame;
+            Regeneration = regeneration;
+            Level = level;
+            SkillPoints = 0;
+            ActualSkillLevel = 0;
+            ActualExperiences = 0;
+            LevelUpExperience = 400;
+            QuestList = new List<Quest>();
         }
 
-        public void Live()
+        public void UpdateRectangle()
         {
-            Alive = Hp > 0;
+            Rectangle = new Rectangle((int)Position.X-Texture.Width/2,(int)Position.Y-Texture.Height/2,Texture.Width,Texture.Height);
         }
 
-        /// <summary>
-        /// Method to change frame of character
-        /// </summary>
-        /// <param name="gameTime"></param>
-        private void CharacterAnimation(GameTime gameTime)
+        public void LevelUp(int vitality, int intelect, int stamina, int spirit, int agility)
         {
-            animationTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (animationTimer > interval)
-            {
-                // Show the next frame
-                currentFrame++;
-                // Reset the timer
-                animationTimer = 0f;
-            }
-            if (currentFrame == 5)
-            {
-                currentFrame = 0;
-            }
+            Vitality += vitality;
+            Intelect += intelect;
+            Stamina += stamina;
+            Spirit += spirit;
+            Agility += agility;
         }
-        /// <summary>
-        /// Method to get rectangle of character
-        /// </summary>
-        /// <returns></returns>
-        public Rectangle CharacterRectangle()
+
+        public void UpdateStats()
         {
-            return new Rectangle((int)CharacterPosition.X - game.spritCharacter[currentFrame].Width / 2, (int)CharacterPosition.Y - game.spritCharacter[currentFrame].Height / 2, game.spritCharacter[currentFrame].Width, game.spritCharacter[currentFrame].Height);
-        }
-        /// <summary>
-        /// Method to draw character
-        /// </summary>
-        public void DrawCharacter()
-        {
-            game.spriteBatch.Draw(game.spritCharacter[currentFrame], new Rectangle((int)CharacterPosition.X, (int)CharacterPosition.Y, game.spritCharacter[currentFrame].Width, game.spritCharacter[currentFrame].Height), null, Color.White, game.Rotation(Angle) + 1.5f, new Vector2(game.spritCharacter[currentFrame].Width / 2, game.spritCharacter[currentFrame].Height / 2), SpriteEffects.None, 0f);
+            if (Hp == MaxHp)
+            {
+                Hp = Vitality * VITALITY;
+                MaxHp = Hp;
+            }
+            else
+                MaxHp = Vitality * VITALITY;
+            if (Energy == MaxEnergy)
+            {
+                Energy = Intelect * ENERGY;
+                MaxEnergy = Energy;
+            }
+            else
+                MaxEnergy = Intelect * ENERGY;
+            HpRegen = MINHPREGEN - Stamina * HPREGENERATION;
+            EnergyRegen = MINENERGYREGEN - Spirit * ENERGYREGENERATION;
+            Speed = (float) (MINSPEED + Agility * SPEED);
+            DefaultSpeed = Speed;
         }
     }
 }

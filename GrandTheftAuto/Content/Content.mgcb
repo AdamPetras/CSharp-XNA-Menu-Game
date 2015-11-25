@@ -13,3 +13,9 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin smallestFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:smallestFont.spritefont
+

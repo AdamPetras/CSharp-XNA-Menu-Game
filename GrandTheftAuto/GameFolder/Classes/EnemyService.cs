@@ -16,13 +16,13 @@ namespace GrandTheftAuto.GameFolder.Classes
         {
             EnemyHit,
             BulletHit,
-            CriticalHit,
             None
         }
         public List<Enemy> EnemyList { get; set; }
         public List<DiedEnemy> DiedList { get; set; }
         public Enemy EnemyTarget { get; private set; }
         public int Score { get; set; }
+
         private GameClass game;
         private EnemyAi enemyAi;
         private double attackTimer;
@@ -34,9 +34,14 @@ namespace GrandTheftAuto.GameFolder.Classes
         private int bulletHitDamage;
         private int cryticalHitDamage;
         private EHit eHit;
+
+        public delegate void GetExperiences(int exp, Character character);
+
+        public event GetExperiences EventGetExperiences;
         public EnemyService(GameClass game, List<Rectangle> obstactleList)
         {
             this.game = game;
+            EventGetExperiences += Experiences;
             EnemyList = new List<Enemy>();
             DiedList = new List<DiedEnemy>();
             enemyAi = new EnemyAi(obstactleList);
@@ -45,7 +50,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             enemyHitDamage = 0;
             cryticalHitDamage = 0;
             bulletHitDamage = 0;
-            
+
             rnd = new Random();
         }
 
@@ -57,11 +62,12 @@ namespace GrandTheftAuto.GameFolder.Classes
             int damage = 0;
             float angle = 0;
             int score = 0;
+            int exp = 0;
             double chanceToMiss = 0;
             Texture2D texture = game.spritCharacter[0];
             EnemyOption enemyOption = new EnemyOption(game);
-            enemyOption.GetEnemy(ref name,enemySet, ref hp, ref damage, ref speed, ref texture, ref score, ref chanceToMiss);
-            Enemy enemy = new Enemy(name, hp, damage, speed, texture, position, angle, score, chanceToMiss);
+            enemyOption.GetEnemy(ref name, enemySet, ref hp, ref damage, ref speed, ref texture, ref score, ref chanceToMiss, ref exp);
+            Enemy enemy = new Enemy(name, hp, damage, speed, texture, position, angle, score, chanceToMiss, exp);
             EnemyList.Add(enemy);
         }
 
@@ -70,13 +76,13 @@ namespace GrandTheftAuto.GameFolder.Classes
             foreach (Enemy enemy in EnemyList)
             {
                 //Grafické vykreslení
-                game.spriteBatch.Draw(game.spritHealthBar, new Rectangle((int)enemy.Position.X - game.spritEnemy[0].Width / 2, (int)enemy.Position.Y, (int)((enemy.Hp / enemy.MaxHp) * game.spritEnemy[0].Width), 5), Color.White);
+                game.spriteBatch.Draw(game.spritEnemyHealthBar, new Rectangle((int)enemy.Position.X - game.spritEnemy[0].Width / 2, (int)enemy.Position.Y, (int)((enemy.Hp / enemy.MaxHp) * game.spritEnemy[0].Width), 5), Color.White);
                 //Vykreslený hodnoty
                 game.spriteBatch.DrawString(game.smallFont, enemy.Hp.ToString(), new Vector2(enemy.Position.X - game.smallFont.MeasureString(enemy.Hp.ToString()).X / 2, enemy.Position.Y - game.smallFont.MeasureString(enemy.Hp.ToString()).Y), Color.Red);
             }
         }
 
-        public void Attack(ref int hp, Rectangle attackedRectangle, GameTime gameTime, Camera camera)
+        public void Attack(ref double hp, Rectangle attackedRectangle, GameTime gameTime, Camera camera)
         {
             if (hp > 0)
                 foreach (Enemy enemy in EnemyList.Where(enemy => attackedRectangle.Intersects(enemy.Rectangle)))
@@ -114,7 +120,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             }
         }
         */
-        public void GetDamage(List<Bullet> bulletList, Camera camera)
+        public void GetDamage(List<Bullet> bulletList, Camera camera, Character character)
         {
             for (int i = 0; i <= EnemyList.Count - 1; i++)
             {
@@ -125,7 +131,7 @@ namespace GrandTheftAuto.GameFolder.Classes
                         EnemyList[i].IsAngry = true;
                         bulletHitDamage = bulletList[j].Damage + rnd.Next(-bulletList[j].DamageRange, bulletList[j].DamageRange);
                         EnemyList[i].Hp -= bulletHitDamage;
-                        cryticalHitDamage = bulletList[j].Damage + bulletList[j].DamageRange-1;
+                        cryticalHitDamage = bulletList[j].Damage + bulletList[j].DamageRange - 1;
                         HitMethod(camera, EnemyList[i].Position, EnemyList[i].Texture);
                         EnemyTarget = EnemyList[i];
                         bulletList.Remove(bulletList[j]);
@@ -135,6 +141,7 @@ namespace GrandTheftAuto.GameFolder.Classes
                 {
                     EnemyList[i].Alive = false;
                     Score += EnemyList[i].Score;
+                    OnEventGetExperiences(EnemyList[i].Exp, character);
                     DiedList.Add(new DiedEnemy(EnemyList[i].Position, game.spritBlood, EnemyList[i].Angle));
                     EnemyList.Remove(EnemyList[i]);
                 }
@@ -219,7 +226,7 @@ namespace GrandTheftAuto.GameFolder.Classes
         }
         private void DrawDamageDone(GameTime gameTime)
         {
-            if (eHit != EHit.None)
+            if (eHit != EHit.None && EnemyList.Count != 0)
             {
                 string enemyDamage = enemyHitDamage != 0 ? enemyHitDamage.ToString() : "MISS";
                 string bulletDamage = bulletHitDamage < cryticalHitDamage ? bulletHitDamage.ToString() : bulletHitDamage + " CriticalHit!!";
@@ -236,6 +243,16 @@ namespace GrandTheftAuto.GameFolder.Classes
                 }
 
             }
+        }
+
+        private void Experiences(int exp, Character character)
+        {
+            character.ActualExperiences += exp;
+        }
+
+        protected virtual void OnEventGetExperiences(int exp, Character character)
+        {
+            if (EventGetExperiences != null) EventGetExperiences(exp, character);
         }
     }
 }

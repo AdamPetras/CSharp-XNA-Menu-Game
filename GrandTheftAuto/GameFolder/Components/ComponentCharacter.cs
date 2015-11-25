@@ -13,7 +13,7 @@ namespace GrandTheftAuto.GameFolder.Components
     /// </summary>
     public class ComponentCharacter : DrawableGameComponent
     {
-        public Character Character { get; private set; }
+        public CharacterService CharacterService { get; private set; }
         private readonly GameClass game;
         private readonly Camera camera;
         private readonly GameGraphics gameGraphics;
@@ -25,7 +25,7 @@ namespace GrandTheftAuto.GameFolder.Components
             this.gameGraphics = gameGraphics;
             this.camera = camera;
             game.EGameState = EGameState.InGameOut;
-            Character = new Character(game, savedData);
+            CharacterService = new CharacterService(game, savedData);
         }
 
         /// <summary>
@@ -45,9 +45,10 @@ namespace GrandTheftAuto.GameFolder.Components
         {
             if (game.EGameState != EGameState.Reloading)
                 game.EGameState = EGameState.InGameOut;
-            camera.Update(Character.CharacterPosition);
-            Character.Move(gameTime);
-            Character.Live();
+            camera.Update(CharacterService.Character.Position);
+            CharacterService.Move(gameTime);
+            CharacterService.Live();
+            CharacterService.Update();
             if (game.SingleClick(Keys.Escape))      //Pauza
             {
                 game.EGameState = EGameState.Pause;
@@ -58,7 +59,7 @@ namespace GrandTheftAuto.GameFolder.Components
             {
                 foreach (Car car in game.carList)
                 {
-                    if (car.CarRectangle().Intersects(Character.CharacterRectangle()))
+                    if (car.CarRectangle().Intersects(CharacterService.Character.Rectangle))
                     {
                         game.ComponentEnable(this, false);
                         car.Selected = true;
@@ -67,13 +68,13 @@ namespace GrandTheftAuto.GameFolder.Components
                     }
                 }
             }
-            if (gameGraphics.Colision(Character.CharacterRectangle()))
+            if (gameGraphics.Colision(CharacterService.Character.Rectangle))
             {
-                Character.CharacterPosition = before;
+                CharacterService.Character.Position = before;
             }
-            if (!gameGraphics.Colision(Character.CharacterRectangle()))
+            if (!gameGraphics.Colision(CharacterService.Character.Rectangle))
             {
-                before = Character.CharacterPosition;
+                before = CharacterService.Character.Position;
             }
             game.SplashDisplay();       // čištění displeje
             base.Update(gameTime);
@@ -83,7 +84,7 @@ namespace GrandTheftAuto.GameFolder.Components
         {
             game.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             DrawOrder = 4;
-            Character.DrawCharacter();
+            CharacterService.DrawCharacter();
             game.spriteBatch.End();
             base.Draw(gameTime);
         }

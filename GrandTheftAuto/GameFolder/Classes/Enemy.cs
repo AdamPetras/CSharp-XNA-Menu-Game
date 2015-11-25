@@ -5,25 +5,18 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GrandTheftAuto.GameFolder.Classes
 {
-    public class Enemy
+    public class Enemy : Stats
     {
         public string Name { get; private set; }
         public int Damage { get; private set; }
-        public float Speed { get; private set; }
-        public Texture2D Texture { get; private set; }
-        public Rectangle Rectangle { get; private set; }
         public double MaxHp { get; private set; }
         public int Score { get; private set; }
         public double ChanceToMiss { get; private set; }
-        public double Hp { get; set; }
+        public int Exp { get; private set; }
         public bool IsAngry { get; set; }
-        public bool Alive { get; set; }
-        public Vector2 Position { get; set; }
-        public float Angle { get; set; }
 
 
-
-        public Enemy(string name,double hp, int damage, float speed, Texture2D texture, Vector2 position, float angle,int score,double chanceToMiss,bool alive = true, bool isAngry = false)
+        public Enemy(string name,double hp, int damage, float speed, Texture2D texture, Vector2 position, float angle,int score,double chanceToMiss,int exp,bool alive = true, bool isAngry = false)
         {
             Name = name;
             Hp = hp;
@@ -35,6 +28,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             Angle = angle;
             Score = score;
             ChanceToMiss = chanceToMiss;
+            Exp = exp;
             Alive = alive;
             IsAngry = isAngry;
         }

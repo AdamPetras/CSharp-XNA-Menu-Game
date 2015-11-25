@@ -23,7 +23,7 @@ namespace GrandTheftAuto.MenuFolder.Classes
         /// </summary>
         /// <param name="text"></param>
         /// <param name="value"></param>
-        public void AddItem(string text, string value = "")
+        public void AddItem(string text, string value = "",bool nonClick = false)
         {
             Vector2 position = new Vector2(Game.graphics.PreferredBackBufferWidth / 2, Game.graphics.PreferredBackBufferHeight / 2 + Items.Count * Game.normalFont.MeasureString(text).Y); //určení pozice přidané položky
             Items item = new Items(text, position,Rectangle.Empty, value);

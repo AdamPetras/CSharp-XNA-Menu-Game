@@ -53,6 +53,17 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GameFolder\Classes\BonusOption.cs" />
+    <Compile Include="GameFolder\Classes\CharacterService.cs" />
+    <Compile Include="GameFolder\Classes\NPC.cs" />
+    <Compile Include="GameFolder\Classes\Quest.cs" />
+    <Compile Include="GameFolder\Classes\QuestMaster.cs" />
+    <Compile Include="GameFolder\Classes\QuestMasterService.cs" />
+    <Compile Include="GameFolder\Classes\QuestService.cs" />
+    <Compile Include="GameFolder\Classes\Stats.cs" />
+    <Compile Include="GameFolder\Classes\Skill.cs" />
+    <Compile Include="GameFolder\Classes\SkillView.cs" />
+    <Compile Include="GameFolder\Classes\SkillService.cs" />
     <Compile Include="GameFolder\Classes\DiedEnemy.cs" />
     <Compile Include="GameFolder\Classes\Enemy.cs" />
     <Compile Include="GameFolder\Classes\EnemyAI.cs" />
@@ -63,7 +74,7 @@
     <Compile Include="GameFolder\Classes\CarFolder\Car.cs" />
     <Compile Include="GameFolder\Classes\CarFolder\CarPhysics.cs" />
     <Compile Include="GameFolder\Classes\Character.cs" />
-    <Compile Include="GameFolder\Classes\GunFolder\CharacterUsingGuns.cs" />
+    <Compile Include="GameFolder\Classes\GunFolder\GunService.cs" />
     <Compile Include="GameFolder\Classes\ColisionDetection.cs" />
     <Compile Include="GameFolder\Classes\GameGraphics.cs" />
     <Compile Include="GameFolder\Classes\Graphics.cs" />
@@ -72,13 +83,16 @@
     <Compile Include="GameFolder\Classes\GunFolder\GunsOptions.cs" />
     <Compile Include="GameFolder\Classes\GunFolder\Holster.cs" />
     <Compile Include="GameFolder\Classes\Pathfinding.cs" />
+    <Compile Include="GameFolder\Classes\StatsService.cs" />
     <Compile Include="GameFolder\Components\ComponentCar.cs" />
     <Compile Include="GameFolder\Components\ComponentCharacter.cs" />
+    <Compile Include="GameFolder\Components\ComponentDrawCurrentQuest.cs" />
     <Compile Include="GameFolder\Components\ComponentEnemy.cs" />
     <Compile Include="GameFolder\Components\ComponentGameGraphics.cs" />
     <Compile Include="GameFolder\Components\ComponentGUI.cs" />
     <Compile Include="GameFolder\Components\ComponentGuns.cs" />
     <Compile Include="GameFolder\Components\ComponentPause.cs" />
+    <Compile Include="GameFolder\Components\ComponentQuestSystem.cs" />
     <Compile Include="GameFolder\Interface\IPhysics.cs" />
     <Compile Include="MenuFolder\Classes\DrawItems.cs" />
     <Compile Include="MenuFolder\Classes\Items.cs" />
@@ -91,6 +105,7 @@
     <Compile Include="MenuFolder\Components\ComponentGameMenu.cs" />
     <Compile Include="MenuFolder\Components\ComponentSaveLoad.cs" />
     <Compile Include="MenuFolder\Components\ComponentSettings.cs" />
+    <Compile Include="GameFolder\Components\ComponentStats.cs" />
     <Compile Include="MenuFolder\GameClass.cs" />
     <Compile Include="MenuFolder\Interface\IDraw.cs" />
     <Compile Include="MenuFolder\Interface\IMenu.cs" />
@@ -134,13 +149,85 @@
     <Content Include="Content\Sprits\Character\characterStop.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Sprits\Character\ExperienceBar.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Character\ExperienceCharge.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Quest\otaznik.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Sprits\Enemy\blood.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Sprits\Enemy\health bar.png">
+    <Content Include="Content\Sprits\Enemy\enemyHealthBar.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\Enemy\zombie.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e0.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e10.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e11.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e12.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e13.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e14.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e15.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e16.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e17.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e18.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e19.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e20.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e6.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e7.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e8.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\EnergyBar\e9.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\explosion.png">
@@ -152,10 +239,22 @@
     <Content Include="Content\Sprits\grass.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Sprits\Guns\Ammo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Sprits\Guns\bullet.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\Guns\M4A1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\HealthAndEnergyBar\Bar.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\HealthAndEnergyBar\Energy.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\HealthAndEnergyBar\Health.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\Houses\house1.png">
@@ -170,6 +269,18 @@
     <Content Include="Content\Sprits\pauseBackground.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Sprits\Quest\pergamen2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Quest\vykricnik.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\arrow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\pergamen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Sprits\Road\crossroad.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -180,6 +291,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\Road\roadcurveright.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\talent.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\tree.png">
@@ -228,6 +342,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\smallestFont.spritefont" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

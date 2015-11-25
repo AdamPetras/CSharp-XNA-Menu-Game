@@ -1,52 +1,44 @@
 ﻿using System.Collections.Generic;
+using GrandTheftAuto.GameFolder.Classes;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace GrandTheftAuto.MenuFolder.Classes
 {
     public class MenuItems : IMenu
     {
         public Items Selected { get; set; }
-        private List<Items> Items;
+        public List<Items> Items { get; set; }
         private GameClass Game;
-        private Vector2 position;
-        private string posit;
+        public Vector2 position;
         private SpriteFont font;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="game"></param>
-        public MenuItems(GameClass game, Vector2 position, SpriteFont font, string posit = "left")
+        public MenuItems(GameClass game, Vector2 position, SpriteFont font)
         {
             Game = game;
+            Items = new List<Items>();
             this.position = position;
-            this.posit = posit;
             this.font = font;
-            Items = new List<Items>(); 
         }
+
         /// <summary>
         /// Method to math position of item
         /// </summary>
         /// <param name="text"></param>
-        public void Position(string text)
-        {
-            if(posit == "left")
-            position = new Vector2(position.X, position.Y + font.MeasureString(text).Y);
-            else
-                position = new Vector2(Game.graphics.PreferredBackBufferWidth / 2 - font.MeasureString(text).X / 2, Game.graphics.PreferredBackBufferHeight / 3 + Items.Count * font.MeasureString(text).Y);
-        }
-
         /// <summary>
         /// Method to add items
         /// </summary>
         /// <param name="text"></param>
         /// <param name="value"></param>
-        public void AddItem(string text, string value = "")
+        public void AddItem(string text, string value = "", bool nonClick = false)
         {
-            Position(text);
-            Items item = new Items(text,position,new Rectangle((int)position.X,(int)(position.Y),(int)font.MeasureString(text).X,(int)font.MeasureString(text).Y), value);            
+            Items item = new Items(text, new Vector2(position.X, position.Y + (font.MeasureString(text).Y * Items.Count)), new Rectangle((int)position.X, (int)(position.Y + (font.MeasureString(text).Y * Items.Count)), (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value, nonClick);
             Items.Add(item);
         }
         /// <summary>
@@ -61,10 +53,23 @@ namespace GrandTheftAuto.MenuFolder.Classes
                 Game.spriteBatch.DrawString(font, item.Value, new Vector2(item.Position.X + 500, item.Position.Y), Color.White);
             }
         }
+
+        public void Moving(Keys keyUp, Keys keyDown)
+        {
+            if (Game.SingleClick(keyUp))
+            {
+                Before();
+            }
+            if (Game.SingleClick(keyDown))
+            {
+                Next();
+            }
+        }
+
         /// <summary>
         /// Method to set selected item + 1
         /// </summary>
-        public void Next()
+        private void Next()
         {
             int index = Items.IndexOf(Selected);
             Selected = index < Items.Count - 1 ? Items[index + 1] : Items[0];
@@ -72,7 +77,7 @@ namespace GrandTheftAuto.MenuFolder.Classes
         /// <summary>
         /// Method to set selected item - 1
         /// </summary>
-        public void Before()
+        private void Before()
         {
             int index = Items.IndexOf(Selected);
             Selected = index > 0 ? Items[index - 1] : Items[Items.Count - 1];
@@ -97,7 +102,7 @@ namespace GrandTheftAuto.MenuFolder.Classes
         {
             foreach (Items item in Items)
             {
-                if (item.Rectangle.Contains(new Point(Game.mouseState.X, Game.mouseState.Y)))
+                if (item.Rectangle.Contains(Game.mouseState.Position) && !item.NonClick)
                 {
                     CursorColision();
                     Selected = item;
@@ -112,12 +117,20 @@ namespace GrandTheftAuto.MenuFolder.Classes
         {
             foreach (Items item in Items)
             {
-                if (item.Rectangle.Contains(new Point(Game.mouseState.X, Game.mouseState.Y)))
+                if (item.Rectangle.Contains(Game.mouseState.Position) && !item.NonClick)
                 {
                     return true;
                 }
             }
             return false;
+        }
+
+        public void PositionIfCameraMoving(Camera camera, Vector2 defaultposition)
+        {
+            foreach (Items items in Items)
+            {
+                items.Position = new Vector2((camera.Centering.X + defaultposition.X - font.MeasureString(items.Text).X / 2), camera.Centering.Y + defaultposition.Y + font.MeasureString(items.Text).Y * Items.FindIndex(s => s.Text == items.Text));
+            }
         }
     }
 }

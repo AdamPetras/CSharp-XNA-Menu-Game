@@ -3,6 +3,6 @@
     public interface IDraw
     {
         void Draw();
-        void AddItem(string text,string value="");
+        void AddItem(string text,string value="", bool nonClick = false);
     }
 }

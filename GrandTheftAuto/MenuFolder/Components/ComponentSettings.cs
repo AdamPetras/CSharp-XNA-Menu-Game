@@ -1,3 +1,4 @@
+using System.Linq;
 using GrandTheftAuto.MenuFolder.Classes;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
@@ -41,7 +42,7 @@ namespace GrandTheftAuto.MenuFolder.Components
             settings.AddItem("Display mode:",values.IsFullScreen());
             settings.AddItem("Resolution:",values.GetResolution(index));
             settings.AddItem("Back");
-            settings.Next();
+            settings.Selected = settings.Items.First();
             base.Initialize();
         }
         /// <summary>
@@ -50,14 +51,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            if (game.SingleClick(Keys.Up)||game.SingleClick(Keys.W))
-            {
-                settings.Before();
-            }
-            if (game.SingleClick(Keys.Down)||game.SingleClick(Keys.S))
-            {
-                settings.Next();
-            }
+            settings.Moving(Keys.W, Keys.S);
             if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && settings.CursorColision()))
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
@@ -69,7 +63,7 @@ namespace GrandTheftAuto.MenuFolder.Components
                         settings.UpdateItem("Display mode:",0,values.IsFullScreen());
                         break;
                     case "Resolution:":
-                        //index = index < values.GetResolutionList().Count-1 ? index++ : index = 0;       NEFUNGUJE???
+                        //index = index < values.GetResolutionList().Count-1 ? index++ : index = 0;
                         if (index < values.GetResolutionList().Count - 1)
                             index++;
                         else index = 0;
@@ -101,7 +95,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
-            game.spriteBatch.Draw(game.spritMenuBackground, Vector2.Zero, Color.White); //vykreslení backgroundu pro settings
+            game.spriteBatch.Draw(game.spritMenuBackground, new Rectangle(0, 0, game.graphics.PreferredBackBufferWidth, game.graphics.PreferredBackBufferHeight), Color.White);  //vykreslení backgroundu pro settings
             settings.Draw();
             game.spriteBatch.End();
             base.Draw(gameTime);

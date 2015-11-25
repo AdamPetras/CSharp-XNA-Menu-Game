@@ -13,7 +13,7 @@ namespace GrandTheftAuto.GameFolder.Components
 {
     public class ComponentGuns:DrawableGameComponent
     {
-        public CharacterUsingGuns CharacterUsingGuns { get; private set; }
+        public GunService GunService { get; private set; }
         private readonly GameClass game;
         private readonly GameGraphics gameGraphics;
         private readonly Camera camera;
@@ -22,7 +22,7 @@ namespace GrandTheftAuto.GameFolder.Components
             this.game = game;
             this.gameGraphics = gameGraphics;
             this.camera = camera;
-            CharacterUsingGuns = new CharacterUsingGuns(game, character, camera, savedData);
+            GunService = new GunService(game, character, savedData);
         }
 
         public override void Initialize()
@@ -34,13 +34,13 @@ namespace GrandTheftAuto.GameFolder.Components
         {
             if (game.EGameState != EGameState.InGameCar)
             {
-                CharacterUsingGuns.PickUpGun();
-                CharacterUsingGuns.Reloading(gameTime);
-                CharacterUsingGuns.BulletColision(gameGraphics.graphicsList);
-                CharacterUsingGuns.SelectGun();
-                CharacterUsingGuns.Shooting(gameTime);
-                CharacterUsingGuns.BulletFly();
-                CharacterUsingGuns.SelectGun();
+                GunService.PickUpGun();
+                GunService.Reloading(gameTime);
+                GunService.BulletColision(gameGraphics.graphicsList);
+                GunService.SelectGun();
+                GunService.Shooting(gameTime);
+                GunService.BulletFly();
+                GunService.GeneratingGuns(gameTime,gameGraphics.graphicsList.ColisionList());
             }
             base.Update(gameTime);
         }
@@ -52,7 +52,7 @@ namespace GrandTheftAuto.GameFolder.Components
                     camera.Transform);
                 DrawOrder = 2;
                 if (game.EGameState != EGameState.InGameCar)
-                CharacterUsingGuns.Draw();
+                GunService.Draw();
                 game.gunsOptions.DrawGuns();    //Vykreslení zbraní na zemi
                 game.spriteBatch.End();
             base.Draw(gameTime);
