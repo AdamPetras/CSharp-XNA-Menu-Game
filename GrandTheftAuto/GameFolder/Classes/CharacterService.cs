@@ -22,6 +22,7 @@ namespace GrandTheftAuto.GameFolder.Classes
         private double animationTimer; //timer pro animace postavy
         private double interval = 150; //interval na animaci postavy
         private double energyDrainRegenerateTimer;
+        private double healthRegenerateTimer;
         public delegate void LevelUp();
 
         public event LevelUp EventLevelUp;
@@ -90,10 +91,10 @@ namespace GrandTheftAuto.GameFolder.Classes
             if (game.keyState.IsKeyDown(game.controlsList[(int) EKeys.Shift].Key) && Character.Alive && Character.Energy > 0 &&
                 !Character.Regeneration)
             {
-                Character.Speed = 1.5f;
+                Character.Speed = 0.5f+Character.DefaultSpeed;
                 interval = 120;
                 energyDrainRegenerateTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
-                if (energyDrainRegenerateTimer > 100)
+                if (energyDrainRegenerateTimer > Character.EnergyRegen)
                 {
                     Character.Energy -= 1;
                     energyDrainRegenerateTimer = 0;
@@ -127,8 +128,11 @@ namespace GrandTheftAuto.GameFolder.Classes
 
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
+            Live();
+            HealthRegenerate(gameTime);
+            UpdateQuestValue();
             Character.UpdateRectangle();
             OnEventLevelUp(Character.Energy, Character.Hp);
             if (game.SingleClick(game.controlsList[(int) EKeys.C].Key) && !IsStatsRunning && Character.Alive)
@@ -147,7 +151,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             }
         }
 
-        public void Live()
+        private void Live()
         {
             Character.Alive = Character.Hp > 0;
         }
@@ -189,6 +193,35 @@ namespace GrandTheftAuto.GameFolder.Classes
         {
             if (EventLevelUp != null && (Character.ActualExperiences >= Character.LevelUpExperience || Character.Level < 1))
                 EventLevelUp();
+        }
+
+        private void HealthRegenerate(GameTime gameTime)
+        {
+            if ((int)Character.Hp != (int)Character.MaxHp &&Character.Alive)
+            {
+                healthRegenerateTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (healthRegenerateTimer >= Character.HpRegen)
+                {
+                    healthRegenerateTimer = 0;
+                    Character.Hp += 2;
+                    if (Character.Hp > Character.MaxHp) //ošetření overflow
+                        Character.Hp = Character.MaxHp;
+                }
+            }
+        }
+
+        public void UpdateQuestValue()  //metoda na přičítání zabítí
+        {
+            //pokud je aktivní úkol na search and destroy a bool proměnná je true
+            if (Character.QuestList.Any(s => s.EQuestState == EQuestState.Active && s.ETypeOfQuest == ETypeOfQuest.SearchAndDestroy) && Character.EnemyKilled)
+            {
+                Character.EnemyKilled = false;  //defaultnutí proměnné pro přičítání
+                Quest quest = Character.QuestList.Find(s => s.EQuestState == EQuestState.Active && s.ETypeOfQuest == ETypeOfQuest.SearchAndDestroy);    //přičtení hodnoty k úkolu
+                quest.ActualValue += 1;
+                if(quest.ActualValue==quest.ValueToSuccess) //pokud je úkol dokončen
+                    quest.EQuestState =EQuestState.Complete;
+            }
+            else Character.EnemyKilled = false; //jinak nastav bool proměnnou na false
         }
     }
 }

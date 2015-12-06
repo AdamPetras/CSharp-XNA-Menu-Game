@@ -1,5 +1,7 @@
 ﻿using System;
 using GrandTheftAuto.MenuFolder;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 
 namespace GrandTheftAuto
 {
@@ -15,9 +17,11 @@ namespace GrandTheftAuto
         [STAThread]
         static void Main()
         {
-            using (var game = new GameClass())
-                game.Run();
+            var game = new GameClass();
+            game.Window.Title = "GrandTheftAuto";
+            game.Run();
         }
+
     }
 #endif
 }

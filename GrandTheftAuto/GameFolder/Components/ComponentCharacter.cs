@@ -47,8 +47,7 @@ namespace GrandTheftAuto.GameFolder.Components
                 game.EGameState = EGameState.InGameOut;
             camera.Update(CharacterService.Character.Position);
             CharacterService.Move(gameTime);
-            CharacterService.Live();
-            CharacterService.Update();
+            CharacterService.Update(gameTime);
             if (game.SingleClick(Keys.Escape))      //Pauza
             {
                 game.EGameState = EGameState.Pause;

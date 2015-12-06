@@ -1,4 +1,5 @@
-﻿using GrandTheftAuto.GameFolder.Classes;
+﻿using System.Linq;
+using GrandTheftAuto.GameFolder.Classes;
 using GrandTheftAuto.MenuFolder;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,18 +13,22 @@ namespace GrandTheftAuto.GameFolder.Components
         private Character character;
         private Camera camera;
         private bool infoOpen;
+        private QuestService QuestService;
         public ComponentQuestSystem(GameClass game, Character character, Camera camera)
             : base(game)
         {
             this.game = game;
             this.camera = camera;
             this.character = character;
-            questMasterService = new QuestMasterService(game, camera,this);
+            questMasterService = new QuestMasterService(game, camera, this);
+            QuestService = new QuestService();
             questMasterService.AddQuester("Ahoj", 100, new Vector2(200, 200), game.spritCharacter[0], 0, 1);
             questMasterService.AddQuester("Zdar", 100, new Vector2(300, 100), game.spritCharacter[0], 0, 1);
-            questMasterService.QuesterList[0].QuestService.AddQuest("první", "První úkol dfsjklgfdjgnfdslkgnlfdsgljdsjgfnfdsjgndfsjgljdjlsfgfdgdhsdfhdsfhsdfh", 100, true, questMasterService.QuesterList[0], questMasterService.QuesterList[1]);
-            //questMasterService.QuesterList[0].QuestService.AddQuest("druhý", "Druhý úkol dfsjklgfdjgnfdslkgnlfdsgljdsjgfnfdsjgndfsjgljdjlsfgfdgdhsdfhdsfhsdfh", 100, true, ETypeOfQuest.Delivery, questMasterService.QuesterList[0], questMasterService.QuesterList[0]);
-            questMasterService.QuesterList[1].QuestService.AddQuest("třetí", "Třetí úkol dfsjklgfdjgnfdslkgnlfdsgljdsjgfnfdsjgndfsjgljdjlsfgfdgdhsdfhdsfhsdfh", 100, true, questMasterService.QuesterList[1], questMasterService.QuesterList[0]);
+            QuestService.AddQuest("první", "První úkol dfsjklgfdjgnfdslkgnlfdsgljdsjgfnfdsjgndfsjgljdjlsfgfdgdhsdfhdsfhsdfh", 100,0, questMasterService.QuesterList[0], questMasterService.QuesterList[1]);
+            QuestService.AddQuest("třetí", "Třetí úkol dfsjklgfdjgnfdslkgnlfdsgljdsjgfnfdsjgndfsjgljdjlsfgfdgdhsdfhdsfhsdfh", 100,0, questMasterService.QuesterList[1], questMasterService.QuesterList[0]);
+            QuestService.AddQuest("Kill", "Zabij 5x Zombie", 200,1, 5, questMasterService.QuesterList[1], questMasterService.QuesterList[0]);
+
+            AddQuestsToQuestMasters();  //nastavení úkolů přísušným quest masterům
         }
 
         public override void Initialize()
@@ -33,7 +38,12 @@ namespace GrandTheftAuto.GameFolder.Components
 
         public override void Update(GameTime gameTime)
         {
-            questMasterService.SetQuestGiveOver();
+            if (game.EGameState == EGameState.InGameOut || game.EGameState == EGameState.InGameCar || game.EGameState == EGameState.Reloading)
+            {
+                questMasterService.SetQuestGiveOver();
+                questMasterService.SetActivatedQuest(character);
+                //questMasterService.ColisionWithCharacter(character);
+            }
             base.Update(gameTime);
         }
 
@@ -41,20 +51,36 @@ namespace GrandTheftAuto.GameFolder.Components
         {
             game.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null,
                     camera.Transform);
-            DrawOrder = 5;
-            questMasterService.DrawQuestMaster();
-            questMasterService.OnEventPickUpQuest(character);
-            if (game.SingleClick(game.controlsList[(int)EKeys.I].Key) && infoOpen)
+            if (game.EGameState == EGameState.InGameOut || game.EGameState == EGameState.InGameCar || game.EGameState == EGameState.Reloading || game.EGameState == EGameState.Pause)
+                questMasterService.DrawQuestMaster();
+            if (game.EGameState == EGameState.InGameOut || game.EGameState == EGameState.InGameCar || game.EGameState == EGameState.Reloading)
             {
-                infoOpen = false;
-            }
-            else if (game.SingleClick(game.controlsList[(int) EKeys.I].Key) || infoOpen)
-            {
-                questMasterService.DrawQuestTable(character);
-                infoOpen = true;
+                DrawOrder = 5;
+                questMasterService.OnEventPickUpQuest(character);
+                if (game.SingleClick(game.controlsList[(int)EKeys.I].Key) && infoOpen)
+                {
+                    infoOpen = false;
+                }
+                else if (game.SingleClick(game.controlsList[(int)EKeys.I].Key) || infoOpen)
+                {
+                    questMasterService.DrawQuestTable(character);
+                    infoOpen = true;
+                }
             }
             game.spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        private void AddQuestsToQuestMasters()
+        {
+            foreach (Quest quest in QuestService.QuestList)
+            {
+                if (questMasterService.QuesterList.Any(s => s == quest.Start))
+                {
+                    questMasterService.QuesterList.Find(s => s == quest.Start).QuestList.Add(quest);
+                }
+            }
+            QuestService.QuestList.Clear();
         }
     }
 }

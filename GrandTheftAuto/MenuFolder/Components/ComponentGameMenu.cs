@@ -27,15 +27,18 @@ namespace GrandTheftAuto.MenuFolder.Components
             : base(game)
         {
             this.game = game;
-            menuItems = new MenuItems(game, new Vector2(100, game.graphics.PreferredBackBufferHeight / 3), game.bigFont);
+            menuItems = new MenuItems(game);
+            Vector2 position = new Vector2(game.graphics.PreferredBackBufferWidth/2,game.graphics.PreferredBackBufferHeight/2);
             //pøidávání položek do menu
-            menuItems.AddItem("Start");
-            menuItems.AddItem("Load");
-            menuItems.AddItem("Settings");
-            menuItems.AddItem("Controls");
-            menuItems.AddItem("About");
-            menuItems.AddItem("Exit");
+            menuItems.AddItem("Start",position,game.bigFont);
+            menuItems.AddItem("Load", position, game.bigFont);
+            menuItems.AddItem("Settings",position, game.bigFont);
+            menuItems.AddItem("Controls",position, game.bigFont);
+            menuItems.AddItem("About",position, game.bigFont);
+            menuItems.AddItem("Exit", position, game.bigFont);
             menuItems.Selected = menuItems.Items.First();
+            menuItems.SetKeysDown(Keys.Down,Keys.S);
+            menuItems.SetKeysUp(Keys.W,Keys.Up);
         }
         /// <summary>
         /// Initialiaze method implemets from IInitializable
@@ -52,8 +55,8 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            menuItems.Moving(Keys.W, Keys.S);
-            if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && menuItems.CursorColision()))
+            menuItems.Moving();
+            if (game.SingleClick(Keys.Enter) /*|| (game.SingleClickMouse() && menuItems.CursorColision()*/)
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
                 switch (menuItems.Selected.Text)
@@ -76,17 +79,17 @@ namespace GrandTheftAuto.MenuFolder.Components
                         Game.Components.Add(componentCharacter);
                         game.carList.Add(new Car(game, new Vector2(0, 0), 103000, 1770));
                         game.carList.Add(new Car(game, new Vector2(200, 0), 103000, 1770));
-                        ComponentCar componentCar = new ComponentCar(game,camera,componentCharacter);
+                        ComponentCar componentCar = new ComponentCar(game,camera,componentCharacter,gameGraphics);
                         game.Components.Add(componentCar);
                         ComponentGuns componentGuns = new ComponentGuns(game,gameGraphics,componentCharacter.CharacterService.Character,savedData,camera);
                         game.Components.Add(componentGuns);
-                        ComponentEnemy componentEnemy = new ComponentEnemy(game, savedData, gameGraphics.graphicsList.ColisionList(), camera,componentCar,componentGuns.GunService, componentCharacter.CharacterService);
+                        ComponentEnemy componentEnemy = new ComponentEnemy(game, savedData, gameGraphics.graphicsService.ColisionList(), camera,componentCar,componentGuns.GunService, componentCharacter.CharacterService);
                         game.Components.Add(componentEnemy);
                         ComponentQuestSystem componentQuestSystem = new ComponentQuestSystem(game,componentCharacter.CharacterService.Character,camera);
                         game.Components.Add(componentQuestSystem);
                         ComponentGUI componentGui = new ComponentGUI(game,camera,componentCharacter.CharacterService.Character,componentGuns.GunService,componentEnemy.enemyService);
                         game.Components.Add(componentGui);
-                        ComponentPause componentPause = new ComponentPause(game,componentCar,componentCharacter,componentEnemy,componentGameGraphics,componentGuns,componentGui);
+                        ComponentPause componentPause = new ComponentPause(game,componentCar,componentCharacter,componentEnemy,componentGameGraphics,componentGuns,componentGui,componentQuestSystem);
                         game.Components.Add(componentPause);
                         game.ComponentEnable(this, false);
                         Game.IsMouseVisible = false;
@@ -123,7 +126,7 @@ namespace GrandTheftAuto.MenuFolder.Components
             {
                 game.ComponentEnable(componentAbout, false);
             }
-            menuItems.CursorPosition();
+            //menuItems.CursorPosition();
             base.Update(gameTime);
         }
         /// <summary>

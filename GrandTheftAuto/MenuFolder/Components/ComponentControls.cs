@@ -11,6 +11,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         private IMenu controlItems;
         private GameClass game;
         private SavedControls savedControls;
+        private Vector2 position;
 
         public delegate void ChangeKeyHandler(string text, int index);
 
@@ -23,17 +24,20 @@ namespace GrandTheftAuto.MenuFolder.Components
             : base(game)
         {
             this.game = game;
+            position = new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 2);
         }
         /// <summary>
         /// Initialiaze method implemets from IInitializable
         /// </summary>
         public override void Initialize()
         {
-            controlItems = new MenuItems(game, new Vector2(100, game.graphics.PreferredBackBufferHeight / 3), game.normalFont);
-            for (int i = 0; i < game.controlsList.Count; i++)
-                controlItems.AddItem(game.controlsList[i].Text, game.controlsList[i].Key.ToString());
-            controlItems.AddItem("Back");
+            controlItems = new MenuItems(game);
+            foreach (SavedControls t in game.controlsList)
+                controlItems.AddItem(t.Text,position, game.smallFont,value:t.Key.ToString());
+            controlItems.AddItem("Back", position, game.smallFont);
             controlItems.Selected = controlItems.Items.First();
+            controlItems.SetKeysDown(Keys.Down, Keys.S);
+            controlItems.SetKeysUp(Keys.W, Keys.Up);
             EventChangeKey += ClickedOn;
             EventChangeKey += GetKey;
             base.Initialize();
@@ -44,8 +48,8 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            controlItems.Moving(Keys.W,Keys.S);
-            if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && controlItems.CursorColision()))
+            controlItems.Moving();
+            if (game.SingleClick(Keys.Enter) /*|| (game.SingleClickMouse() && controlItems.CursorColision()*/)
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
 
@@ -81,7 +85,7 @@ namespace GrandTheftAuto.MenuFolder.Components
                         break;
                 }
             }
-            controlItems.CursorPosition();
+            //controlItems.CursorPosition();
             base.Update(gameTime);
         }
         /// <summary>
@@ -103,7 +107,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// <param name="index"></param>      
         private void ClickedOn(string text, int index)      // if clicked on it will write "Click any key"
         {
-            controlItems.UpdateItem(text, index, "Click any key");
+            controlItems.UpdateItem(text, index, position, game.smallFont,value: "Click any key");
         }
 
         protected virtual void OnEventChangeKey(string text, int index)
@@ -121,8 +125,8 @@ namespace GrandTheftAuto.MenuFolder.Components
             {
                 savedControls = new SavedControls(text, (Keys)keys.GetValue(0));
                 game.controlsList.Insert(index, savedControls);
-                game.controlsList.RemoveAt(index + 1);
-                controlItems.UpdateItem(text, index, savedControls.Key.ToString());
+                game.controlsList.RemoveAt(index+1);
+                controlItems.UpdateItem(text, index, position, game.smallFont,value: savedControls.Key.ToString());
                 Enabled = true;
             }
 

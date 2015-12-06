@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GrandTheftAuto.GameFolder.Classes.CarFolder;
 using GrandTheftAuto.GameFolder.Classes.GunFolder;
+using GrandTheftAuto.GameFolder.Components;
 using GrandTheftAuto.MenuFolder.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -56,7 +57,6 @@ namespace GrandTheftAuto.MenuFolder
         #region Textury
         public Texture2D spritMenuBackground;
         public Texture2D spritAbout;
-        public Texture2D spritGameBackground;
         public Texture2D spritCar;
         public Texture2D spritPauseBackground;
         public Texture2D spritTree;
@@ -80,11 +80,14 @@ namespace GrandTheftAuto.MenuFolder
         public Texture2D spritExperienceBar;
         public Texture2D spritExperienceCharge;
         public Texture2D[] spritPergamen;
-        public Texture2D spritTalent;
-        public Texture2D spritArrow;
-        public Texture2D spritQuestion;
+        public Texture2D[] spritTalents;
+        public Texture2D spritCompleteQuestion;
         public Texture2D spritActiveQuestion;
-
+        public Texture2D spritInActiveQuestion;
+        public Texture2D spritDialogBubble;
+        public Texture2D spritGrass;
+        public Texture2D spritTCross;
+        public Texture2D spritDeadEndRoad;
         #endregion
         #region Fonty
         public SpriteFont bigFont;
@@ -108,6 +111,7 @@ namespace GrandTheftAuto.MenuFolder
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
+
         /// <summary>
         /// Initialiaze method implemets from IInitializable
         /// </summary>
@@ -157,6 +161,7 @@ namespace GrandTheftAuto.MenuFolder
             spritHouse = new Texture2D[3];
             spritGuns = new Texture2D[1];
             spritPergamen = new Texture2D[2];
+            spritTalents = new Texture2D[13];
             gunsOptions = new GunsOptions(this);
             IsMouseVisible = true;
             base.Initialize();
@@ -171,9 +176,9 @@ namespace GrandTheftAuto.MenuFolder
 
             #region Naètení spritù
 
+            spritGrass = Content.Load<Texture2D>(@"Sprits/grass");
             spritMenuBackground = Content.Load<Texture2D>(@"Sprits/backGround");
             spritAbout = Content.Load<Texture2D>(@"Sprits/About");
-            spritGameBackground = Content.Load<Texture2D>(@"Sprits/grass");
             spritCar = Content.Load<Texture2D>(@"Sprits/car");
             spritPauseBackground = Content.Load<Texture2D>(@"Sprits/pauseBackground");
             spritTree = Content.Load<Texture2D>(@"Sprits/tree");
@@ -184,6 +189,8 @@ namespace GrandTheftAuto.MenuFolder
             spritCrossRoad = Content.Load<Texture2D>(@"Sprits/Road/crossroad");
             spritRoadCurveLeft = Content.Load<Texture2D>(@"Sprits/Road/roadcurveleft");
             spritRoadCurveRight = Content.Load<Texture2D>(@"Sprits/Road/roadcurveright");
+            spritTCross = Content.Load<Texture2D>(@"Sprits/Road/Tcross");
+            spritDeadEndRoad = Content.Load<Texture2D>(@"Sprits/Road/deadEnd");
 
             spritHouse[0] = Content.Load<Texture2D>(@"Sprits/Houses/house1");
             spritHouse[1] = Content.Load<Texture2D>(@"Sprits/Houses/house2");
@@ -214,13 +221,14 @@ namespace GrandTheftAuto.MenuFolder
             #endregion
             spritPergamen[0] = Content.Load<Texture2D>(@"Sprits/TalentsAndStats/pergamen");
             spritPergamen[1] = Content.Load<Texture2D>(@"Sprits/Quest/pergamen2");
-            spritTalent = Content.Load<Texture2D>(@"Sprits/TalentsAndStats/talent");
-            spritArrow = Content.Load<Texture2D>(@"Sprits/TalentsAndStats/arrow");
             spritHealthAndEnergyBar = Content.Load<Texture2D>(@"Sprits/HealthAndEnergyBar/Bar");
             spritCharacterHealth = Content.Load<Texture2D>(@"Sprits/HealthAndEnergyBar/Health");
             spritCharacterEnergy = Content.Load<Texture2D>(@"Sprits/HealthAndEnergyBar/Energy");
-            spritQuestion = Content.Load<Texture2D>(@"Sprits/Quest/vykricnik");
-            spritActiveQuestion = Content.Load<Texture2D>(@"Sprits/Quest/otaznik");
+            spritCompleteQuestion = Content.Load<Texture2D>(@"Sprits/Quest/completeQuest");
+            spritInActiveQuestion = Content.Load<Texture2D>(@"Sprits/Quest/inActiveQuest");
+            spritActiveQuestion = Content.Load<Texture2D>(@"Sprits/Quest/ActiveQuest");
+            spritDialogBubble = Content.Load<Texture2D>(@"Sprits/Dialog/dialogBubble");
+            LoadTextures(spritTalents, @"Sprits/TalentsAndStats/talent",13); 
         }
 
         protected override void UnloadContent()
@@ -300,9 +308,9 @@ namespace GrandTheftAuto.MenuFolder
             graphics.GraphicsDevice.Clear(color);
         }
 
-        public void LoadBar(Texture2D[] texture,string trace,int numberOfTexture)
+        public void LoadTextures(Texture2D[] texture,string trace,int howManyTextures)
         {
-            for (int i=0;i<=numberOfTexture;i++)
+            for (int i=0;i<=howManyTextures-1;i++)
             texture[i] = Content.Load<Texture2D>(trace+i);
         }
     }

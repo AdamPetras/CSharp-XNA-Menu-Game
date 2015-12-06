@@ -13,6 +13,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         private IMenu settings;
         private int index;      //pomocná promìnná
         private bool IsResolutionChanged;
+        private Vector2 position;
         /// <summary>
         /// Constuctor
         /// </summary>
@@ -22,6 +23,7 @@ namespace GrandTheftAuto.MenuFolder.Components
             : base(game)
         {
             this.game = game;
+            position = new Vector2(game.graphics.PreferredBackBufferWidth / 4, game.graphics.PreferredBackBufferHeight / 2);
             IsResolutionChanged = false;
         }
         /// <summary>
@@ -29,7 +31,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// </summary>
         public override void Initialize()
         {
-            settings = new MenuItems(game,new Vector2(100,game.graphics.PreferredBackBufferHeight/3),game.normalFont);
+            settings = new MenuItems(game);
             values = new SettingValues(game);
             for (int i = 0; i<values.GetResolutionList().Count;i++)
             {
@@ -39,10 +41,13 @@ namespace GrandTheftAuto.MenuFolder.Components
                     break;
                 }
             }
-            settings.AddItem("Display mode:",values.IsFullScreen());
-            settings.AddItem("Resolution:",values.GetResolution(index));
-            settings.AddItem("Back");
+            position = new Vector2(game.graphics.PreferredBackBufferWidth/4,game.graphics.PreferredBackBufferHeight/2);
+            settings.AddItem("Display mode:",position,game.normalFont,value: values.IsFullScreen());
+            settings.AddItem("Resolution:", position, game.normalFont, value: values.GetResolution(index));
+            settings.AddItem("Back", position, game.normalFont);
             settings.Selected = settings.Items.First();
+            settings.SetKeysDown(Keys.Down, Keys.S);
+            settings.SetKeysUp(Keys.W, Keys.Up);
             base.Initialize();
         }
         /// <summary>
@@ -51,8 +56,8 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            settings.Moving(Keys.W, Keys.S);
-            if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && settings.CursorColision()))
+            settings.Moving();
+            if (game.SingleClick(Keys.Enter) /*|| (game.SingleClickMouse() && settings.CursorColision()*/)
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
                 switch (settings.Selected.Text)
@@ -60,7 +65,7 @@ namespace GrandTheftAuto.MenuFolder.Components
                     case "Display mode:":
                         game.graphics.IsFullScreen = !game.graphics.IsFullScreen;
                         game.graphics.ApplyChanges();
-                        settings.UpdateItem("Display mode:",0,values.IsFullScreen());
+                        settings.UpdateItem("Display mode:", 0, position, game.normalFont,value:values.IsFullScreen());
                         break;
                     case "Resolution:":
                         //index = index < values.GetResolutionList().Count-1 ? index++ : index = 0;
@@ -70,11 +75,13 @@ namespace GrandTheftAuto.MenuFolder.Components
                         IsResolutionChanged = true;
                         game.graphics.PreferredBackBufferWidth = values.GetResolutionList()[index].Width;
                         game.graphics.PreferredBackBufferHeight = values.GetResolutionList()[index].Height;
-                        settings.UpdateItem("Display mode:",0,values.IsFullScreen());
-                        settings.UpdateItem("Back", 2);
-                        settings.UpdateItem("Resolution:",1,values.GetResolution(index));
+                        position = new Vector2(game.graphics.PreferredBackBufferWidth / 4, game.graphics.PreferredBackBufferHeight / 2);
+                        settings.UpdateItem("Display mode:", 0, position, game.normalFont,value:values.IsFullScreen());
+                        settings.UpdateItem("Resolution:", 1, position, game.normalFont, value:values.GetResolution(index));
+                        settings.UpdateItem("Back", 2, position, game.normalFont);
                         game.graphics.ApplyChanges();
                         game.componentGameMenu = new ComponentGameMenu(game);
+                        settings.Selected = settings.Items.Find(s => s.Text=="Resolution:");
                         break;
                     case "Back":
                         game.ComponentEnable(this,false);
@@ -85,7 +92,7 @@ namespace GrandTheftAuto.MenuFolder.Components
                         break;
                 }
             } 
-            settings.CursorPosition();
+            //settings.CursorPosition();
             base.Update(gameTime);
         }
         /// <summary>

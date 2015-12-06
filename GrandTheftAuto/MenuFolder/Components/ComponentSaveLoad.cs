@@ -17,11 +17,13 @@ namespace GrandTheftAuto.MenuFolder.Components
     {
         private IMenu load;
         private GameClass game;
+        private Vector2 position;
         private ComponentCar componentCar;
         private ComponentCharacter componentCharacter;
         private ComponentEnemy componentEnemy;
         private ComponentGameGraphics componentGameGraphics;
         private ComponentGuns componentGuns;
+
         public ComponentSaveLoad(GameClass game, ComponentCar componentCar, ComponentGameGraphics componentGameGraphics, ComponentGuns componentGuns, ComponentCharacter componentCharacter, ComponentEnemy componentEnemy)
             : base(game)
         {
@@ -31,11 +33,14 @@ namespace GrandTheftAuto.MenuFolder.Components
             this.componentGuns = componentGuns;
             this.componentGameGraphics = componentGameGraphics;
             this.componentEnemy = componentEnemy;
+            position = new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 2);
         }
 
-        public ComponentSaveLoad(GameClass game) : base(game)
+        public ComponentSaveLoad(GameClass game)
+            : base(game)
         {
             this.game = game;
+            position = new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 2);
         }
 
         /// <summary>
@@ -44,13 +49,15 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// </summary>
         public override void Initialize()
         {
-            load = new MenuItems(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 3), game.normalFont);
-            for (int i = 1; i <= game.saveList.Count; i++)
+            load = new MenuItems(game);
+            for (int i = 0; i < game.saveList.Count; i++)
             {
-                load.AddItem("Position " + i);
+                load.AddItem("Position " + i, position, game.normalFont, value: game.saveList[i].Time);
             }
-            load.AddItem("Back");
+            load.AddItem("Back", position, game.normalFont);
             load.Selected = load.Items.First();
+            load.SetKeysDown(Keys.Down, Keys.S);
+            load.SetKeysUp(Keys.W, Keys.Up);
             base.Initialize();
         }
 
@@ -60,8 +67,8 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            load.Moving(Keys.W, Keys.S);
-            if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && load.CursorColision()))
+            load.Moving();
+            if (game.SingleClick(Keys.Enter) /*|| (game.SingleClickMouse() && load.CursorColision()*/)
             {
                 switch (load.Selected.Text)
                 {
@@ -85,7 +92,7 @@ namespace GrandTheftAuto.MenuFolder.Components
                         break;
                 }
             }
-            load.CursorPosition();
+            //load.CursorPosition();
             base.Update(gameTime);
         }
         /// <summary>
@@ -97,7 +104,6 @@ namespace GrandTheftAuto.MenuFolder.Components
             game.spriteBatch.Begin();
             game.spriteBatch.Draw(game.spritMenuBackground, Vector2.Zero, Color.White);
             load.Draw();
-            DrawStats();
             game.spriteBatch.End();
         }
         /// <summary>
@@ -162,11 +168,11 @@ namespace GrandTheftAuto.MenuFolder.Components
         /// <summary>
         /// Method to draw statistics of saving
         /// </summary>
-        private void DrawStats()
-        {
-            DrawOrder = 10;
-            for (int i = 0; i < game.saveList.Count; i++)
-                game.spriteBatch.DrawString(game.normalFont, game.saveList[i].Time, new Vector2(game.graphics.PreferredBackBufferWidth / 2 + 250, game.graphics.PreferredBackBufferHeight / 3 + i * game.normalFont.MeasureString(game.saveList[i].Time).Y), Color.White);
-        }
+        /* private void DrawStats()
+         {
+             DrawOrder = 10;
+             for (int i = 0; i < game.saveList.Count; i++)
+                 game.spriteBatch.DrawString(game.normalFont, game.saveList[i].Time, new Vector2(position.X + game.normalFont.MeasureString(game.saveList[i].Time).X, position.Y + i * game.normalFont.MeasureString(game.saveList[i].Time).Y), Color.White);
+         }*/
     }
 }

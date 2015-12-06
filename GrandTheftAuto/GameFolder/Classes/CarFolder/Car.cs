@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using GrandTheftAuto.GameFolder.Interface;
 using GrandTheftAuto.MenuFolder;
 using GrandTheftAuto.MenuFolder.Classes;
@@ -131,21 +133,23 @@ namespace GrandTheftAuto.GameFolder.Classes.CarFolder
                 if (game.keyState.IsKeyDown(game.controlsList[(int) EKeys.Left].Key) && velocity > 30)
                     Angle -= 0.03f;
             }
-
             #endregion
-
             Inertia(gameTime); //Setrvačnost
             Braking(gameTime); //Brždění
             physics.Speed(ref velocity, ECar, carWeight, enginePower, gameTime); //Rychlost   
+            if (CurrentSpeed() == 0 && ECar != ECar.Colision)
+                //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
+                ECar = ECar.Stop;
+        }
+
+        public void Update()
+        {
             if (Colision || Hp <= 0)
             {
                 ECar = ECar.Colision;
                 game.EGameState = EGameState.GameOver;
                 Colision = true;
             }
-            if (CurrentSpeed() == 0 && ECar != ECar.Colision)
-                //Pokud je rychlost menší než nula nebo nula tak se do enumerátoru hodí stop
-                ECar = ECar.Stop;
         }
 
         /// <summary>

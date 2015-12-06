@@ -7,11 +7,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GrandTheftAuto.GameFolder.Classes
 {
-    public class QuestMaster : Stats
+    public class QuestMaster : Statistics
     {
         public string Name { get; private set; }
         public Rectangle TalkRectangle { get; private set; }
-        public QuestService QuestService { get; set; }
+        public List<Quest> QuestList { get; set; }
 
         public QuestMaster(string name,int hp, Vector2 position, Texture2D texture, float angle, float speed,Camera camera)
         {
@@ -24,7 +24,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             Alive = true;
             Rectangle = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
             TalkRectangle = new Rectangle((int)position.X - 15, (int)position.Y - 15, texture.Width + 15, texture.Height + 15);
-            QuestService = new QuestService();
+            QuestList = new List<Quest>();
         }
     }
 }

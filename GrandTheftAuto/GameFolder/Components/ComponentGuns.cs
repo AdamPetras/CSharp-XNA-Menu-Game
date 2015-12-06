@@ -36,11 +36,11 @@ namespace GrandTheftAuto.GameFolder.Components
             {
                 GunService.PickUpGun();
                 GunService.Reloading(gameTime);
-                GunService.BulletColision(gameGraphics.graphicsList);
+                GunService.BulletColision(gameGraphics.graphicsService);
                 GunService.SelectGun();
                 GunService.Shooting(gameTime);
                 GunService.BulletFly();
-                GunService.GeneratingGuns(gameTime,gameGraphics.graphicsList.ColisionList());
+                GunService.GeneratingGuns(gameTime,gameGraphics.graphicsService.ColisionList());
             }
             base.Update(gameTime);
         }

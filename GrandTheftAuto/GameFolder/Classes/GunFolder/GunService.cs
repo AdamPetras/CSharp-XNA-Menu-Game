@@ -135,11 +135,11 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
             }
         }
 
-        public void BulletColision(GraphicsList graphicsList)
+        public void BulletColision(GraphicsService graphicsService)
         {
             if (BulletList.Count != 0)
             {
-                foreach (Rectangle graphics in graphicsList.ColisionList())
+                foreach (Rectangle graphics in graphicsService.ColisionList())
                 {
                     for (int i = 0; i < BulletList.Count; i++)
                     {

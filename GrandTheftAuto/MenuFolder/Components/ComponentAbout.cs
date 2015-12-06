@@ -11,6 +11,7 @@ namespace GrandTheftAuto.MenuFolder.Components
     {
         private GameClass game;
         private IDraw about;
+        private Vector2 position;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -19,6 +20,7 @@ namespace GrandTheftAuto.MenuFolder.Components
             : base(game)
         {
             this.game = game;
+            position = new Vector2(game.graphics.PreferredBackBufferWidth / 4, game.graphics.PreferredBackBufferHeight / 2);
         }
         /// <summary>
         /// Initialiaze method implemets from IInitializable
@@ -26,16 +28,16 @@ namespace GrandTheftAuto.MenuFolder.Components
         public override void Initialize()
         {
             about = new DrawItems(game);
-            about.AddItem("***GAME DESIGNERS***");
-            about.AddItem("");
-            about.AddItem("Main programmer: ");
-            about.AddItem("Adam Petráš");
-            about.AddItem("");
-            about.AddItem("Main graphics: ");
-            about.AddItem("Adam Petráš");
-            about.AddItem("");
-            about.AddItem("Other graphics: ");
-            about.AddItem("Jiří Mrhálek");
+            about.AddItem("***GAME DESIGNERS***", position, game.bigFont,rotation:-0.3f);
+            about.AddItem("", position, game.smallFont);
+            about.AddItem("Main programmer: ", position, game.smallFont);
+            about.AddItem("Adam Petráš", position, game.smallFont);
+            about.AddItem("", position, game.smallFont);
+            about.AddItem("Main graphics: ", position, game.smallFont);
+            about.AddItem("Adam Petráš", position, game.smallFont);
+            about.AddItem("", position, game.smallFont);
+            about.AddItem("Other graphics: ", position, game.smallFont);
+            about.AddItem("Jiří Mrhálek", position, game.smallFont);
             base.Initialize();
         }
         /// <summary>

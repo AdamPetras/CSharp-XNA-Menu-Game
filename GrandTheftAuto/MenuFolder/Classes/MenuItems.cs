@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using GrandTheftAuto.GameFolder.Classes;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
@@ -12,19 +13,18 @@ namespace GrandTheftAuto.MenuFolder.Classes
         public Items Selected { get; set; }
         public List<Items> Items { get; set; }
         private GameClass Game;
-        public Vector2 position;
-        private SpriteFont font;
+        private Keys[] Up;
+        private Keys[] Down;
+
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="game"></param>
-        public MenuItems(GameClass game, Vector2 position, SpriteFont font)
+        public MenuItems(GameClass game)
         {
             Game = game;
             Items = new List<Items>();
-            this.position = position;
-            this.font = font;
         }
 
         /// <summary>
@@ -36,9 +36,9 @@ namespace GrandTheftAuto.MenuFolder.Classes
         /// </summary>
         /// <param name="text"></param>
         /// <param name="value"></param>
-        public void AddItem(string text, string value = "", bool nonClick = false)
+        public void AddItem(string text, Vector2 position, SpriteFont font, bool centerText = true, string value = "", float rotation = 0f, int spaceBeforeValue = 0, bool nonClick = false, Camera camera = null)
         {
-            Items item = new Items(text, new Vector2(position.X, position.Y + (font.MeasureString(text).Y * Items.Count)), new Rectangle((int)position.X, (int)(position.Y + (font.MeasureString(text).Y * Items.Count)), (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value, nonClick);
+            Items item = new Items(text, new Vector2(position.X, position.Y + (font.MeasureString(text).Y * Items.Count)), font, rotation, centerText, new Rectangle((int)position.X, (int)(position.Y + (font.MeasureString(text).Y * Items.Count)), (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value, nonClick, spaceBeforeValue, camera);
             Items.Add(item);
         }
         /// <summary>
@@ -49,18 +49,29 @@ namespace GrandTheftAuto.MenuFolder.Classes
             foreach (Items item in Items)
             {
                 Color color = item == Selected ? Color.Red : Color.White;
-                Game.spriteBatch.DrawString(font, item.Text, new Vector2(item.Position.X, item.Position.Y), color);
-                Game.spriteBatch.DrawString(font, item.Value, new Vector2(item.Position.X + 500, item.Position.Y), Color.White);
+                Game.spriteBatch.DrawString(item.Font, item.Text, new Vector2(item.ActualPosition.X, item.ActualPosition.Y), color, item.Rotation, item.StringOrigin, 1f, SpriteEffects.None, 0.5f);
+                Game.spriteBatch.DrawString(item.Font, item.Value, new Vector2(item.ActualPosition.X + item.Font.MeasureString(item.Text).X, item.ActualPosition.Y), color, item.Rotation, new Vector2(0, item.Font.MeasureString(item.Text).Y / 2), 1f, SpriteEffects.None, 0.5f);
             }
         }
 
-        public void Moving(Keys keyUp, Keys keyDown)
+        public void SetKeysUp(params Keys[] keys)
         {
-            if (Game.SingleClick(keyUp))
+            Up = new Keys[keys.Length];
+            Up = keys;
+        }
+        public void SetKeysDown(params Keys[] keys)
+        {
+            Down = new Keys[keys.Length];
+            Down = keys;
+        }
+
+        public void Moving()
+        {
+            if (Up.Any(s => Game.SingleClick(s)))
             {
                 Before();
             }
-            if (Game.SingleClick(keyDown))
+            if (Down.Any(s => Game.SingleClick(s)))
             {
                 Next();
             }
@@ -88,13 +99,14 @@ namespace GrandTheftAuto.MenuFolder.Classes
         /// <param name="text"></param>
         /// <param name="i"></param>
         /// <param name="value"></param>
-        public void UpdateItem(string text, int i, string value = "")
+        public void UpdateItem(string text, int i, Vector2 position, SpriteFont font, bool centerText = true, string value = "", float rotation = 0f)
         {
-            Items item = new Items(text, new Vector2(position.X, Game.graphics.PreferredBackBufferHeight / 3 + font.MeasureString(text).Y * (i + 1)), new Rectangle((int)position.X, (int)(Game.graphics.PreferredBackBufferHeight / 3 + font.MeasureString(text).Y * (i + 1)), (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value);
+            Items item = new Items(text, new Vector2(position.X, position.Y + font.MeasureString(text).Y * i), font, rotation, centerText, new Rectangle((int)position.X, (int)position.Y, (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value);
             Items.Insert(i, item);
             Items.RemoveAt(i + 1);
             Selected = item;
         }
+        /*
         /// <summary>
         /// Method to get if cursor has Colision
         /// </summary>
@@ -115,23 +127,15 @@ namespace GrandTheftAuto.MenuFolder.Classes
         /// <returns></returns>
         public bool CursorColision()
         {
+            return Items.Any(item => item.Rectangle.Contains(Game.mouseState.Position) && !item.NonClick);
+        }*/
+
+        public void PositionIfCameraMoving(Vector2 offset)
+        {
             foreach (Items item in Items)
             {
-                if (item.Rectangle.Contains(Game.mouseState.Position) && !item.NonClick)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public void PositionIfCameraMoving(Camera camera, Vector2 defaultposition)
-        {
-            foreach (Items items in Items)
-            {
-                items.Position = new Vector2((camera.Centering.X + defaultposition.X - font.MeasureString(items.Text).X / 2), camera.Centering.Y + defaultposition.Y + font.MeasureString(items.Text).Y * Items.FindIndex(s => s.Text == items.Text));
+                item.ActualPosition = new Vector2(offset.X+item.DefaultPosition.X-item.StringLength.X/2,offset.Y+item.DefaultPosition.Y+item.StringLength.Y);
             }
         }
     }
 }
-

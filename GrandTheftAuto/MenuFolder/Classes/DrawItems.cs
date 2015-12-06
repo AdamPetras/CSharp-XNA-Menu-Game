@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using GrandTheftAuto.GameFolder.Classes;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace GrandTheftAuto.MenuFolder.Classes
 {
@@ -18,15 +20,17 @@ namespace GrandTheftAuto.MenuFolder.Classes
             Game = game;
             Items = new List<Items>();
         }
+
         /// <summary>
         /// Method to add items
         /// </summary>
         /// <param name="text"></param>
         /// <param name="value"></param>
-        public void AddItem(string text, string value = "",bool nonClick = false)
+        /// <param name="spaceBeforeValue"></param>
+        public void AddItem(string text, Vector2 position, SpriteFont font, bool centerText = true, string value = "", float rotation = 0f, int spaceBeforeValue = 0, bool nonClick = false, Camera camera = null)
         {
-            Vector2 position = new Vector2(Game.graphics.PreferredBackBufferWidth / 2, Game.graphics.PreferredBackBufferHeight / 2 + Items.Count * Game.normalFont.MeasureString(text).Y); //určení pozice přidané položky
-            Items item = new Items(text, position,Rectangle.Empty, value);
+            position.Y += Items.Count * Game.normalFont.MeasureString(text).Y; //určení pozice přidané položky
+            Items item = new Items(text, position, font, rotation, centerText, Rectangle.Empty, value, false, spaceBeforeValue, camera);
             Items.Add(item);
         }
         /// <summary>
@@ -35,7 +39,7 @@ namespace GrandTheftAuto.MenuFolder.Classes
         public void Draw()
         {
             foreach (Items item in Items)
-                Game.spriteBatch.DrawString(Game.smallFont, item.Text + "   " + item.Value, item.Position, Color.Red);
+                Game.spriteBatch.DrawString(item.Font, item.Text + "   " + item.Value, item.ActualPosition, Color.Red, item.Rotation, item.StringOrigin, 1f, SpriteEffects.None, 0.5f);
         }
     }
 }

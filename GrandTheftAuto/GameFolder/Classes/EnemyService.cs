@@ -28,29 +28,29 @@ namespace GrandTheftAuto.GameFolder.Classes
         private double attackTimer;
         private double spawnTimer;
         private double hitTimer;
-        private Vector2 hitVector;
+        private Vector2 hitPosition;
         private Random rnd;
         private int enemyHitDamage;
         private int bulletHitDamage;
         private int cryticalHitDamage;
         private EHit eHit;
 
-        public delegate void GetExperiences(int exp, Character character);
+        public delegate void EnemyDie(Enemy enemy, Character character);
 
-        public event GetExperiences EventGetExperiences;
+        public event EnemyDie EventEnemyDie;
         public EnemyService(GameClass game, List<Rectangle> obstactleList)
         {
             this.game = game;
-            EventGetExperiences += Experiences;
+            EventEnemyDie += EnemyDead;
+            EventEnemyDie += Experiences;
             EnemyList = new List<Enemy>();
             DiedList = new List<DiedEnemy>();
             enemyAi = new EnemyAi(obstactleList);
             Score = 0;
-            hitVector = Vector2.Zero;
+            hitPosition = Vector2.Zero;
             enemyHitDamage = 0;
             cryticalHitDamage = 0;
             bulletHitDamage = 0;
-
             rnd = new Random();
         }
 
@@ -84,7 +84,7 @@ namespace GrandTheftAuto.GameFolder.Classes
 
         public void Attack(ref double hp, Rectangle attackedRectangle, GameTime gameTime, Camera camera)
         {
-            if (hp > 0)
+            if (hp > 0 || EnemyList.Count != 0)
                 foreach (Enemy enemy in EnemyList.Where(enemy => attackedRectangle.Intersects(enemy.Rectangle)))
                 {
                     attackTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -122,28 +122,28 @@ namespace GrandTheftAuto.GameFolder.Classes
         */
         public void GetDamage(List<Bullet> bulletList, Camera camera, Character character)
         {
-            for (int i = 0; i <= EnemyList.Count - 1; i++)
+            if (bulletList.Count != 0 && EnemyList.Count != 0)
             {
-                for (int j = 0; j <= bulletList.Count - 1; j++)
+                for (int i = 0; i <= EnemyList.Count - 1; i++)
                 {
-                    if (EnemyList[i].Rectangle.Contains(bulletList[j].Position.X, bulletList[j].Position.Y))
+                    for (int j = 0; j <= bulletList.Count - 1; j++)
                     {
-                        EnemyList[i].IsAngry = true;
-                        bulletHitDamage = bulletList[j].Damage + rnd.Next(-bulletList[j].DamageRange, bulletList[j].DamageRange);
-                        EnemyList[i].Hp -= bulletHitDamage;
-                        cryticalHitDamage = bulletList[j].Damage + bulletList[j].DamageRange - 1;
-                        HitMethod(camera, EnemyList[i].Position, EnemyList[i].Texture);
-                        EnemyTarget = EnemyList[i];
-                        bulletList.Remove(bulletList[j]);
+                        if (EnemyList[i].Rectangle.Contains(bulletList[j].Position.X, bulletList[j].Position.Y))
+                        {
+                            EnemyList[i].IsAngry = true;
+                            bulletHitDamage = bulletList[j].Damage +
+                                              rnd.Next(-bulletList[j].DamageRange, bulletList[j].DamageRange);
+                            EnemyList[i].Hp -= bulletHitDamage;
+                            cryticalHitDamage = bulletList[j].Damage + bulletList[j].DamageRange - 1;
+                            HitMethod(camera, EnemyList[i].Position, EnemyList[i].Texture);
+                            EnemyTarget = EnemyList[i];
+                            bulletList.Remove(bulletList[j]);
+                        }
                     }
-                }
-                if (EnemyList[i].Hp <= 0)
-                {
-                    EnemyList[i].Alive = false;
-                    Score += EnemyList[i].Score;
-                    OnEventGetExperiences(EnemyList[i].Exp, character);
-                    DiedList.Add(new DiedEnemy(EnemyList[i].Position, game.spritBlood, EnemyList[i].Angle));
-                    EnemyList.Remove(EnemyList[i]);
+                    if (EnemyList[i].Hp <= 0)
+                    {
+                        OnEventEnemyDie(EnemyList[i], character);
+                    }
                 }
             }
         }
@@ -152,7 +152,7 @@ namespace GrandTheftAuto.GameFolder.Classes
         {
             eHit = bulletHit ? EHit.BulletHit : EHit.EnemyHit;
             Random rnd = new Random();
-            hitVector = new Vector2(rnd.Next((int)(position.X - texture.Width / 2), (int)(position.X + texture.Width / 2)) - camera.Centering.X
+            hitPosition = new Vector2(rnd.Next((int)(position.X - texture.Width / 2), (int)(position.X + texture.Width / 2)) - camera.Centering.X
                 , rnd.Next((int)(position.Y - texture.Height / 2), (int)(position.Y + texture.Height / 2)) - camera.Centering.Y);
         }
 
@@ -180,44 +180,49 @@ namespace GrandTheftAuto.GameFolder.Classes
 
         public void RotationOfEnemy(Vector2 position, Character character)
         {
-            foreach (Enemy enemy in EnemyList.Where(s => s.IsAngry))
+            if (EnemyList.Count != 0)
             {
-                double legOne;
-                double legTwo; //leg = přepona
-                if (enemy.Position.X > position.X && enemy.Position.Y < position.Y) //první kvadrant
+                foreach (Enemy enemy in EnemyList.Where(s => s.IsAngry))
                 {
-                    legOne = enemy.Position.X - position.X;
-                    legTwo = position.Y - enemy.Position.Y;
-                    enemy.Angle = (float)Math.Atan2(legOne, legTwo) + GameClass.DegreeToRadians(180);
+                    double legOne;
+                    double legTwo; //leg = přepona
+                    if (enemy.Position.X > position.X && enemy.Position.Y < position.Y) //první kvadrant
+                    {
+                        legOne = enemy.Position.X - position.X;
+                        legTwo = position.Y - enemy.Position.Y;
+                        enemy.Angle = (float)Math.Atan2(legOne, legTwo) + GameClass.DegreeToRadians(180);
+                    }
+                    else if (enemy.Position.X < position.X && enemy.Position.Y < position.Y) //druhý kvadrant
+                    {
+                        legOne = position.X - enemy.Position.X;
+                        legTwo = position.Y - enemy.Position.Y;
+                        enemy.Angle = (float)Math.Atan2(legTwo, legOne) + GameClass.DegreeToRadians(90);
+                    }
+                    else if (enemy.Position.X < position.X && enemy.Position.Y > position.Y) //třetí kvadrant
+                    {
+                        legOne = position.X - enemy.Position.X;
+                        legTwo = enemy.Position.Y - position.Y;
+                        enemy.Angle = (float)Math.Atan2(legOne, legTwo);
+                    }
+                    else if (enemy.Position.X > position.X && enemy.Position.Y > position.Y) //čtvrtý kvadrant
+                    {
+                        legOne = enemy.Position.X - position.X;
+                        legTwo = enemy.Position.Y - position.Y;
+                        enemy.Angle = (float)Math.Atan2(legTwo, legOne) - GameClass.DegreeToRadians(90);
+                    }
+                    enemy.Angle = enemy.Angle;
                 }
-                else if (enemy.Position.X < position.X && enemy.Position.Y < position.Y) //druhý kvadrant
-                {
-                    legOne = position.X - enemy.Position.X;
-                    legTwo = position.Y - enemy.Position.Y;
-                    enemy.Angle = (float)Math.Atan2(legTwo, legOne) + GameClass.DegreeToRadians(90);
-                }
-                else if (enemy.Position.X < position.X && enemy.Position.Y > position.Y) //třetí kvadrant
-                {
-                    legOne = position.X - enemy.Position.X;
-                    legTwo = enemy.Position.Y - position.Y;
-                    enemy.Angle = (float)Math.Atan2(legOne, legTwo);
-                }
-                else if (enemy.Position.X > position.X && enemy.Position.Y > position.Y) //čtvrtý kvadrant
-                {
-                    legOne = enemy.Position.X - position.X;
-                    legTwo = enemy.Position.Y - position.Y;
-                    enemy.Angle = (float)Math.Atan2(legTwo, legOne) - GameClass.DegreeToRadians(90);
-                }
-                enemy.Angle = enemy.Angle;
             }
         }
 
         public void DrawEnemy(Camera camera, GameTime gameTime)
         {
+            //mrtvý
             foreach (DiedEnemy diedEnemy in DiedList)
             {
                 game.spriteBatch.Draw(diedEnemy.Texture, new Rectangle((int)(diedEnemy.Position.X - camera.Centering.X - diedEnemy.Texture.Width / 2), (int)(diedEnemy.Position.Y - camera.Centering.Y - diedEnemy.Texture.Height / 2), diedEnemy.Texture.Width, diedEnemy.Texture.Height), Color.White);
             }
+            //živý
             foreach (Enemy enemy in EnemyList)
             {
                 game.spriteBatch.Draw(enemy.Texture, new Rectangle((int)(enemy.Position.X - camera.Centering.X), (int)(enemy.Position.Y - camera.Centering.Y), enemy.Texture.Width, enemy.Texture.Height), null, Color.White, enemy.Angle, new Vector2(enemy.Texture.Width / 2, enemy.Texture.Height / 2), SpriteEffects.None, 0f);
@@ -232,9 +237,9 @@ namespace GrandTheftAuto.GameFolder.Classes
                 string bulletDamage = bulletHitDamage < cryticalHitDamage ? bulletHitDamage.ToString() : bulletHitDamage + " CriticalHit!!";
                 Color color = eHit == EHit.EnemyHit ? Color.Red : Color.White;
                 if (eHit == EHit.BulletHit)
-                    game.spriteBatch.DrawString(game.smallFont, bulletDamage, hitVector, color);
+                    game.spriteBatch.DrawString(game.smallFont, bulletDamage, hitPosition, color);
                 if (eHit == EHit.EnemyHit)
-                    game.spriteBatch.DrawString(game.smallFont, enemyDamage, hitVector, color);
+                    game.spriteBatch.DrawString(game.smallFont, enemyDamage, hitPosition, color);
                 hitTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (hitTimer > 500)
                 {
@@ -245,14 +250,25 @@ namespace GrandTheftAuto.GameFolder.Classes
             }
         }
 
-        private void Experiences(int exp, Character character)
+        private void Experiences(Enemy enemy, Character character)
         {
-            character.ActualExperiences += exp;
+            character.ActualExperiences += enemy.Exp;
         }
 
-        protected virtual void OnEventGetExperiences(int exp, Character character)
+        private void EnemyDead(Enemy enemy, Character character)
         {
-            if (EventGetExperiences != null) EventGetExperiences(exp, character);
+            character.EnemyKilled = true;
+            enemy.Alive = false;
+            Score += enemy.Score;
+            DiedList.Add(new DiedEnemy(enemy.Position, game.spritBlood, enemy.Angle));
+            if (DiedList.Count > 20)   //pokud je zabitých více jak 20 zombie tak se postupně maže první ze zabitých
+                DiedList.RemoveAt(0);
+            EnemyList.Remove(enemy);
+        }
+
+        protected virtual void OnEventEnemyDie(Enemy enemy, Character character)
+        {
+            if (EventEnemyDie != null) EventEnemyDie(enemy, character);
         }
     }
 }

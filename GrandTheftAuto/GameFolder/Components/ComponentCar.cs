@@ -15,6 +15,7 @@ namespace GrandTheftAuto.GameFolder.Components
         private float animation;
         private ComponentCharacter componentCharacter;
         private double getOutOfCarTimer;
+        private GameGraphics gameGraphics;
 
         /// <summary>
         /// Constructor
@@ -22,12 +23,13 @@ namespace GrandTheftAuto.GameFolder.Components
         /// <param name="game"></param>
         /// <param name="camera"></param>
         /// <param name="componentCharacter"></param>
-        public ComponentCar(GameClass game, Camera camera, ComponentCharacter componentCharacter)
+        public ComponentCar(GameClass game, Camera camera, ComponentCharacter componentCharacter,GameGraphics gameGraphics)
             : base(game)
         {
             this.game = game;
             this.camera = camera;
             this.componentCharacter = componentCharacter;
+            this.gameGraphics = gameGraphics;
             animation = 0;
         }
         /// <summary>
@@ -47,8 +49,11 @@ namespace GrandTheftAuto.GameFolder.Components
             {
                 if ((game.EGameState == EGameState.InGameCar || game.EGameState == EGameState.GameOver) && car.Selected)
                 {
+                    car.Update();
                     if (!car.Colision)
                     {
+                        componentCharacter.CharacterService.Character.Position = car.Position;
+                        componentCharacter.CharacterService.Character.UpdateRectangle();
                         SelectedCar = car;
                         getOutOfCarTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
                         car.Move(gameTime);
@@ -73,6 +78,10 @@ namespace GrandTheftAuto.GameFolder.Components
                         Game.IsMouseVisible = true;
                     }
                     game.SplashDisplay(); // èištìní displeje  
+                }
+                if (gameGraphics.Colision(car.CarRectangle()))
+                {
+                    car.Colision = true;
                 }
             }
             base.Update(gameTime);

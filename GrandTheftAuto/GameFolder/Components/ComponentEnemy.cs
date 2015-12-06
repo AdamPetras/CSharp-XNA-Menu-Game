@@ -40,7 +40,7 @@ namespace GrandTheftAuto.GameFolder.Components
         }
 
         public override void Update(GameTime gameTime)
-        {/*
+        {
             if (game.EGameState == EGameState.InGameOut || game.EGameState == EGameState.Reloading && characterService.Character.Alive)
             {
                 enemyService.GeneratingEnemies(gameTime, camera, characterService.Character.Rectangle);
@@ -60,7 +60,7 @@ namespace GrandTheftAuto.GameFolder.Components
                 componentCar.SelectedCar.Hp = damaged;
             }
             if (characterUsingGuns != null)
-                enemyService.GetDamage(characterUsingGuns.BulletList,camera,characterService.Character);*/
+                enemyService.GetDamage(characterUsingGuns.BulletList,camera,characterService.Character);
             base.Update(gameTime);
         }
 
@@ -68,7 +68,7 @@ namespace GrandTheftAuto.GameFolder.Components
         {
             game.spriteBatch.Begin();
             DrawOrder = 1;
-            //enemyService.DrawEnemy(camera,gameTime);
+            enemyService.DrawEnemy(camera,gameTime);
             game.spriteBatch.End();
             base.Draw(gameTime);
         }

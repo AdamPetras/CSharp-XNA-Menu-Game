@@ -2,6 +2,7 @@
 using GrandTheftAuto.GameFolder.Classes;
 using GrandTheftAuto.MenuFolder.Classes;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Menu.MenuFolder.Interface
@@ -10,10 +11,13 @@ namespace Menu.MenuFolder.Interface
     {
         Items Selected { get; set; }
         List<Items> Items { get; set; }
-        void PositionIfCameraMoving(Camera camera, Vector2 defaultposition);
-        void Moving(Keys keyUp, Keys keyDown);
-        void UpdateItem(string text, int i, string value = "");
+        void PositionIfCameraMoving(Vector2 offset);
+        void Moving();
+        void SetKeysUp(params Keys[] keys);
+        void SetKeysDown(params Keys[] keys);
+        void UpdateItem(string text, int i, Vector2 position, SpriteFont font, bool centerText = true, string value = "", float rotation = 0f);
+        /*
         void CursorPosition();
-        bool CursorColision();
+        bool CursorColision();*/
     }
 }

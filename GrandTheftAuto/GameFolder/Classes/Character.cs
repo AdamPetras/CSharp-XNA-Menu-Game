@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GrandTheftAuto.GameFolder.Classes
 {
-    public class Character:Stats
+    public class Character:Statistics
     {
         public bool Regeneration { get; set; }
         public int CurrentFrame { get; set; }
@@ -28,7 +28,9 @@ namespace GrandTheftAuto.GameFolder.Classes
         public int LevelUpExperience { get; set; }
         public int SkillPoints { get; set; }
         public int ActualSkillLevel { get; set; }
+        public bool EnemyKilled { get; set; }
         public List<Quest> QuestList { get; set; }
+        public int QuestPoints { get; set; }
 
         private const int VITALITY = 10;
         private const int ENERGY = 5;
@@ -53,7 +55,9 @@ namespace GrandTheftAuto.GameFolder.Classes
             ActualSkillLevel = 0;
             ActualExperiences = 0;
             LevelUpExperience = 400;
+            EnemyKilled = false;
             QuestList = new List<Quest>();
+            QuestPoints = 0;
         }
 
         public void UpdateRectangle()

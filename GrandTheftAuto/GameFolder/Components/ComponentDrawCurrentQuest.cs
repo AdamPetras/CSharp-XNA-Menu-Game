@@ -36,77 +36,76 @@ namespace GrandTheftAuto.GameFolder.Components
 
         public override void Update(GameTime gameTime)
         {
-            CheckQuest();
-            if (currentQuest.EQuestState == EQuestState.Inactive)
+            if (game.EGameState == EGameState.InGameOut || game.EGameState == EGameState.InGameCar ||
+                game.EGameState == EGameState.Reloading)
             {
-                if (game.mouseState.RightButton == ButtonState.Pressed)
+
+                CheckQuest();
+                if (currentQuest.EQuestState == EQuestState.Inactive)
                 {
-                    ExitThisComponent();
-                }
-                if (game.SingleClick(Keys.K))
-                {
-                    AcceptQuest();
+                    if (game.mouseState.RightButton == ButtonState.Pressed)
+                    {
+                        ExitThisComponent();
+                    }
+                    if (game.SingleClick(Keys.K))
+                    {
+                        AcceptQuest();
+                    }
                 }
             }
             base.Update(gameTime);
         }
-
         public override void Draw(GameTime gameTime)
         {
-            if (currentQuest.EQuestState == EQuestState.Inactive)
+            if (game.EGameState == EGameState.InGameOut || game.EGameState == EGameState.InGameCar ||
+                game.EGameState == EGameState.Reloading)
             {
-                game.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null,
-                    camera.Transform);
-                DrawOrder = 6;
-
-                game.spriteBatch.Draw(game.spritPergamen[0],
-                    new Vector2(
-                        (camera.Centering.X + game.graphics.PreferredBackBufferWidth / 2 - game.spritPergamen[0].Width / 2),
-                        (camera.Centering.Y + game.graphics.PreferredBackBufferHeight / 2 - game.spritPergamen[0].Height / 2)),
-                    Color.White);
-                game.spriteBatch.DrawString(game.smallestFont, currentQuest.Description,
-                    new Vector2(
-                        (camera.Centering.X + game.graphics.PreferredBackBufferWidth / 2 - game.spritPergamen[0].Width / 2) +
-                        game.smallestFont.MeasureString(currentQuest.Description).X / 2,
-                        (camera.Centering.Y + game.graphics.PreferredBackBufferHeight / 2 - game.spritPergamen[0].Height / 2) +
-                        game.smallestFont.MeasureString(currentQuest.Description).Y / 2), Color.Red);
-
-                game.spriteBatch.End();
+                if (currentQuest.EQuestState == EQuestState.Inactive)
+                {
+                    game.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null,
+                        camera.Transform);
+                    DrawOrder = 6;
+                    game.spriteBatch.Draw(game.spritPergamen[1],
+                        new Vector2(
+                            (camera.Centering.X + game.graphics.PreferredBackBufferWidth / 2 -
+                             game.spritPergamen[1].Width / 2),
+                            (camera.Centering.Y + game.graphics.PreferredBackBufferHeight / 2 -
+                             game.spritPergamen[1].Height / 2)),
+                        Color.White);
+                    Vector2 stringOrigin = game.smallFont.MeasureString(currentQuest.Description) / 2;
+                    game.spriteBatch.DrawString(game.smallFont, currentQuest.Description,
+                        new Vector2(WhereToWrite().Center.X, WhereToWrite().Center.Y), Color.Red, 0, stringOrigin, 1.0f,
+                        SpriteEffects.None, 0.5f);
+                    game.spriteBatch.End();
+                }
             }
             base.Draw(gameTime);
         }
 
         private void CheckQuest()
         {
-            switch (currentQuest.ETypeOfQuest)
+            if (currentQuest.ETypeOfQuest == ETypeOfQuest.Delivery)
             {
-                case ETypeOfQuest.Delivery:
-                    if (currentQuest.End == currentQuestMaster && currentQuest.EQuestState != EQuestState.Complete)
-                        character.ActualExperiences += currentQuest.Reward;
-                    currentQuest.EQuestState = EQuestState.Complete;
-                    currentQuestMaster.QuestService.QuestList.Remove(currentQuest);
+                if (currentQuest.End == currentQuestMaster)     //odevzdání úkolu
+                {
+                    character.ActualExperiences += currentQuest.Reward;
+                    currentQuestMaster.QuestList.Remove(currentQuest);
+                    character.QuestPoints++;
                     character.QuestList.Remove(currentQuest);
                     ExitThisComponent();
-                    break;
-                case ETypeOfQuest.SearchAndDestroy:
-                    if (currentQuest.ValueToSuccess == currentQuest.ActualValue && currentQuest.End == currentQuestMaster &&
-                        currentQuest.EQuestState != EQuestState.Complete)
-                    {
-                        character.ActualExperiences += currentQuest.Reward;
-                        currentQuest.EQuestState = EQuestState.Complete;
-                        currentQuestMaster.QuestService.QuestList.Remove(currentQuest);
-                        character.QuestList.Remove(currentQuest);
-                        ExitThisComponent();
-                    }
-                    break;
+                }
             }
-        }
-
-        public void UpdateQuestValue()
-        {
-            if (character.QuestList.Any(s => s.EQuestState == EQuestState.Active))    //pokud questmastar má nějaký aktivní quest
+            else if (currentQuest.ETypeOfQuest == ETypeOfQuest.SearchAndDestroy)
             {
-                character.QuestList.Find(s => s.EQuestState == EQuestState.Active).ActualValue = 0;
+                if (currentQuest.ValueToSuccess == currentQuest.ActualValue && currentQuest.End == currentQuestMaster) //odevzdání úkolu
+                {
+                    character.ActualExperiences += currentQuest.Reward;
+                    currentQuestMaster.QuestList.Remove(currentQuest);
+                    character.QuestList.Remove(currentQuest);
+                    character.QuestPoints++;
+                    ExitThisComponent();
+                }
+                else if (currentQuest.EQuestState == EQuestState.Active) ExitThisComponent();
             }
         }
 
@@ -118,11 +117,16 @@ namespace GrandTheftAuto.GameFolder.Components
 
         private void AcceptQuest()
         {
-            currentQuest.EQuestState = EQuestState.Active;
+            currentQuest.EQuestState = currentQuest.ETypeOfQuest != ETypeOfQuest.Delivery ? EQuestState.Active : EQuestState.Complete;
             character.QuestList.Add(currentQuest);
             game.ComponentEnable(this, false);
             game.ComponentEnable(componentQuestSystem);
         }
 
+        private Rectangle WhereToWrite()
+        {
+            return new Rectangle((int)(camera.Centering.X + game.graphics.PreferredBackBufferWidth / 2 - game.spritPergamen[1].Width / 2),
+                        (int)(camera.Centering.Y + game.graphics.PreferredBackBufferHeight / 2 - game.spritPergamen[1].Height / 2), game.spritPergamen[1].Width, game.spritPergamen[1].Height);
+        }
     }
 }

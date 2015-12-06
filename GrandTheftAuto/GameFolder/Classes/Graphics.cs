@@ -7,6 +7,7 @@ namespace GrandTheftAuto.GameFolder.Classes
     {
         public Vector2 Position { get; private set; }
         public Texture2D Texture { get; private set; }
+        public Rectangle Rectangle { get; private set; }
         public bool Colision { get; private set; }
         public float Angle { get; private set; }
 
@@ -16,10 +17,12 @@ namespace GrandTheftAuto.GameFolder.Classes
         /// <param name="position"></param>
         /// <param name="texture"></param>
         /// <param name="colision"></param>
+        /// <param name="angle"></param>
         public Graphics(Vector2 position,Texture2D texture, bool colision,float angle)
         {
             Position = position;
             Texture = texture;
+            Rectangle = new Rectangle((int) position.X, (int) position.Y, texture.Width, texture.Height);
             Colision = colision;
             Angle = angle;
         }

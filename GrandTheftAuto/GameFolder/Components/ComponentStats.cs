@@ -61,7 +61,7 @@ namespace GrandTheftAuto.GameFolder.Components
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
-            DrawOrder = 4;
+            DrawOrder = 5;
             if (statsService != null && skillView == null)
             {
                 string text = "Level:" + characterService.Character.Level + "\n" +

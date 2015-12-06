@@ -11,22 +11,13 @@ namespace GrandTheftAuto.GameFolder.Classes
             QuestList = new List<Quest>();
         }
 
-        public void AddQuest(string name, string description, int reward, bool activable, int valueToSuccess, QuestMaster start, QuestMaster end)
+        public void AddQuest(string name, string description, int reward,int levelToActive, int valueToSuccess, QuestMaster start, QuestMaster end)
         {
-            QuestList.Add(new Quest(name, description, reward, activable, valueToSuccess, start, end));
+            QuestList.Add(new Quest(name, description, reward, valueToSuccess, start, end,levelToActive));
         }
-        public void AddQuest(string name,string description, int reward, bool activable, QuestMaster start, QuestMaster end)
-        {           
-            QuestList.Add(new Quest(name, description, reward, activable, start, end));
-        }
-        public List<Quest> ActiveQuestList()
+        public void AddQuest(string name, string description, int reward, int levelToActive, QuestMaster start, QuestMaster end)
         {
-            return QuestList.Where(s => s.EQuestState == EQuestState.Active) as List<Quest>;
-        }
-
-        public List<Quest> CompleteQuestList()
-        {
-            return QuestList.Where(s => s.EQuestState == EQuestState.Complete) as List<Quest>;
+            QuestList.Add(new Quest(name, description, reward, start, end,levelToActive));
         }
     }
 }

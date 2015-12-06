@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GrandTheftAuto.GameFolder.Classes
 {
-    public class Enemy : Stats
+    public class Enemy : Statistics
     {
         public string Name { get; private set; }
         public int Damage { get; private set; }

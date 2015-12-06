@@ -22,12 +22,14 @@ namespace GrandTheftAuto.GameFolder.Components
         private ComponentGameGraphics componentGameGraphics;
         private ComponentGuns componentGuns;
         private ComponentGUI componentGui;
+        private ComponentQuestSystem componentQuestSystem;
         private double keyboardFlickerTimer;
-        public ComponentPause(GameClass game, ComponentCar componentCar, ComponentCharacter componentCharacter, ComponentEnemy componentEnemy, ComponentGameGraphics componentGameGraphics, ComponentGuns componentGuns, ComponentGUI componentGui)
+        public ComponentPause(GameClass game, ComponentCar componentCar, ComponentCharacter componentCharacter, ComponentEnemy componentEnemy, ComponentGameGraphics componentGameGraphics, ComponentGuns componentGuns, ComponentGUI componentGui,ComponentQuestSystem componentQuestSystem)
             : base(game)
         {
             this.game = game;
             this.componentCar = componentCar;
+            this.componentQuestSystem = componentQuestSystem;
             this.componentCharacter = componentCharacter;
             this.componentEnemy = componentEnemy;
             this.componentGameGraphics = componentGameGraphics;
@@ -41,13 +43,16 @@ namespace GrandTheftAuto.GameFolder.Components
         /// </summary>
         public override void Initialize()
         {
-            pause = new MenuItems(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 2), game.bigFont);
-            pause.AddItem("Back");
-            pause.AddItem("Load");
-            pause.AddItem("Save");
-            pause.AddItem("Menu");
-            pause.AddItem("Exit");
+            pause = new MenuItems(game);
+            Vector2 position = new Vector2(game.graphics.PreferredBackBufferWidth/2,game.graphics.PreferredBackBufferHeight/2);
+            pause.AddItem("Back", position, game.bigFont);
+            pause.AddItem("Load", position, game.bigFont);
+            pause.AddItem("Save", position, game.bigFont);
+            pause.AddItem("Menu", position, game.bigFont);
+            pause.AddItem("Exit", position, game.bigFont);
             pause.Selected = pause.Items.First();
+            pause.SetKeysDown(Keys.Down, Keys.S);
+            pause.SetKeysUp(Keys.W, Keys.Up);
             base.Initialize();
         }
 
@@ -63,8 +68,8 @@ namespace GrandTheftAuto.GameFolder.Components
                 componentEnemy.Enabled = false;
                 keyboardFlickerTimer += gameTime.ElapsedGameTime.Milliseconds;
 
-                pause.Moving(Keys.W, Keys.S);
-                if (game.SingleClick(Keys.Enter) || (game.SingleClickMouse() && pause.CursorColision()))
+                pause.Moving();
+                if (game.SingleClick(Keys.Enter) /*|| (game.SingleClickMouse() && pause.CursorColision()*/)
                 {
                     switch (pause.Selected.Text)
                     {
@@ -103,6 +108,7 @@ namespace GrandTheftAuto.GameFolder.Components
                             game.Components.Remove(componentCharacter);
                             game.Components.Remove(componentGuns);
                             game.Components.Remove(componentGameGraphics);
+                            game.Components.Remove(componentQuestSystem);
                             game.Components.Remove(this);
                             game.ComponentEnable(game.componentGameMenu);
                             game.ComponentEnable(this, false);
@@ -131,7 +137,7 @@ namespace GrandTheftAuto.GameFolder.Components
                     }
                     Game.IsMouseVisible = false;
                 }
-                pause.CursorPosition();
+                //pause.CursorPosition();
                 game.SplashDisplay();       //èištìní displeje
             }
             else if (game.EGameState == EGameState.InGameOut || game.EGameState == EGameState.InGameCar)
@@ -147,7 +153,7 @@ namespace GrandTheftAuto.GameFolder.Components
             game.spriteBatch.Begin();
             if (game.EGameState == EGameState.Pause)
             {
-                game.spriteBatch.Draw(game.spritPauseBackground,Vector2.Zero,Color.White*0.6f);
+                game.spriteBatch.Draw(game.spritPauseBackground,new Rectangle(0,0,game.graphics.PreferredBackBufferWidth,game.graphics.PreferredBackBufferHeight),Color.White*0.6f);
                 pause.Draw();
                 DrawOrder = 9;
                 game.spriteBatch.DrawString(game.normalFont, eGameStateBefore.ToString(), new Vector2(0, 0), Color.White);

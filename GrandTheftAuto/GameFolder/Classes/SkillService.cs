@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GrandTheftAuto.MenuFolder;
 using Microsoft.Xna.Framework;
@@ -34,41 +35,44 @@ namespace GrandTheftAuto.GameFolder.Classes
 
         public void AddSkill(string name, string description, int level, bool procentual, int eSkill, double bonus, Texture2D texture)
         {
-            Skill skill = new Skill(name, description, level, SkillPosition(texture), texture, bonus, (EWhichBonus)eSkill, procentual);
+            Skill skill = new Skill(name, description, level, SkillPosition(texture, level), texture, bonus, (EWhichBonus)eSkill, procentual);
             ListOfSkills.Add(skill);
         }
 
         public Skill GetDescriptionOfSkill()
         {
-            foreach (Skill skill in ListOfSkills.Where(skill => skill.Rectangle.Contains(game.mouseState.Position)))
-            {
-                return skill;
-            }
-            return null;
+            return ListOfSkills.FirstOrDefault(skill => skill.Rectangle.Contains(game.mouseState.Position));
         }
 
         public void ActivateSkill()
         {
             foreach (Skill skill in ListOfSkills)
             {
-                if (skill.Rectangle.Contains(game.mouseState.Position) && game.mouseState.LeftButton == ButtonState.Pressed && character.SkillPoints > 0 && skill.ActivePossible && !skill.Activated)
+                if (skill.Rectangle.Contains(game.mouseState.Position) && game.mouseState.LeftButton == ButtonState.Pressed && character.SkillPoints > 0 && skill.Activable && !skill.Activated)
                 {
                     character.SkillPoints -= 1;
                     character.ActualSkillLevel += 1;
                     skill.Activated = true;
                     TypeOfBonus(skill.ESkill, skill.Bonus, skill.Procentual);
                 }
+                else if ((skill.Rectangle.Contains(game.mouseState.Position) &&
+                          game.mouseState.LeftButton == ButtonState.Pressed) && (character.SkillPoints == 0 ||
+                                                                                 !skill.Activable ||
+                                                                                 skill.Activated))
+                {
+                    //pokud neni skill aktivovatelný nebo aktivovaný
+                }
             }
         }
 
         public void SkillSetActivePossible()
         {
-            foreach (Skill skill in ListOfSkills)
+            foreach (Skill skill in ListOfSkills.Where(skill => skill.Level <= character.ActualSkillLevel && character.SkillPoints != 0))
             {
-                if (skill.Level <= character.ActualSkillLevel)
-                    skill.ActivePossible = true;
+                skill.Activable = true;
             }
         }
+
         public void UpdateStatistics()
         {
             character.Vitality += (int)BonusOption.VitalityBonus;
@@ -79,9 +83,26 @@ namespace GrandTheftAuto.GameFolder.Classes
             character.UpdateStats();
         }
 
-        public Vector2 SkillPosition(Texture2D texture)
+        public Vector2 SkillPosition(Texture2D texture, int level)
         {
-            return new Vector2((game.graphics.PreferredBackBufferWidth / 2 - texture.Width / 2), game.spritArrow.Height * ListOfSkills.Count + texture.Height * ListOfSkills.Count);
+            if (ListOfSkills.Any(s => s.Level != level) || ListOfSkills.Count == 0)
+                return new Vector2(game.graphics.PreferredBackBufferWidth / 2 - texture.Width / 2, texture.Height * level + 50 * level);
+            return new Vector2(0, 0);
+        }
+
+        public void SkillPositions()    //pokud je více skillu v řadě
+        {
+            foreach (Skill skill in ListOfSkills)
+            {
+                List<Skill> list = ListOfSkills.FindAll(s => s.Level == skill.Level);
+                if (list.Count > 1)    //pokud je více jak jeden skill v tabulce tak...
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        Vector2 originVector = new Vector2((list[i].Texture.Width + list.Count * list[i].Texture.Width * 2) - list[i].Texture.Width); //vystředění
+                        list[i].Position = new Vector2(list[i].DefaultPosition.X + list[i].Texture.Width + i * list[i].Texture.Width * 2 - originVector.X / 2, list[i].DefaultPosition.Y);
+                        list[i].UpdateRectangle();  //update rectanglu
+                    }
+            }
         }
 
         private void TypeOfBonus(EWhichBonus eSkill, double bonus, bool procentual)

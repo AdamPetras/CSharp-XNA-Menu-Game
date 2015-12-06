@@ -55,12 +55,13 @@
   <ItemGroup>
     <Compile Include="GameFolder\Classes\BonusOption.cs" />
     <Compile Include="GameFolder\Classes\CharacterService.cs" />
-    <Compile Include="GameFolder\Classes\NPC.cs" />
+    <Compile Include="GameFolder\Classes\Dialog.cs" />
+    <Compile Include="GameFolder\Classes\DialogService.cs" />
     <Compile Include="GameFolder\Classes\Quest.cs" />
     <Compile Include="GameFolder\Classes\QuestMaster.cs" />
     <Compile Include="GameFolder\Classes\QuestMasterService.cs" />
     <Compile Include="GameFolder\Classes\QuestService.cs" />
-    <Compile Include="GameFolder\Classes\Stats.cs" />
+    <Compile Include="GameFolder\Classes\Statistics.cs" />
     <Compile Include="GameFolder\Classes\Skill.cs" />
     <Compile Include="GameFolder\Classes\SkillView.cs" />
     <Compile Include="GameFolder\Classes\SkillService.cs" />
@@ -75,17 +76,18 @@
     <Compile Include="GameFolder\Classes\CarFolder\CarPhysics.cs" />
     <Compile Include="GameFolder\Classes\Character.cs" />
     <Compile Include="GameFolder\Classes\GunFolder\GunService.cs" />
-    <Compile Include="GameFolder\Classes\ColisionDetection.cs" />
     <Compile Include="GameFolder\Classes\GameGraphics.cs" />
     <Compile Include="GameFolder\Classes\Graphics.cs" />
-    <Compile Include="GameFolder\Classes\GraphicsList.cs" />
+    <Compile Include="GameFolder\Classes\GraphicsService.cs" />
     <Compile Include="GameFolder\Classes\GunFolder\Gun.cs" />
     <Compile Include="GameFolder\Classes\GunFolder\GunsOptions.cs" />
     <Compile Include="GameFolder\Classes\GunFolder\Holster.cs" />
     <Compile Include="GameFolder\Classes\Pathfinding.cs" />
     <Compile Include="GameFolder\Classes\StatsService.cs" />
+    <Compile Include="GameFolder\Classes\TextVisualisation.cs" />
     <Compile Include="GameFolder\Components\ComponentCar.cs" />
     <Compile Include="GameFolder\Components\ComponentCharacter.cs" />
+    <Compile Include="GameFolder\Components\ComponentDialogs.cs" />
     <Compile Include="GameFolder\Components\ComponentDrawCurrentQuest.cs" />
     <Compile Include="GameFolder\Components\ComponentEnemy.cs" />
     <Compile Include="GameFolder\Components\ComponentGameGraphics.cs" />
@@ -155,7 +157,7 @@
     <Content Include="Content\Sprits\Character\ExperienceCharge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Sprits\Quest\otaznik.png">
+    <Content Include="Content\Sprits\Dialog\dialogBubble.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\Enemy\blood.png">
@@ -236,7 +238,7 @@
     <Content Include="Content\Sprits\gameover.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Sprits\grass.jpg">
+    <Content Include="Content\Sprits\grass.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\Guns\Ammo.png">
@@ -269,13 +271,22 @@
     <Content Include="Content\Sprits\pauseBackground.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Sprits\Quest\completeQuest.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Quest\inActiveQuest.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Quest\ActiveQuest.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Sprits\Quest\pergamen2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Sprits\Quest\vykricnik.png">
+    <Content Include="Content\Sprits\Road\deadEnd.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Sprits\TalentsAndStats\arrow.png">
+    <Content Include="Content\Sprits\Road\Tcross.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\TalentsAndStats\pergamen.png">
@@ -293,7 +304,43 @@
     <Content Include="Content\Sprits\Road\roadcurveright.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Sprits\TalentsAndStats\talent.png">
+    <Content Include="Content\Sprits\TalentsAndStats\talent1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\talent10.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\talent11.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\talent12.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\talent0.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\talent2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\talent3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\talent4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\talent5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\talent6.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\talent7.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\talent8.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\TalentsAndStats\talent9.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\tree.png">
