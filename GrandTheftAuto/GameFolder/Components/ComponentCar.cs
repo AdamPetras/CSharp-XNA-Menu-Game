@@ -75,13 +75,8 @@ namespace GrandTheftAuto.GameFolder.Components
                     {
                         game.EGameState = EGameState.Pause;
                         Enabled = false;
-                        Game.IsMouseVisible = true;
                     }
                     game.SplashDisplay(); // èištìní displeje  
-                }
-                if (gameGraphics.Colision(car.CarRectangle()))
-                {
-                    car.Colision = true;
                 }
             }
             base.Update(gameTime);

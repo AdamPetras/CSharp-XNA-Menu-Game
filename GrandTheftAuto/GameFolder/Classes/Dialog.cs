@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GrandTheftAuto.GameFolder.Classes
@@ -15,7 +11,7 @@ namespace GrandTheftAuto.GameFolder.Classes
         public SpriteFont SpriteFont { get; private set; }
         public Color TextColor { get; private set; }
         public string Text { get; private set; }
-        private int Border { set; get; }
+        private int Border { get;set; }
 
         public Dialog(Vector2 position, Texture2D background, SpriteFont spriteFont, string text, int border, Color textColor = default(Color))
         {

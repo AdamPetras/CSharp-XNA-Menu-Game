@@ -102,6 +102,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
+            DrawOrder = 10;
             game.spriteBatch.Draw(game.spritMenuBackground, Vector2.Zero, Color.White);
             load.Draw();
             game.spriteBatch.End();

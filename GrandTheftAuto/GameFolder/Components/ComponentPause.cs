@@ -23,7 +23,6 @@ namespace GrandTheftAuto.GameFolder.Components
         private ComponentGuns componentGuns;
         private ComponentGUI componentGui;
         private ComponentQuestSystem componentQuestSystem;
-        private double keyboardFlickerTimer;
         public ComponentPause(GameClass game, ComponentCar componentCar, ComponentCharacter componentCharacter, ComponentEnemy componentEnemy, ComponentGameGraphics componentGameGraphics, ComponentGuns componentGuns, ComponentGUI componentGui,ComponentQuestSystem componentQuestSystem)
             : base(game)
         {
@@ -66,8 +65,6 @@ namespace GrandTheftAuto.GameFolder.Components
             {
                 componentGuns.Enabled = false;
                 componentEnemy.Enabled = false;
-                keyboardFlickerTimer += gameTime.ElapsedGameTime.Milliseconds;
-
                 pause.Moving();
                 if (game.SingleClick(Keys.Enter) /*|| (game.SingleClickMouse() && pause.CursorColision()*/)
                 {
@@ -118,9 +115,8 @@ namespace GrandTheftAuto.GameFolder.Components
                             break;
                     }
                 }
-                if (game.SingleClick(Keys.Escape) && keyboardFlickerTimer > 50)
+                if (game.SingleClick(Keys.Escape))
                 {
-                    keyboardFlickerTimer = 0;
                     if (eGameStateBefore == EGameState.InGameCar)
                     {
                         game.EGameState = EGameState.InGameCar;
@@ -134,8 +130,7 @@ namespace GrandTheftAuto.GameFolder.Components
                         componentCharacter.Enabled = true;
                         componentEnemy.Enabled = true;
                         componentGuns.Enabled = true;
-                    }
-                    Game.IsMouseVisible = false;
+                    }                   
                 }
                 //pause.CursorPosition();
                 game.SplashDisplay();       //èištìní displeje
@@ -157,6 +152,7 @@ namespace GrandTheftAuto.GameFolder.Components
                 pause.Draw();
                 DrawOrder = 9;
                 game.spriteBatch.DrawString(game.normalFont, eGameStateBefore.ToString(), new Vector2(0, 0), Color.White);
+                game.spriteBatch.Draw(game.cursor, game.mouseState.Position.ToVector2(), Color.White);
             }
             game.spriteBatch.End();
             base.Draw(gameTime);

@@ -12,6 +12,7 @@ namespace GrandTheftAuto.GameFolder.Classes
         public string Name { get; private set; }
         public Rectangle TalkRectangle { get; private set; }
         public List<Quest> QuestList { get; set; }
+        public bool Speak { get; set; }
 
         public QuestMaster(string name,int hp, Vector2 position, Texture2D texture, float angle, float speed,Camera camera)
         {
@@ -22,6 +23,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             Angle = angle;
             Speed = speed;
             Alive = true;
+            Speak = false;
             Rectangle = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
             TalkRectangle = new Rectangle((int)position.X - 15, (int)position.Y - 15, texture.Width + 15, texture.Height + 15);
             QuestList = new List<Quest>();

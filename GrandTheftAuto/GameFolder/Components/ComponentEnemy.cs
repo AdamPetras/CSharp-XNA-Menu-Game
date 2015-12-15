@@ -48,13 +48,11 @@ namespace GrandTheftAuto.GameFolder.Components
                 double hp = characterService.Character.Hp;
                 enemyService.Attack(ref hp, characterService.Character.Rectangle, gameTime, camera);
                 characterService.Character.Hp = hp;
-                enemyService.RotationOfEnemy(characterService.Character.Position, characterService.Character);
             }
             else if (game.EGameState == EGameState.InGameCar)
             {
                 enemyService.GeneratingEnemies(gameTime, camera, componentCar.SelectedCar.CarRectangle());
                 enemyService.PathFinding(componentCar.SelectedCar.Position, Rectangle.Empty, componentCar.SelectedCar.CarRectangle());
-                enemyService.RotationOfEnemy(componentCar.SelectedCar.Position, characterService.Character);
                 double damaged = componentCar.SelectedCar.Hp;
                 enemyService.Attack(ref damaged, componentCar.SelectedCar.CarRectangle(), gameTime,camera);
                 componentCar.SelectedCar.Hp = damaged;

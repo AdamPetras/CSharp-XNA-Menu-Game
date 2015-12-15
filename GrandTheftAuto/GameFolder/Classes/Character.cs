@@ -28,7 +28,7 @@ namespace GrandTheftAuto.GameFolder.Classes
         public int LevelUpExperience { get; set; }
         public int SkillPoints { get; set; }
         public int ActualSkillLevel { get; set; }
-        public bool EnemyKilled { get; set; }
+        public Enemy EnemyKilled { get; set; }
         public List<Quest> QuestList { get; set; }
         public int QuestPoints { get; set; }
 
@@ -55,7 +55,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             ActualSkillLevel = 0;
             ActualExperiences = 0;
             LevelUpExperience = 400;
-            EnemyKilled = false;
+            EnemyKilled = null;
             QuestList = new List<Quest>();
             QuestPoints = 0;
         }

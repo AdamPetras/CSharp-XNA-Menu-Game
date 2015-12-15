@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using GrandTheftAuto.GameFolder.Classes.GunFolder;
 using GrandTheftAuto.MenuFolder;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media;
 
 namespace GrandTheftAuto.GameFolder.Classes
 {
@@ -26,7 +24,6 @@ namespace GrandTheftAuto.GameFolder.Classes
         private GameClass game;
         private EnemyAi enemyAi;
         private double attackTimer;
-        private double spawnTimer;
         private double hitTimer;
         private Vector2 hitPosition;
         private Random rnd;
@@ -52,10 +49,12 @@ namespace GrandTheftAuto.GameFolder.Classes
             cryticalHitDamage = 0;
             bulletHitDamage = 0;
             rnd = new Random();
+            eHit = EHit.None;
         }
 
-        private void AddEnemy(int enemySet, Vector2 position)
+        private void AddEnemy(Vector2 position,Texture2D texture2d)
         {
+            Random rnd = new Random();
             string name = "";
             int hp = 0;
             float speed = 0;
@@ -64,11 +63,11 @@ namespace GrandTheftAuto.GameFolder.Classes
             int score = 0;
             int exp = 0;
             double chanceToMiss = 0;
-            Texture2D texture = game.spritCharacter[0];
+            int rand = rnd.Next(10, 100);
+            Texture2D texture = texture2d;
             EnemyOption enemyOption = new EnemyOption(game);
-            enemyOption.GetEnemy(ref name, enemySet, ref hp, ref damage, ref speed, ref texture, ref score, ref chanceToMiss, ref exp);
-            Enemy enemy = new Enemy(name, hp, damage, speed, texture, position, angle, score, chanceToMiss, exp);
-            EnemyList.Add(enemy);
+            enemyOption.GetEnemy(ref name,rand, ref hp, ref damage, ref speed, ref texture, ref score, ref chanceToMiss, ref exp);
+            EnemyList.Add(new Enemy(name, hp, damage, speed, texture, position, angle, score, chanceToMiss, exp));
         }
 
         public void DrawEnemyHp()
@@ -84,7 +83,7 @@ namespace GrandTheftAuto.GameFolder.Classes
 
         public void Attack(ref double hp, Rectangle attackedRectangle, GameTime gameTime, Camera camera)
         {
-            if (hp > 0 || EnemyList.Count != 0)
+            if (hp > 0)
                 foreach (Enemy enemy in EnemyList.Where(enemy => attackedRectangle.Intersects(enemy.Rectangle)))
                 {
                     attackTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -160,58 +159,18 @@ namespace GrandTheftAuto.GameFolder.Classes
         {
             foreach (Enemy enemy in EnemyList)
             {
-                enemy.UpdateEachRectangle(); //aktualizace rectanglu enemy
-                float angle = enemy.Angle;
+                enemy.UpdateEachRectangle();
                 enemy.Position = enemyAi.PathFinding(enemy.Position, characterPosition, enemy, characterRectangle, carRectangle);
-                enemy.Angle = angle;
             }
         }
 
         public void GeneratingEnemies(GameTime gameTime, Camera camera, Rectangle characterRectangle)
         {
-            spawnTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (10000 < spawnTimer)
+            if (EnemyList.Count < 200)
             {
+                Texture2D texture = game.spritCharacter[0];
                 Random rand = new Random();
-                AddEnemy(rand.Next(0, Enum.GetNames(typeof(EEnemies)).Length), enemyAi.GeneratePosition(rand, characterRectangle));
-                spawnTimer = 0;
-            }
-        }
-
-        public void RotationOfEnemy(Vector2 position, Character character)
-        {
-            if (EnemyList.Count != 0)
-            {
-                foreach (Enemy enemy in EnemyList.Where(s => s.IsAngry))
-                {
-                    double legOne;
-                    double legTwo; //leg = přepona
-                    if (enemy.Position.X > position.X && enemy.Position.Y < position.Y) //první kvadrant
-                    {
-                        legOne = enemy.Position.X - position.X;
-                        legTwo = position.Y - enemy.Position.Y;
-                        enemy.Angle = (float)Math.Atan2(legOne, legTwo) + GameClass.DegreeToRadians(180);
-                    }
-                    else if (enemy.Position.X < position.X && enemy.Position.Y < position.Y) //druhý kvadrant
-                    {
-                        legOne = position.X - enemy.Position.X;
-                        legTwo = position.Y - enemy.Position.Y;
-                        enemy.Angle = (float)Math.Atan2(legTwo, legOne) + GameClass.DegreeToRadians(90);
-                    }
-                    else if (enemy.Position.X < position.X && enemy.Position.Y > position.Y) //třetí kvadrant
-                    {
-                        legOne = position.X - enemy.Position.X;
-                        legTwo = enemy.Position.Y - position.Y;
-                        enemy.Angle = (float)Math.Atan2(legOne, legTwo);
-                    }
-                    else if (enemy.Position.X > position.X && enemy.Position.Y > position.Y) //čtvrtý kvadrant
-                    {
-                        legOne = enemy.Position.X - position.X;
-                        legTwo = enemy.Position.Y - position.Y;
-                        enemy.Angle = (float)Math.Atan2(legTwo, legOne) - GameClass.DegreeToRadians(90);
-                    }
-                    enemy.Angle = enemy.Angle;
-                }
+                AddEnemy(enemyAi.GeneratePosition(rand, characterRectangle,texture),texture);
             }
         }
 
@@ -257,11 +216,11 @@ namespace GrandTheftAuto.GameFolder.Classes
 
         private void EnemyDead(Enemy enemy, Character character)
         {
-            character.EnemyKilled = true;
+            character.EnemyKilled = enemy;
             enemy.Alive = false;
             Score += enemy.Score;
             DiedList.Add(new DiedEnemy(enemy.Position, game.spritBlood, enemy.Angle));
-            if (DiedList.Count > 20)   //pokud je zabitých více jak 20 zombie tak se postupně maže první ze zabitých
+            if (DiedList.Count > 50)   //pokud je zabitých více jak 50 zombie tak se postupně maže první ze zabitých
                 DiedList.RemoveAt(0);
             EnemyList.Remove(enemy);
         }

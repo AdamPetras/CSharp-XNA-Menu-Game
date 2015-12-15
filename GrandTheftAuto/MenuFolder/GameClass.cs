@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using GrandTheftAuto.GameFolder.Classes;
 using GrandTheftAuto.GameFolder.Classes.CarFolder;
 using GrandTheftAuto.GameFolder.Classes.GunFolder;
-using GrandTheftAuto.GameFolder.Components;
 using GrandTheftAuto.MenuFolder.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -88,6 +88,10 @@ namespace GrandTheftAuto.MenuFolder
         public Texture2D spritGrass;
         public Texture2D spritTCross;
         public Texture2D spritDeadEndRoad;
+        public Texture2D[] spritNPCs;
+        public Texture2D cursor;
+        public Texture2D spritQuestComplete;
+        public Texture2D spritSpeakBubble;
         #endregion
         #region Fonty
         public SpriteFont bigFont;
@@ -101,8 +105,10 @@ namespace GrandTheftAuto.MenuFolder
         public List<SavedData> saveList;
         public List<SavedControls> controlsList;
         public List<Car> carList;
+        public List<Item> itemList; 
 
         public GunsOptions gunsOptions;
+        private double ClickTimer;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -116,7 +122,7 @@ namespace GrandTheftAuto.MenuFolder
         /// Initialiaze method implemets from IInitializable
         /// </summary>
         protected override void Initialize()
-        {
+        {          
             #region DefiniceOkna
 
             graphics.PreferredBackBufferWidth = width;
@@ -143,6 +149,7 @@ namespace GrandTheftAuto.MenuFolder
                 saveList.Add(new SavedData(Vector2.Zero, 0));
             }
             carList = new List<Car>();
+            itemList = new List<Item>();
             controlsList.Add(new SavedControls("throttle", Keys.W));
             controlsList.Add(new SavedControls("brake", Keys.S));
             controlsList.Add(new SavedControls("turn left", Keys.A));
@@ -162,8 +169,8 @@ namespace GrandTheftAuto.MenuFolder
             spritGuns = new Texture2D[1];
             spritPergamen = new Texture2D[2];
             spritTalents = new Texture2D[13];
+            spritNPCs = new Texture2D[8];
             gunsOptions = new GunsOptions(this);
-            IsMouseVisible = true;
             base.Initialize();
         }
 
@@ -228,7 +235,11 @@ namespace GrandTheftAuto.MenuFolder
             spritInActiveQuestion = Content.Load<Texture2D>(@"Sprits/Quest/inActiveQuest");
             spritActiveQuestion = Content.Load<Texture2D>(@"Sprits/Quest/ActiveQuest");
             spritDialogBubble = Content.Load<Texture2D>(@"Sprits/Dialog/dialogBubble");
-            LoadTextures(spritTalents, @"Sprits/TalentsAndStats/talent",13); 
+            spritSpeakBubble = Content.Load<Texture2D>(@"Sprits/Quest/speakbubble");
+            spritQuestComplete = Content.Load<Texture2D>(@"Sprits/Quest/questcomplete");
+            LoadTextures(spritTalents, @"Sprits/TalentsAndStats/talent",13);
+            LoadTextures(spritNPCs, @"Sprits/Character/NPCs/Npc",8);
+            cursor = Content.Load<Texture2D>(@"Sprits/cursor");
         }
 
         protected override void UnloadContent()
@@ -241,6 +252,7 @@ namespace GrandTheftAuto.MenuFolder
         /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
         {
+            ClickTimer += gameTime.ElapsedGameTime.Milliseconds;
             keyStateBefore = keyState;
             mouseStateBefore = mouseState;
             keyState = Keyboard.GetState();
@@ -253,20 +265,51 @@ namespace GrandTheftAuto.MenuFolder
         /// <param name="gameTime"></param>
         protected override void Draw(GameTime gameTime)
         {
+            spriteBatch.Begin();
+
+            spriteBatch.End();
             base.Draw(gameTime);
         }
+
         /// <summary>
         /// Method to check flick of key
         /// </summary>
         /// <param name="key"></param>
+        /// <param name="flickering"></param>
         /// <returns></returns>
-        public bool SingleClick(Keys key)
+        public bool SingleClick(Keys key,bool flickering = true)
         {
-            return keyState.IsKeyDown(key) && keyStateBefore.IsKeyUp(key);
+            if (keyState.IsKeyDown(key) && keyStateBefore.IsKeyUp(key))
+            {
+                if (ClickTimer > 0 && flickering)
+                {
+                    ClickTimer = 0;
+                    return true;
+                }
+                if (!flickering)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
-        public bool SingleClickMouse()
+        public bool SingleClickLeftMouse()
         {
-            return mouseState.LeftButton == ButtonState.Pressed && mouseStateBefore.LeftButton == ButtonState.Released;
+            if (mouseState.LeftButton == ButtonState.Pressed && mouseStateBefore.LeftButton == ButtonState.Released && ClickTimer > 0)
+            {
+                ClickTimer = 0;
+                return true;
+            }
+            return false;
+        }
+        public bool SingleClickRightMouse()
+        {
+            if (mouseState.RightButton == ButtonState.Pressed && mouseStateBefore.RightButton == ButtonState.Released && ClickTimer > 100)
+            {
+                ClickTimer = 0;
+                return true;
+            }
+            return false;
         }
         /// <summary>
         /// Method to Enable/Disable components

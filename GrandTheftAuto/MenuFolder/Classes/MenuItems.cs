@@ -15,7 +15,7 @@ namespace GrandTheftAuto.MenuFolder.Classes
         private GameClass Game;
         private Keys[] Up;
         private Keys[] Down;
-
+        private int id;
 
         /// <summary>
         /// Constructor
@@ -25,21 +25,16 @@ namespace GrandTheftAuto.MenuFolder.Classes
         {
             Game = game;
             Items = new List<Items>();
+            id = 0;
         }
-
-        /// <summary>
-        /// Method to math position of item
-        /// </summary>
-        /// <param name="text"></param>
-        /// <summary>
-        /// Method to add items
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="value"></param>
         public void AddItem(string text, Vector2 position, SpriteFont font, bool centerText = true, string value = "", float rotation = 0f, int spaceBeforeValue = 0, bool nonClick = false, Camera camera = null)
-        {
-            Items item = new Items(text, new Vector2(position.X, position.Y + (font.MeasureString(text).Y * Items.Count)), font, rotation, centerText, new Rectangle((int)position.X, (int)(position.Y + (font.MeasureString(text).Y * Items.Count)), (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value, nonClick, spaceBeforeValue, camera);
-            Items.Add(item);
+        {         
+            Items item = new Items(text, new Vector2(position.X, position.Y + (font.MeasureString(text).Y * Items.Count)), font, rotation,id++, centerText, new Rectangle((int)position.X, (int)(position.Y + (font.MeasureString(text).Y * Items.Count)), (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value, nonClick, spaceBeforeValue, camera);
+            if (!Items.Exists(s => s.Text == item.Text && s.Value == item.Value))
+            {
+                Items.Add(item);
+                Selected = Items.First();
+            }
         }
         /// <summary>
         /// Method to draw items
@@ -99,9 +94,9 @@ namespace GrandTheftAuto.MenuFolder.Classes
         /// <param name="text"></param>
         /// <param name="i"></param>
         /// <param name="value"></param>
-        public void UpdateItem(string text, int i, Vector2 position, SpriteFont font, bool centerText = true, string value = "", float rotation = 0f)
+        public void UpdateItem(string text, int i, Vector2 position, SpriteFont font, bool centerText = true, string value = "", float rotation = 0f, int spaceBeforeValue = 0)
         {
-            Items item = new Items(text, new Vector2(position.X, position.Y + font.MeasureString(text).Y * i), font, rotation, centerText, new Rectangle((int)position.X, (int)position.Y, (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value);
+            Items item = new Items(text, new Vector2(position.X, position.Y + font.MeasureString(text).Y * i), font, rotation,i+1, centerText, new Rectangle((int)position.X, (int)position.Y, (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value, spaceBeforeValue: spaceBeforeValue);
             Items.Insert(i, item);
             Items.RemoveAt(i + 1);
             Selected = item;
@@ -134,7 +129,7 @@ namespace GrandTheftAuto.MenuFolder.Classes
         {
             foreach (Items item in Items)
             {
-                item.ActualPosition = new Vector2(offset.X+item.DefaultPosition.X-item.StringLength.X/2,offset.Y+item.DefaultPosition.Y+item.StringLength.Y);
+                item.ActualPosition = new Vector2(offset.X + item.DefaultPosition.X - item.StringLength.X / 2, offset.Y + item.DefaultPosition.Y + item.StringLength.Y);
             }
         }
     }

@@ -18,6 +18,7 @@ namespace GrandTheftAuto.MenuFolder.Classes
         public float Rotation { get; set; }
         public Camera Camera { get; set; }
         public Vector2 StringLength { get; set; }
+        public int Id { get; private set; }
 
         /// <summary>
         /// Constructor
@@ -28,11 +29,12 @@ namespace GrandTheftAuto.MenuFolder.Classes
         /// <param name="rectangle"></param>
         /// <param name="value"></param>
         /// <param name="nonClick"></param>
-        public Items(string text, Vector2 actualPosition, SpriteFont font, float rotation, bool centerText = true, Rectangle rectangle = default (Rectangle), string value = "", bool nonClick = false, int spaceBeforeValue = 0, Camera camera = null)
+        public Items(string text, Vector2 actualPosition, SpriteFont font, float rotation,int id, bool centerText = true, Rectangle rectangle = default (Rectangle), string value = "", bool nonClick = false, int spaceBeforeValue = 0, Camera camera = null)
         {
             Text = text;
             ActualPosition = actualPosition;
             DefaultPosition = actualPosition;
+            Id = id;
             Font = font;
             if (centerText)
                 StringOrigin = Font.MeasureString(Text) / 2;

@@ -27,10 +27,14 @@ namespace GrandTheftAuto.GameFolder.Classes
         /// <param name="texture"></param>
         /// <param name="angle"></param>
         /// <param name="colision"></param>
-        public void AddGraphics(Vector2 position, Texture2D texture, float angle = 0f, bool colision = false)
+        /// <param name="description"></param>
+        public void AddGraphics(Vector2 position, Texture2D texture, float angle = 0f, bool colision = false, string description = "")
         {
-            Graphics graphics = new Graphics(position, texture, colision, angle);
-            objectList.Add(graphics);
+            objectList.Add(new Graphics(position, texture, colision, angle));
+        }
+        public void AddGraphics(Vector2 position, Texture2D texture, string description, SpriteFont spriteFont, float angle = 0f, bool colision = false)
+        {
+            objectList.Add(new Graphics(position, texture, colision, angle, description, spriteFont));
         }
         /// <summary>
         /// Method which add graphics with colisions to list of colisions
@@ -39,11 +43,6 @@ namespace GrandTheftAuto.GameFolder.Classes
         public List<Rectangle> ColisionList()
         {
             return objectList.Where(graphics => graphics.Colision).Select(graphics => graphics.Rectangle).ToList();
-        }
-
-        public List<Graphics> ObjectTextureList()
-        {
-            return objectList.Where(graphics => graphics.Colision).ToList();
         }
 
         /// <summary>
@@ -68,8 +67,18 @@ namespace GrandTheftAuto.GameFolder.Classes
         {
             foreach (Graphics graphics in objectList.Where(graphics => graphics.Colision))
             {
-                game.spriteBatch.Draw(graphics.Texture, new Vector2(graphics.Position.X+graphics.Texture.Width/2,graphics.Position.Y+graphics.Texture.Height/2), null, Color.White, graphics.Angle, new Vector2(graphics.Texture.Width/2,graphics.Texture.Height/2), 1f, SpriteEffects.None, 0f);
+                game.spriteBatch.Draw(graphics.Texture, new Vector2(graphics.Position.X + graphics.Texture.Width / 2, graphics.Position.Y + graphics.Texture.Height / 2), null, Color.White, graphics.Angle, new Vector2(graphics.Texture.Width / 2, graphics.Texture.Height / 2), 1f, SpriteEffects.None, 0f);
+                if (graphics.Description.Length != 0)
+                {
+                    DrawDescription(graphics.Description, graphics.SpriteFont, graphics.Rectangle.Center.ToVector2());
+                }
             }
+        }
+
+        private void DrawDescription(string text, SpriteFont spriteFont, Vector2 position)
+        {
+            Vector2 origin = spriteFont.MeasureString(text) / 2;
+            game.spriteBatch.DrawString(spriteFont, text, position - origin, Color.White);
         }
 
         /// <summary>
@@ -80,6 +89,10 @@ namespace GrandTheftAuto.GameFolder.Classes
             foreach (Graphics graphics in objectList.Where(graphics => !graphics.Colision))
             {
                 game.spriteBatch.Draw(graphics.Texture, new Vector2(graphics.Position.X + graphics.Texture.Width / 2, graphics.Position.Y + graphics.Texture.Height / 2), null, Color.White, graphics.Angle, new Vector2(graphics.Texture.Width / 2, graphics.Texture.Height / 2), 1f, SpriteEffects.None, 0f);
+                if (graphics.Description != "")
+                {
+                    DrawDescription(graphics.Description, graphics.SpriteFont, graphics.Rectangle.Center.ToVector2());
+                }
             }
         }
     }

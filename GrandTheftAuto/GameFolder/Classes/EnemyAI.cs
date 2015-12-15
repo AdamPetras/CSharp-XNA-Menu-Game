@@ -1,166 +1,153 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
+using GrandTheftAuto.MenuFolder;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace GrandTheftAuto.GameFolder.Classes
 {
     public class EnemyAi
     {
-        private List<Pathfinding> closedList;   // již projíté pole nebo překážky
-        private List<Pathfinding> openedList;   // pole, které je ještě potřeba projít
+        private List<Rectangle> ObstactleList;   // již projíté pole nebo překážky
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="obstactleList"></param>
         public EnemyAi(List<Rectangle> obstactleList)
         {
-            closedList = new List<Pathfinding>();
-            openedList = new List<Pathfinding>();
-            foreach (Rectangle rectangle in obstactleList)
-            {
-                closedList.Add(new Pathfinding(rectangle));
-            }
+            ObstactleList = obstactleList;
         }
 
+        public Vector2 TryDirection(Vector2 finishPosition, Enemy enemy, Rectangle rectangle)
+        {
+            Vector2 position;
+            float distance = (Math.Abs(enemy.Position.X - finishPosition.X) + Math.Abs(enemy.Position.Y - finishPosition.Y));
+            if (!rectangle.Contains(position = new Vector2(enemy.Position.X+1, enemy.Position.Y)) &&
+                Math.Abs(position.X - finishPosition.X) + Math.Abs(position.Y - finishPosition.Y) < distance)   //doprava
+            {
+                enemy.Angle = (float) (Math.PI/2);
+                return new Vector2(1,0);
+            }
+            if (!rectangle.Contains(position = new Vector2(enemy.Position.X-1, enemy.Position.Y)) &&
+                Math.Abs(position.X - finishPosition.X) + Math.Abs(position.Y - finishPosition.Y) < distance)    //doleva
+            {
+                enemy.Angle = (float)(Math.PI *1.5);
+                return new Vector2(-1, 0);
+            }
+
+            if (!rectangle.Contains(position = new Vector2(enemy.Position.X,enemy.Position.Y - 1)) &&
+                Math.Abs(position.X - finishPosition.X) + Math.Abs(position.Y - finishPosition.Y) < distance)    //nahoru
+            {
+                enemy.Angle = 0f;
+                return new Vector2(0, -1);
+            }
+            if (!rectangle.Contains(position = new Vector2(enemy.Position.X,enemy.Position.Y + 1)) &&
+                Math.Abs(position.X - finishPosition.X) + Math.Abs(position.Y - finishPosition.Y) < distance)    //dolu
+            {
+                enemy.Angle = (float)(Math.PI);
+                return new Vector2(0, 1);
+            }
+            return Vector2.Zero;
+        }
+
+        public Vector2 Position(Vector2 finishPosition, Enemy enemy)
+        {
+            if (finishPosition != enemy.Position)
+            {
+                //tg(a) = Xodvesna/Yodvesna nebo tg(a) = Yodvesna/Xodvesna podle kvadrantu
+                //výpočet tangensu vždy pro danou odvěsnu rovnu 1
+                float legOne;
+                float legTwo; //leg = přepona
+                float angle;
+                if (enemy.Position.X > finishPosition.X && enemy.Position.Y < finishPosition.Y) //první kvadrant
+                {
+                    legOne = enemy.Position.X - finishPosition.X;        //X odvěsna
+                    legTwo = finishPosition.Y - enemy.Position.Y;        //Y odvěsna
+                    angle = (float)Math.Atan2(legOne, legTwo);              //výpočet úhlu
+                    enemy.Angle = angle + GameClass.DegreeToRadians(180);   //nastavení úhlu enemy
+                    if (angle <= Math.PI / 4)                               //první polovina kvadrantu
+                        return new Vector2(-(float)(Math.Tan(angle)), 1);
+                    if (angle >= Math.PI / 4)                               //druhá polovina kvadrantu
+                        return new Vector2(-1, (float)((1) / (Math.Tan(angle))));
+                }
+                if (enemy.Position.X < finishPosition.X && enemy.Position.Y < finishPosition.Y) //druhý kvadrant
+                {
+                    legOne = finishPosition.X - enemy.Position.X;        //X odvěsna
+                    legTwo = finishPosition.Y - enemy.Position.Y;        //Y odvěsna
+                    angle = (float)Math.Atan2(legTwo, legOne);              //výpočet úhlu
+                    enemy.Angle = angle + GameClass.DegreeToRadians(90);    //nastavení úhlu enemy
+                    if (angle <= Math.PI / 4)                               //první polovina kvadrantu
+                        return new Vector2(1, (float)Math.Tan(angle));
+                    if (angle >= Math.PI / 4)                               //druhá polovina kvadrantu
+                        return new Vector2((float)(1 / (Math.Tan(angle))), 1);
+                }
+                if (enemy.Position.X < finishPosition.X && enemy.Position.Y > finishPosition.Y) //třetí kvadrant
+                {
+                    legOne = finishPosition.X - enemy.Position.X;        //X odvěsna
+                    legTwo = enemy.Position.Y - finishPosition.Y;        //Y odvěsna
+                    angle = (float)Math.Atan2(legOne, legTwo);              //výpočet úhlu
+                    enemy.Angle = angle;                                    //nastavení úhlu enemy
+                    if (angle <= Math.PI / 4)                               //první polovina kvadrantu
+                        return new Vector2((float)Math.Tan(angle), -1);
+                    if (angle >= Math.PI / 4)                               //druhá polovina kvadrantu
+                        return new Vector2(1, -(float)(1 / (Math.Tan(angle))));
+                }
+                if (enemy.Position.X > finishPosition.X && enemy.Position.Y > finishPosition.Y) //čtvrtý kvadrant
+                {
+                    legOne = enemy.Position.X - finishPosition.X;        //X odvěsna
+                    legTwo = enemy.Position.Y - finishPosition.Y;        //Y odvěsna
+                    angle = (float)Math.Atan2(legTwo, legOne);              //výpočet úhlu
+                    enemy.Angle = angle - GameClass.DegreeToRadians(90);    //nastavení úhlu enemy
+                    if (angle <= Math.PI / 4)                               //první polovina kvadrantu
+                        return new Vector2(-1, -(float)Math.Tan(angle));
+                    if (angle >= Math.PI / 4)                               //druhá polovina kvadrantu
+                        return new Vector2(-(float)(1 / (Math.Tan(angle))), -1);
+                }
+                enemy.Angle = enemy.Angle;
+            }
+            return Vector2.Zero;
+        }
         /// <summary>
         /// Method to generate position without colision
         /// </summary>
         /// <param name="rand"></param>
         /// <param name="charRectangle"></param>
+        /// <param name="count"></param>
         /// <returns></returns>
-        public Vector2 GeneratePosition(Random rand, Rectangle charRectangle)
+        public Vector2 GeneratePosition(Random rand, Rectangle charRectangle, Texture2D enemyTexture)
         {
             Vector2 position;
-            Rectangle characterRectangle = new Rectangle(charRectangle.Left - 100, charRectangle.Top - 100, charRectangle.Right + 100, charRectangle.Bottom + 100);
+            Rectangle enemyRectangle;
+            Rectangle characterRectangle = new Rectangle(charRectangle.Left - 500, charRectangle.Top - 500, charRectangle.Right + 500, charRectangle.Bottom + 500);
             do
             {
-                position = new Vector2(rand.Next(0, 500), rand.Next(0, 500));
-            } while (closedList.Any(s => s.Obstactle.Contains(position)) && characterRectangle.Contains(position));
+                position = new Vector2(rand.Next(-3000, 3000), rand.Next(-2100, 7500));
+                enemyRectangle = new Rectangle((int)position.X, (int)position.Y, enemyTexture.Width, enemyTexture.Height);
+
+            } while (ObstactleList.Any(s => s.Intersects(enemyRectangle)) || characterRectangle.Contains(position));
             return position;
         }
 
 
-        public Vector2 PathFinding(Vector2 actualPosition, Vector2 finishPosition, Enemy enemy, Rectangle characterRectangle, Rectangle carRectangle)
+        public Vector2 PathFinding(Vector2 actualPosition, Vector2 finishPosition, Enemy enemy,
+            Rectangle characterRectangle, Rectangle carRectangle)
         {
-            // G = součet hodnot po nejkratší cestě po které se lze dostat do místa
-            // H = odhadová vzdálenost od aktuálního místa do cíle
-            // F = H + G
-            // H = |start.X-cíl.X|+|start.Y-cíl.Y|
-            // G = startovní pozice (ze začátku vždy 0)
-            // F = |start.X-cíl.X|+|start.Y-cíl.Y| + startovní pozice
-            if ((!characterRectangle.IsEmpty && !characterRectangle.Contains(actualPosition)) || (!carRectangle.IsEmpty && !carRectangle.Contains(actualPosition)))
+            if ((Math.Abs(actualPosition.X - finishPosition.X) + Math.Abs(actualPosition.Y - finishPosition.Y)) < 300 || enemy.IsAngry)
             {
-                Pathfinding pathfinding = new Pathfinding(actualPosition, finishPosition); //Aktuální pozice
-                closedList.Add(pathfinding);
-                if (enemy.IsAngry || pathfinding.F < 200)
+                if (!ObstactleList.Any(s => s.Intersects(enemy.Rectangle)))
                 {
-                    openedList.Clear();
-                    Vector2 defaultVector = actualPosition;
-
-                    #region Čtyřrozměrný pohyb
-
-                    #region Vlevo
-
-                    actualPosition = defaultVector;
-                    actualPosition.X -= enemy.Speed; //vlevo
-                    enemy.Angle = 1.47f;
-                    pathfinding = new Pathfinding(actualPosition, finishPosition);
-                    openedList.Add(pathfinding);
-
-                    #endregion
-
-                    #region Vpravo
-
-                    actualPosition = defaultVector;
-                    actualPosition.X += enemy.Speed; //vpravo
-                    pathfinding = new Pathfinding(actualPosition, finishPosition);
-                    openedList.Add(pathfinding);
-
-                    #endregion
-
-                    #region Dolu
-
-                    actualPosition = defaultVector;
-                    actualPosition.Y += enemy.Speed; //dolu
-                    pathfinding = new Pathfinding(actualPosition, finishPosition);
-                    openedList.Add(pathfinding);
-
-                    #endregion
-
-                    #region Nahoru
-
-                    actualPosition = defaultVector;
-                    actualPosition.Y -= enemy.Speed; //nahoru
-                    pathfinding = new Pathfinding(actualPosition, finishPosition);
-                    openedList.Add(pathfinding);
-
-                    #endregion
-
-                    #endregion
-
-                    #region Diagonální pohyb
-
-                    #region Diagonální vpravo dolu
-
-                    actualPosition = defaultVector;
-                    actualPosition.Y += enemy.Speed; //dolu
-                    actualPosition.X += enemy.Speed; //vpravo
-                    pathfinding = new Pathfinding(actualPosition, finishPosition);
-                    openedList.Add(pathfinding);
-
-                    #endregion
-
-                    #region Diagonální vpravo nahoru
-
-                    actualPosition = defaultVector;
-                    actualPosition.Y -= enemy.Speed; //nahoru
-                    actualPosition.X += enemy.Speed; //vpravo
-                    pathfinding = new Pathfinding(actualPosition, finishPosition);
-                    openedList.Add(pathfinding);
-
-                    #endregion
-
-                    #region Diagonální vlevo dolu
-
-                    actualPosition = defaultVector;
-                    actualPosition.Y += enemy.Speed; //dolu
-                    actualPosition.X -= enemy.Speed; //vlevo
-                    pathfinding = new Pathfinding(actualPosition, finishPosition);
-                    openedList.Add(pathfinding);
-
-                    #endregion
-
-                    #region Diagonální vlevo nahoru
-
-                    actualPosition = defaultVector;
-                    actualPosition.Y -= enemy.Speed; //nahoru
-                    actualPosition.X -= enemy.Speed; //vlevo
-                    pathfinding = new Pathfinding(actualPosition, finishPosition);
-                    openedList.Add(pathfinding);
-
-                    #endregion
-
-                    #endregion
-
-                    actualPosition = defaultVector;
-                    openedList = openedList.OrderBy(s => s.F).ToList(); //seřazení od nejmenšího prvku
-                    foreach (Pathfinding t in openedList)
-                    {
-                        enemy.Position = t.Start;
-                        enemy.UpdateEachRectangle();
-                        if (!closedList.Any(s => s.Obstactle.Intersects(enemy.Rectangle)))
-                        {
-                            if (enemy.MaxHp != enemy.Hp || openedList[0].F < 200)
-                                enemy.IsAngry = true;
-                            else enemy.IsAngry = false;
-                            return t.Start;
-                        }
-                    }
+                    enemy.Position += Position(finishPosition, enemy);
+                    enemy.UpdateEachRectangle();
+                }
+                else
+                {
+                    enemy.Position += TryDirection(finishPosition, enemy,
+                        ObstactleList.Find(s => s.Intersects(enemy.Rectangle)));
+                    enemy.UpdateEachRectangle();
                 }
             }
-            return actualPosition;
+            return enemy.Position;
         }
     }
 }

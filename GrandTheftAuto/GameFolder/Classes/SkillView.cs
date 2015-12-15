@@ -58,11 +58,14 @@ namespace GrandTheftAuto.GameFolder.Classes
             skillService.AddSkill("HealthBonus", "Add 10 health", 0, false, (int)EWhichBonus.Vitality, 1, game.spritTalents[3]);
             skillService.AddSkill("EnergyBonus", "Add 10 energy", 1, false, (int)EWhichBonus.Intelect, 2, game.spritTalents[8]);
             skillService.AddSkill("SpeedBonus", "Add 0.1 speed", 1, false, (int)EWhichBonus.Agility, 5, game.spritTalents[11]);
-            skillService.AddSkill("HealthRegenerationBonus", "Add health regeneration", 1, false, (int)EWhichBonus.Stamina, 5, game.spritTalents[9]);
-            skillService.AddSkill("HealthBonus", "Add 10% of health", 2, true, (int)EWhichBonus.Intelect, 10, game.spritTalents[5]);
+            skillService.AddSkill("HealthRegenerationBonus", "Add health regeneration", 1, false, (int)EWhichBonus.Stamina, 10, game.spritTalents[9]);
+            skillService.AddSkill("HealthBonus", "Add 10% of total health", 2, true, (int)EWhichBonus.Vitality, 10, game.spritTalents[5]);
+            skillService.AddSkill("SpeedBonus", "Add 15% of total speed", 2, true, (int)EWhichBonus.Agility, 15, game.spritTalents[0]);
             skillService.AddSkill("EnergyRegenerationBonus", "Add energy regeneration", 3, false, (int)EWhichBonus.Spirit, 5, game.spritTalents[12]);
-            skillService.AddSkill("HealthBonus", "Add 20% of energy", 3, true, (int)EWhichBonus.Agility, 20, game.spritTalents[10]);
-            skillService.AddSkill("HealthBonus", "Add 20% of health", 4, true, (int)EWhichBonus.Vitality, 20, game.spritTalents[6]);
+            skillService.AddSkill("EnergyBonus", "Add 20% of total energy", 3, true, (int)EWhichBonus.Intelect, 20, game.spritTalents[10]);
+            skillService.AddSkill("HealthBonus", "Add 100 health", 4, false, (int)EWhichBonus.Vitality, 10, game.spritTalents[2]);
+            skillService.AddSkill("HealthBonus", "Add 15% of total health", 5, true, (int)EWhichBonus.Vitality, 15, game.spritTalents[6]);
+
         }
     }
 }

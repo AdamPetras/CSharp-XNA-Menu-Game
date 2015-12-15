@@ -39,19 +39,16 @@ namespace GrandTheftAuto.GameFolder.Components
                 game.EGameState = EGameState.Pause;
                 game.ComponentEnable(this, false);
                 characterService.IsStatsRunning = false;
-                Game.IsMouseVisible = true;
             }
-            if (game.SingleClick(game.controlsList[(int)EKeys.C].Key) && statsService != null && skillView == null) //vypnutí statů
+            if (game.SingleClick(game.controlsList[(int)EKeys.C].Key,false) && statsService != null && skillView == null) //vypnutí statů
             {
-                game.ComponentEnable(this, false);
-                game.IsMouseVisible = false;
                 characterService.IsStatsRunning = false;
+                game.ComponentEnable(this, false);
             }
-            else if (game.SingleClick(game.controlsList[(int)EKeys.T].Key) && skillView != null) //vypnutí talentu
+            else if (game.SingleClick(game.controlsList[(int)EKeys.T].Key,false) && skillView != null) //vypnutí talentu
             {
-                game.ComponentEnable(this, false);
-                game.IsMouseVisible = false;
                 characterService.IsStatsRunning = false;
+                game.ComponentEnable(this, false);
             }
             if (skillView != null)
                 skillView.Update();
@@ -85,6 +82,7 @@ namespace GrandTheftAuto.GameFolder.Components
             if (skillView != null)
             {
                 skillView.DrawSkillTable();
+                game.spriteBatch.Draw(game.cursor, game.mouseState.Position.ToVector2(), Color.White);
             }
             game.spriteBatch.End();
             base.Draw(gameTime);

@@ -15,7 +15,6 @@ namespace GrandTheftAuto.GameFolder.Classes
         Intelect,
         Spirit,
         Agility,
-        Damage
     }
 
     public class SkillService

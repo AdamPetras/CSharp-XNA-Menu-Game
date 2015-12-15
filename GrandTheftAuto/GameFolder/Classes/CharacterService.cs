@@ -37,9 +37,9 @@ namespace GrandTheftAuto.GameFolder.Classes
         public CharacterService(GameClass game, SavedData savedData)
         {
             this.game = game;
-            Character = new Character(new Vector2(100,100),game.spritCharacter[0]);
+            Character = new Character(new Vector2(100, 100), game.spritCharacter[0]);
             stats = new StatsService(Character);
-            skillView = new SkillView(game,Character);
+            skillView = new SkillView(game, Character);
             EventLevelUp += stats.NewLevel;
             EventLevelUp += stats.CalculateExperience;
             EventLevelUp += skillView.AddSkillPoint;
@@ -58,13 +58,13 @@ namespace GrandTheftAuto.GameFolder.Classes
         {
             #region Chůze
 
-            if (game.keyState.IsKeyDown(game.controlsList[(int) EKeys.Up].Key) && Character.Alive)
+            if (game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Up].Key) && Character.Alive)
             {
                 distance += Character.Speed;
                 CharacterAnimation(gameTime);
                 Character.Position = game.CalculatePosition(Character.Position, Character.Angle, ref distance);
             }
-            if (game.keyState.IsKeyDown(game.controlsList[(int) EKeys.Down].Key) && Character.Alive)
+            if (game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Down].Key) && Character.Alive)
             {
                 distance -= Character.Speed;
                 CharacterAnimation(gameTime);
@@ -75,11 +75,11 @@ namespace GrandTheftAuto.GameFolder.Classes
 
             #region Otáčení
 
-            if (game.keyState.IsKeyDown(game.controlsList[(int) EKeys.Left].Key) && Character.Alive)
+            if (game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Left].Key) && Character.Alive)
             {
                 Character.Angle -= 0.05f;
             }
-            if (game.keyState.IsKeyDown(game.controlsList[(int) EKeys.Right].Key) && Character.Alive)
+            if (game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Right].Key) && Character.Alive)
             {
                 Character.Angle += 0.05f;
             }
@@ -88,10 +88,10 @@ namespace GrandTheftAuto.GameFolder.Classes
 
             #region Běh
 
-            if (game.keyState.IsKeyDown(game.controlsList[(int) EKeys.Shift].Key) && Character.Alive && Character.Energy > 0 &&
+            if (game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Shift].Key) && Character.Alive && Character.Energy > 0 &&
                 !Character.Regeneration)
             {
-                Character.Speed = 0.5f+Character.DefaultSpeed;
+                Character.Speed = 0.5f + Character.DefaultSpeed;
                 interval = 120;
                 energyDrainRegenerateTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (energyDrainRegenerateTimer > Character.EnergyRegen)
@@ -113,17 +113,17 @@ namespace GrandTheftAuto.GameFolder.Classes
                     Character.Energy += 1;
                     energyDrainRegenerateTimer = 0;
                 }
-                if (Character.Energy >= Character.MaxEnergy/5)
+                if (Character.Energy >= Character.MaxEnergy / 5)
                     Character.Regeneration = false;
             }
 
             #endregion
 
             //-------------Pokud nechodí nebo je zmáčknuto dopředu i dozadu tak se nastaví obrázek stop-------------
-            if (game.keyState.IsKeyUp(game.controlsList[(int) EKeys.Down].Key) &&
-                game.keyState.IsKeyUp(game.controlsList[(int) EKeys.Up].Key) ||
-                game.keyState.IsKeyDown(game.controlsList[(int) EKeys.Down].Key) &&
-                game.keyState.IsKeyDown(game.controlsList[(int) EKeys.Up].Key))
+            if (game.keyState.IsKeyUp(game.controlsList[(int)EKeys.Down].Key) &&
+                game.keyState.IsKeyUp(game.controlsList[(int)EKeys.Up].Key) ||
+                game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Down].Key) &&
+                game.keyState.IsKeyDown(game.controlsList[(int)EKeys.Up].Key))
                 Character.CurrentFrame = 0;
 
         }
@@ -135,18 +135,16 @@ namespace GrandTheftAuto.GameFolder.Classes
             UpdateQuestValue();
             Character.UpdateRectangle();
             OnEventLevelUp(Character.Energy, Character.Hp);
-            if (game.SingleClick(game.controlsList[(int) EKeys.C].Key) && !IsStatsRunning && Character.Alive)
+            if (game.SingleClick(game.controlsList[(int)EKeys.C].Key, false) && !IsStatsRunning && Character.Alive)
             {
                 ComponentStats componentStats = new ComponentStats(game, stats, this);
                 game.Components.Add(componentStats);
-                game.IsMouseVisible = true;
                 IsStatsRunning = true;
             }
-            else if (game.SingleClick(game.controlsList[(int) EKeys.T].Key) && !IsStatsRunning && Character.Alive)
+            else if (game.SingleClick(game.controlsList[(int)EKeys.T].Key, false) && !IsStatsRunning && Character.Alive)
             {
                 ComponentStats componentStats = new ComponentStats(game, skillView, stats, this);
                 game.Components.Add(componentStats);
-                game.IsMouseVisible = true;
                 IsStatsRunning = true;
             }
         }
@@ -182,10 +180,10 @@ namespace GrandTheftAuto.GameFolder.Classes
         public void DrawCharacter()
         {
             game.spriteBatch.Draw(game.spritCharacter[Character.CurrentFrame],
-                new Rectangle((int) Character.Position.X, (int) Character.Position.Y,
+                new Rectangle((int)Character.Position.X, (int)Character.Position.Y,
                     game.spritCharacter[Character.CurrentFrame].Width, game.spritCharacter[Character.CurrentFrame].Height), null,
                 Color.White, game.Rotation(Character.Angle) + 1.5f,
-                new Vector2(game.spritCharacter[Character.CurrentFrame].Width/2, game.spritCharacter[Character.CurrentFrame].Height/2),
+                new Vector2(game.spritCharacter[Character.CurrentFrame].Width / 2, game.spritCharacter[Character.CurrentFrame].Height / 2),
                 SpriteEffects.None, 0f);
         }
 
@@ -197,7 +195,7 @@ namespace GrandTheftAuto.GameFolder.Classes
 
         private void HealthRegenerate(GameTime gameTime)
         {
-            if ((int)Character.Hp != (int)Character.MaxHp &&Character.Alive)
+            if ((int)Character.Hp != (int)Character.MaxHp && Character.Alive)
             {
                 healthRegenerateTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (healthRegenerateTimer >= Character.HpRegen)
@@ -213,15 +211,38 @@ namespace GrandTheftAuto.GameFolder.Classes
         public void UpdateQuestValue()  //metoda na přičítání zabítí
         {
             //pokud je aktivní úkol na search and destroy a bool proměnná je true
-            if (Character.QuestList.Any(s => s.EQuestState == EQuestState.Active && s.ETypeOfQuest == ETypeOfQuest.SearchAndDestroy) && Character.EnemyKilled)
+            if (
+                Character.EnemyKilled != null &&
+                Character.QuestList.Any(s => s.EQuestState == EQuestState.Active && s.ETypeOfQuest == ETypeOfQuest.SearchAndDestroy))
             {
-                Character.EnemyKilled = false;  //defaultnutí proměnné pro přičítání
-                Quest quest = Character.QuestList.Find(s => s.EQuestState == EQuestState.Active && s.ETypeOfQuest == ETypeOfQuest.SearchAndDestroy);    //přičtení hodnoty k úkolu
-                quest.ActualValue += 1;
-                if(quest.ActualValue==quest.ValueToSuccess) //pokud je úkol dokončen
-                    quest.EQuestState =EQuestState.Complete;
+                //přičtení hodnoty k úkolu
+                foreach (Quest quest in Character.QuestList.Where(s => s.EQuestState == EQuestState.Active && s.ETypeOfQuest == ETypeOfQuest.SearchAndDestroy))
+                {
+                    if (quest.PlaceToDo == null)
+                    {
+                        if (quest.EEnemies.Count == 0)
+                            quest.ActualValue += 1;
+                        else if (quest.EEnemies.Any(s => s.ToString() == Character.EnemyKilled.Name))
+                            quest.ActualValue += 1;
+                        if (quest.ActualValue == quest.ValueToSuccess) //pokud je úkol dokončen
+                            quest.EQuestState = EQuestState.Complete;
+                    }
+                    else if (quest.PlaceToDo != null)
+                    {
+                        if (quest.PlaceToDo.Value.Intersects(Character.Rectangle))
+                        {
+                            if (quest.EEnemies.Count == 0)
+                                quest.ActualValue += 1;
+                            else if (quest.EEnemies.Any(s => s.ToString() == Character.EnemyKilled.Name))
+                                quest.ActualValue += 1;
+                            if (quest.ActualValue == quest.ValueToSuccess) //pokud je úkol dokončen
+                                quest.EQuestState = EQuestState.Complete;
+                        }
+                    }
+                    Character.EnemyKilled = null; //defaultnutí proměnné pro přičítání
+                }
             }
-            else Character.EnemyKilled = false; //jinak nastav bool proměnnou na false
+            else Character.EnemyKilled = null; //jinak nastav bool proměnnou na false
         }
     }
 }

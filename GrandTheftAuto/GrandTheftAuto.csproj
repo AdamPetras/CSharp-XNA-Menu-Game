@@ -57,6 +57,9 @@
     <Compile Include="GameFolder\Classes\CharacterService.cs" />
     <Compile Include="GameFolder\Classes\Dialog.cs" />
     <Compile Include="GameFolder\Classes\DialogService.cs" />
+    <Compile Include="GameFolder\Classes\Inventory.cs" />
+    <Compile Include="GameFolder\Classes\InventoryItem.cs" />
+    <Compile Include="GameFolder\Classes\Item.cs" />
     <Compile Include="GameFolder\Classes\Quest.cs" />
     <Compile Include="GameFolder\Classes\QuestMaster.cs" />
     <Compile Include="GameFolder\Classes\QuestMasterService.cs" />
@@ -82,7 +85,6 @@
     <Compile Include="GameFolder\Classes\GunFolder\Gun.cs" />
     <Compile Include="GameFolder\Classes\GunFolder\GunsOptions.cs" />
     <Compile Include="GameFolder\Classes\GunFolder\Holster.cs" />
-    <Compile Include="GameFolder\Classes\Pathfinding.cs" />
     <Compile Include="GameFolder\Classes\StatsService.cs" />
     <Compile Include="GameFolder\Classes\TextVisualisation.cs" />
     <Compile Include="GameFolder\Components\ComponentCar.cs" />
@@ -93,6 +95,8 @@
     <Compile Include="GameFolder\Components\ComponentGameGraphics.cs" />
     <Compile Include="GameFolder\Components\ComponentGUI.cs" />
     <Compile Include="GameFolder\Components\ComponentGuns.cs" />
+    <Compile Include="GameFolder\Components\ComponentInventory.cs" />
+    <Compile Include="GameFolder\Components\ComponentItem.cs" />
     <Compile Include="GameFolder\Components\ComponentPause.cs" />
     <Compile Include="GameFolder\Components\ComponentQuestSystem.cs" />
     <Compile Include="GameFolder\Interface\IPhysics.cs" />
@@ -125,6 +129,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Sprits\About.png">
@@ -155,6 +160,33 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\Character\ExperienceCharge.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Character\NPCs\Npc1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Character\NPCs\Npc2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Character\NPCs\Npc3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Character\NPCs\Npc4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Character\NPCs\Npc5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Character\NPCs\Npc6.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Character\NPCs\Npc7.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Character\NPCs\Npc0.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\cursor.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprits\Dialog\dialogBubble.png">
@@ -283,6 +315,12 @@
     <Content Include="Content\Sprits\Quest\pergamen2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Sprits\Quest\questcomplete.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprits\Quest\speakbubble.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Sprits\Road\deadEnd.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -346,6 +384,7 @@
     <Content Include="Content\Sprits\tree.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="GameFolder\Classes\WhatToDo.txt" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

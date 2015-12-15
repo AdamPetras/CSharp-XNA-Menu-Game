@@ -16,14 +16,14 @@ namespace GrandTheftAuto.GameFolder.Classes
         public bool IsAngry { get; set; }
 
 
-        public Enemy(string name,double hp, int damage, float speed, Texture2D texture, Vector2 position, float angle,int score,double chanceToMiss,int exp,bool alive = true, bool isAngry = false)
+        public Enemy(string name, double hp, int damage, float speed, Texture2D texture, Vector2 position, float angle, int score, double chanceToMiss, int exp, bool alive = true, bool isAngry = false)
         {
             Name = name;
             Hp = hp;
             MaxHp = Hp;
             Damage = damage;
             Speed = speed;
-            Texture = texture;         
+            Texture = texture;
             Position = position;
             Angle = angle;
             Score = score;
@@ -35,7 +35,7 @@ namespace GrandTheftAuto.GameFolder.Classes
 
         public void UpdateEachRectangle()
         {
-            Rectangle = new Rectangle((int)Position.X-Texture.Width/2, (int)Position.Y-Texture.Height/2, Texture.Width, Texture.Height);
+            Rectangle = new Rectangle((int)Position.X - Texture.Width / 2, (int)Position.Y - Texture.Height / 2, Texture.Width, Texture.Height);
         }
     }
 }

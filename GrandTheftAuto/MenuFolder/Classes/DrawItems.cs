@@ -11,6 +11,7 @@ namespace GrandTheftAuto.MenuFolder.Classes
         public Items Selected { get; set; }
         private List<Items> Items;
         private GameClass Game;
+        private int id;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -19,6 +20,7 @@ namespace GrandTheftAuto.MenuFolder.Classes
         {
             Game = game;
             Items = new List<Items>();
+            id = 0;
         }
 
         /// <summary>
@@ -30,7 +32,7 @@ namespace GrandTheftAuto.MenuFolder.Classes
         public void AddItem(string text, Vector2 position, SpriteFont font, bool centerText = true, string value = "", float rotation = 0f, int spaceBeforeValue = 0, bool nonClick = false, Camera camera = null)
         {
             position.Y += Items.Count * Game.normalFont.MeasureString(text).Y; //určení pozice přidané položky
-            Items item = new Items(text, position, font, rotation, centerText, Rectangle.Empty, value, false, spaceBeforeValue, camera);
+            Items item = new Items(text, position, font, rotation,id++, centerText, Rectangle.Empty, value, false, spaceBeforeValue, camera);
             Items.Add(item);
         }
         /// <summary>

@@ -28,7 +28,8 @@ namespace GrandTheftAuto.GameFolder.Classes
             foreach (string word in words)
             {
                 Vector2 size = spriteFont.MeasureString(word);
-
+                if (word.Contains("\n"))    //pokud je manuálně odřádkováno
+                    lineWidth = 0;
                 if (lineWidth + size.X < maxLineWidth)
                 {
                     sb.Append(word + " ");

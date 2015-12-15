@@ -1,4 +1,5 @@
-﻿using GrandTheftAuto.MenuFolder;
+﻿using System;
+using GrandTheftAuto.MenuFolder;
 using Microsoft.Xna.Framework;
 
 namespace GrandTheftAuto.GameFolder.Classes
@@ -6,9 +7,9 @@ namespace GrandTheftAuto.GameFolder.Classes
     public class GameGraphics
     {
         public GraphicsService graphicsService { get; private set; }
-        private const float Devadesat = 1.57f;
-        private const float Stoosmdesat = 3.14f;
-        private const float Dvestesedmdesat = 4.71f;
+        private const float Devadesat = (float)(Math.PI / 2);
+        private const float Stoosmdesat = (float)Math.PI;
+        private const float Dvestesedmdesat = (float)(Math.PI *1.5);
         /// <summary>
         /// Constructor
         /// </summary>
@@ -31,6 +32,10 @@ namespace GrandTheftAuto.GameFolder.Classes
             graphicsService.AddGraphics(new Vector2(1800, 1200), game.spritRoad, Devadesat);
             graphicsService.AddGraphics(new Vector2(1500, 1200), game.spritCrossRoad);//X
             graphicsService.AddGraphics(new Vector2(1500, 1500), game.spritRoad);
+
+            graphicsService.AddGraphics(new Vector2(600, 50), game.spritHouse[2], "SMITHY", game.bigFont, colision: true);
+            graphicsService.AddGraphics(new Vector2(-900, 1200), game.spritHouse[0], "Falric's Home", game.bigFont, colision: true);
+            graphicsService.AddGraphics(new Vector2(-2700, 1800), game.spritHouse[1], "Garr's Home", game.bigFont, colision: true);
             //Vrběcká ulice
             graphicsService.AddGraphics(new Vector2(1200, 1200), game.spritRoad, Devadesat);
             graphicsService.AddGraphics(new Vector2(900, 1200), game.spritTCross, Devadesat);//T
@@ -68,7 +73,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             graphicsService.AddGraphics(new Vector2(-300, -300), game.spritGrass);
             graphicsService.AddGraphics(new Vector2(0, -300), game.spritGrass);
             graphicsService.AddGraphics(new Vector2(300, -300), game.spritGrass);
-            graphicsService.AddGraphics(new Vector2(600, -300), game.spritTree, colision: true);
+            graphicsService.AddGraphics(new Vector2(600, -300), game.spritGrass);
             graphicsService.AddGraphics(new Vector2(900, -300), game.spritGrass);
             graphicsService.AddGraphics(new Vector2(1200, -300), game.spritGrass);
             graphicsService.AddGraphics(new Vector2(-300, -600), game.spritTree, colision: true);
@@ -338,16 +343,16 @@ namespace GrandTheftAuto.GameFolder.Classes
             #endregion
             #region Bojkovská ulice
             //Ulice nahoře
-            graphicsService.AddGraphics(new Vector2(-2700, 3300), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-2400, 3300), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-2100, 3300), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-1800, 3300), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-1500, 3300), game.spritTCross,Devadesat);//T
-            graphicsService.AddGraphics(new Vector2(-1200, 3300), game.spritRoadCurveRight,Stoosmdesat);
+            graphicsService.AddGraphics(new Vector2(-2700, 3300), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-2400, 3300), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-2100, 3300), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-1800, 3300), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-1500, 3300), game.spritTCross, Devadesat);//T
+            graphicsService.AddGraphics(new Vector2(-1200, 3300), game.spritRoadCurveRight, Stoosmdesat);
             graphicsService.AddGraphics(new Vector2(-1200, 3000), game.spritRoadCurveRight);
-            graphicsService.AddGraphics(new Vector2(-900, 3000), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-600, 3000), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-300, 3000), game.spritRoad,Devadesat);
+            graphicsService.AddGraphics(new Vector2(-900, 3000), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-600, 3000), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-300, 3000), game.spritRoad, Devadesat);
             graphicsService.AddGraphics(new Vector2(-1500, 4800), game.spritRoad);
             graphicsService.AddGraphics(new Vector2(-1500, 4500), game.spritRoad);
             graphicsService.AddGraphics(new Vector2(-1500, 4200), game.spritRoad);
@@ -364,32 +369,32 @@ namespace GrandTheftAuto.GameFolder.Classes
             graphicsService.AddGraphics(new Vector2(-3000, 4800), game.spritRoad);
             graphicsService.AddGraphics(new Vector2(-3000, 5100), game.spritTCross);//T
             graphicsService.AddGraphics(new Vector2(-3000, 5400), game.spritRoad);
-            graphicsService.AddGraphics(new Vector2(-3000, 5700), game.spritDeadEndRoad,Stoosmdesat);
-            graphicsService.AddGraphics(new Vector2(-2700, 5100), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-2400, 5100), game.spritTCross,Dvestesedmdesat);//T
-            graphicsService.AddGraphics(new Vector2(-2100, 5100), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-1800, 5100), game.spritTCross,Devadesat);//T
-            graphicsService.AddGraphics(new Vector2(-1500, 5100), game.spritTCross,Dvestesedmdesat);//T
-            graphicsService.AddGraphics(new Vector2(-1200, 5100), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-900, 5100), game.spritRoad,Devadesat);
+            graphicsService.AddGraphics(new Vector2(-3000, 5700), game.spritDeadEndRoad, Stoosmdesat);
+            graphicsService.AddGraphics(new Vector2(-2700, 5100), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-2400, 5100), game.spritTCross, Dvestesedmdesat);//T
+            graphicsService.AddGraphics(new Vector2(-2100, 5100), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-1800, 5100), game.spritTCross, Devadesat);//T
+            graphicsService.AddGraphics(new Vector2(-1500, 5100), game.spritTCross, Dvestesedmdesat);//T
+            graphicsService.AddGraphics(new Vector2(-1200, 5100), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-900, 5100), game.spritRoad, Devadesat);
             graphicsService.AddGraphics(new Vector2(-600, 5100), game.spritRoadCurveLeft);
             graphicsService.AddGraphics(new Vector2(-600, 5400), game.spritRoad);
             graphicsService.AddGraphics(new Vector2(-600, 5700), game.spritRoad);
             graphicsService.AddGraphics(new Vector2(-600, 6000), game.spritTCross);//T
-            graphicsService.AddGraphics(new Vector2(-300, 6000), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-600, 6300), game.spritRoadCurveRight,Stoosmdesat);
-            graphicsService.AddGraphics(new Vector2(-900, 6300), game.spritRoad,Devadesat);
+            graphicsService.AddGraphics(new Vector2(-300, 6000), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-600, 6300), game.spritRoadCurveRight, Stoosmdesat);
+            graphicsService.AddGraphics(new Vector2(-900, 6300), game.spritRoad, Devadesat);
             graphicsService.AddGraphics(new Vector2(-1200, 6300), game.spritRoadCurveRight);
             graphicsService.AddGraphics(new Vector2(-1200, 6600), game.spritRoad);
             graphicsService.AddGraphics(new Vector2(-1200, 6900), game.spritRoad);
-            graphicsService.AddGraphics(new Vector2(-1200, 7200), game.spritTCross,Dvestesedmdesat);//T
-            graphicsService.AddGraphics(new Vector2(-1500, 7200), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-1800, 7200), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-2100, 7200), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-2400, 7200), game.spritTCross,Dvestesedmdesat);//T
+            graphicsService.AddGraphics(new Vector2(-1200, 7200), game.spritTCross, Dvestesedmdesat);//T
+            graphicsService.AddGraphics(new Vector2(-1500, 7200), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-1800, 7200), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-2100, 7200), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-2400, 7200), game.spritTCross, Dvestesedmdesat);//T
             //Slepé dolů
-            graphicsService.AddGraphics(new Vector2(-2700, 7200), game.spritRoad,Devadesat);
-            graphicsService.AddGraphics(new Vector2(-3000, 7200), game.spritDeadEndRoad,Dvestesedmdesat);
+            graphicsService.AddGraphics(new Vector2(-2700, 7200), game.spritRoad, Devadesat);
+            graphicsService.AddGraphics(new Vector2(-3000, 7200), game.spritDeadEndRoad, Dvestesedmdesat);
             graphicsService.AddGraphics(new Vector2(-2400, 6900), game.spritRoad);
             graphicsService.AddGraphics(new Vector2(-2400, 6600), game.spritRoad);
             graphicsService.AddGraphics(new Vector2(-2400, 6300), game.spritDeadEndRoad);

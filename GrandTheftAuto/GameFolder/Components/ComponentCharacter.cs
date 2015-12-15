@@ -52,7 +52,6 @@ namespace GrandTheftAuto.GameFolder.Components
             {
                 game.EGameState = EGameState.Pause;
                 Enabled = false;
-                Game.IsMouseVisible = true;
             }
             if (game.SingleClick(game.controlsList[(int)EKeys.E].Key))      //Nastup do auta
             {

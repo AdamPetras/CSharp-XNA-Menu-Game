@@ -79,6 +79,10 @@ namespace GrandTheftAuto.MenuFolder.Components
                         Game.Components.Add(componentCharacter);
                         game.carList.Add(new Car(game, new Vector2(0, 0), 103000, 1770));
                         game.carList.Add(new Car(game, new Vector2(200, 0), 103000, 1770));
+                        ComponentItem componentItem = new ComponentItem(game,camera);
+                        Game.Components.Add(componentItem);
+                        ComponentInventory componentInventory = new ComponentInventory(game,componentCharacter.CharacterService.Character);
+                        game.Components.Add(componentInventory);
                         ComponentCar componentCar = new ComponentCar(game,camera,componentCharacter,gameGraphics);
                         game.Components.Add(componentCar);
                         ComponentGuns componentGuns = new ComponentGuns(game,gameGraphics,componentCharacter.CharacterService.Character,savedData,camera);
@@ -155,6 +159,7 @@ namespace GrandTheftAuto.MenuFolder.Components
             game.spriteBatch.Begin();
             game.spriteBatch.Draw(game.spritMenuBackground, new Rectangle(0,0,game.graphics.PreferredBackBufferWidth,game.graphics.PreferredBackBufferHeight), Color.White);
             menuItems.Draw();
+            game.spriteBatch.Draw(game.cursor, game.mouseState.Position.ToVector2(), Color.White);
             game.spriteBatch.End();
             base.Draw(gameTime);
         }
