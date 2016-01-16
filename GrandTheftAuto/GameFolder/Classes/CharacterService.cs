@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using GrandTheftAuto.GameFolder.Components;
 using GrandTheftAuto.MenuFolder;
 using GrandTheftAuto.MenuFolder.Classes;
-using GrandTheftAuto.MenuFolder.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -32,14 +28,15 @@ namespace GrandTheftAuto.GameFolder.Classes
         /// </summary>
         /// <param name="game"></param>
         /// <param name="savedData"></param>
-        /// <param name="position"></param>
-        /// <param name="angle"></param>
-        public CharacterService(GameClass game, SavedData savedData)
+        /// <param name="bonusOption"></param>
+        public CharacterService(GameClass game, SavedData savedData, BonusOption bonusOption)
         {
             this.game = game;
+            IsStatsRunning = false;
             Character = new Character(new Vector2(100, 100), game.spritCharacter[0]);
-            stats = new StatsService(Character);
-            skillView = new SkillView(game, Character);
+            bonusOption.UpdateStatistics(Character);
+            stats = new StatsService(Character, bonusOption);
+            skillView = new SkillView(game, Character, bonusOption);
             EventLevelUp += stats.NewLevel;
             EventLevelUp += stats.CalculateExperience;
             EventLevelUp += skillView.AddSkillPoint;
@@ -139,13 +136,11 @@ namespace GrandTheftAuto.GameFolder.Classes
             {
                 ComponentStats componentStats = new ComponentStats(game, stats, this);
                 game.Components.Add(componentStats);
-                IsStatsRunning = true;
             }
             else if (game.SingleClick(game.controlsList[(int)EKeys.T].Key, false) && !IsStatsRunning && Character.Alive)
             {
                 ComponentStats componentStats = new ComponentStats(game, skillView, stats, this);
                 game.Components.Add(componentStats);
-                IsStatsRunning = true;
             }
         }
 
@@ -179,12 +174,9 @@ namespace GrandTheftAuto.GameFolder.Classes
         /// </summary>
         public void DrawCharacter()
         {
-            game.spriteBatch.Draw(game.spritCharacter[Character.CurrentFrame],
-                new Rectangle((int)Character.Position.X, (int)Character.Position.Y,
-                    game.spritCharacter[Character.CurrentFrame].Width, game.spritCharacter[Character.CurrentFrame].Height), null,
-                Color.White, game.Rotation(Character.Angle) + 1.5f,
-                new Vector2(game.spritCharacter[Character.CurrentFrame].Width / 2, game.spritCharacter[Character.CurrentFrame].Height / 2),
-                SpriteEffects.None, 0f);
+            Texture2D texture = !Character.IsGunInHand ? game.spritCharacter[Character.CurrentFrame] : game.spritCharacterWithGun[Character.CurrentFrame];
+            game.spriteBatch.Draw(texture, new Rectangle((int)Character.Position.X, (int)Character.Position.Y, texture.Width, texture.Height), null,
+                Color.White, game.Rotation(Character.Angle) + 1.5f, new Vector2(texture.Width / 2, texture.Height / 2), SpriteEffects.None, 0f);
         }
 
         protected virtual void OnEventLevelUp(int maxEnergy, double maxHp)

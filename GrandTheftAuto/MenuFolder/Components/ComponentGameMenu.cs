@@ -1,6 +1,7 @@
 using System.Linq;
 using GrandTheftAuto.GameFolder.Classes;
 using GrandTheftAuto.GameFolder.Classes.CarFolder;
+using GrandTheftAuto.GameFolder.Classes.GunFolder;
 using GrandTheftAuto.GameFolder.Components;
 using GrandTheftAuto.MenuFolder.Classes;
 using Menu.MenuFolder.Interface;
@@ -28,17 +29,17 @@ namespace GrandTheftAuto.MenuFolder.Components
         {
             this.game = game;
             menuItems = new MenuItems(game);
-            Vector2 position = new Vector2(game.graphics.PreferredBackBufferWidth/2,game.graphics.PreferredBackBufferHeight/2);
+            Vector2 position = new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 2);
             //pøidávání položek do menu
-            menuItems.AddItem("Start",position,game.bigFont);
+            menuItems.AddItem("Start", position, game.bigFont);
             menuItems.AddItem("Load", position, game.bigFont);
-            menuItems.AddItem("Settings",position, game.bigFont);
-            menuItems.AddItem("Controls",position, game.bigFont);
-            menuItems.AddItem("About",position, game.bigFont);
+            menuItems.AddItem("Settings", position, game.bigFont);
+            menuItems.AddItem("Controls", position, game.bigFont);
+            menuItems.AddItem("About", position, game.bigFont);
             menuItems.AddItem("Exit", position, game.bigFont);
             menuItems.Selected = menuItems.Items.First();
-            menuItems.SetKeysDown(Keys.Down,Keys.S);
-            menuItems.SetKeysUp(Keys.W,Keys.Up);
+            menuItems.SetKeysDown(Keys.Down, Keys.S);
+            menuItems.SetKeysUp(Keys.W, Keys.Up);
         }
         /// <summary>
         /// Initialiaze method implemets from IInitializable
@@ -56,7 +57,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         public override void Update(GameTime gameTime)
         {
             menuItems.Moving();
-            if (game.SingleClick(Keys.Enter) /*|| (game.SingleClickMouse() && menuItems.CursorColision()*/)
+            if (game.SingleClick(Keys.Enter) || (game.SingleClickLeftMouse() && menuItems.CursorColision()))
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
                 switch (menuItems.Selected.Text)
@@ -64,39 +65,39 @@ namespace GrandTheftAuto.MenuFolder.Components
                     case "Start":
                         GameGraphics gameGraphics = new GameGraphics(game);
                         Camera camera = new Camera(game);
-                        ComponentGameGraphics componentGameGraphics = new ComponentGameGraphics(game,gameGraphics,camera);
+                        ComponentGameGraphics componentGameGraphics = new ComponentGameGraphics(game, gameGraphics, camera);
                         game.Components.Add(componentGameGraphics);
-                        SavedData savedData = new SavedData(new Vector2(100,100), 0f,game.carList,false);
+                        SavedData savedData = new SavedData(new Vector2(100, 100), 0f, game.carList, false);
                         game.gunsOptions.GunList.Clear();        // vyèištìní listu se zbranìmi
-                        game.gunsOptions.AddGun(new Vector2(200, 200), 1);
-                        game.gunsOptions.AddGun(new Vector2(200, 100), 1);
-                        game.gunsOptions.AddGun(new Vector2(200, 100), 2);
-                        game.gunsOptions.AddGun(new Vector2(300, 200), 2);
-                        game.gunsOptions.AddGun(new Vector2(100, 200), 2);
-                        game.gunsOptions.AddGun(new Vector2(400, 200), 2);
-                        game.gunsOptions.AddGun(new Vector2(300, 500), 4);
-                        ComponentCharacter componentCharacter = new ComponentCharacter(game,savedData,gameGraphics,camera);
+                        game.gunsOptions.AddGun(new Vector2(200, 200), (int)EGuns.P90);
+                        game.gunsOptions.AddGun(new Vector2(200, 100), (int)EGuns.ACWR);
+                        game.gunsOptions.AddGun(new Vector2(200, 100), (int)EGuns.ScarL);
+                        game.gunsOptions.AddGun(new Vector2(300, 200), (int)EGuns.Ak47);
+                        game.gunsOptions.AddGun(new Vector2(100, 200), (int)EGuns.PKP);
+                        game.gunsOptions.AddGun(new Vector2(400, 200), (int)EGuns.M4A1);
+                        game.gunsOptions.AddGun(new Vector2(300, 500), (int)EGuns.M60);
+                        BonusOption bonusOption = new BonusOption();
+                        ComponentCharacter componentCharacter = new ComponentCharacter(game, savedData, gameGraphics, camera, bonusOption);
                         Game.Components.Add(componentCharacter);
                         game.carList.Add(new Car(game, new Vector2(0, 0), 103000, 1770));
                         game.carList.Add(new Car(game, new Vector2(200, 0), 103000, 1770));
-                        ComponentItem componentItem = new ComponentItem(game,camera);
+                        ComponentItem componentItem = new ComponentItem(game, camera);
                         Game.Components.Add(componentItem);
-                        ComponentInventory componentInventory = new ComponentInventory(game,componentCharacter.CharacterService.Character);
-                        game.Components.Add(componentInventory);
-                        ComponentCar componentCar = new ComponentCar(game,camera,componentCharacter,gameGraphics);
+                        ComponentCar componentCar = new ComponentCar(game, camera, componentCharacter);
                         game.Components.Add(componentCar);
-                        ComponentGuns componentGuns = new ComponentGuns(game,gameGraphics,componentCharacter.CharacterService.Character,savedData,camera);
+                        ComponentGuns componentGuns = new ComponentGuns(game, gameGraphics, componentCharacter.CharacterService.Character, savedData, camera);
                         game.Components.Add(componentGuns);
-                        ComponentEnemy componentEnemy = new ComponentEnemy(game, savedData, gameGraphics.graphicsService.ColisionList(), camera,componentCar,componentGuns.GunService, componentCharacter.CharacterService);
+                        ComponentEnemy componentEnemy = new ComponentEnemy(game, savedData, gameGraphics.graphicsService.ColisionList(), camera, componentCar, componentGuns.GunService, componentCharacter.CharacterService);
                         game.Components.Add(componentEnemy);
-                        ComponentQuestSystem componentQuestSystem = new ComponentQuestSystem(game,componentCharacter.CharacterService.Character,camera);
+                        ComponentInventory componentInventory = new ComponentInventory(game, componentCharacter.CharacterService.Character, bonusOption, componentEnemy, componentCharacter, componentGuns, componentCar);
+                        game.Components.Add(componentInventory);
+                        ComponentQuestSystem componentQuestSystem = new ComponentQuestSystem(game, componentCharacter.CharacterService.Character, camera);
                         game.Components.Add(componentQuestSystem);
-                        ComponentGUI componentGui = new ComponentGUI(game,camera,componentCharacter.CharacterService.Character,componentGuns.GunService,componentEnemy.enemyService);
+                        ComponentGUI componentGui = new ComponentGUI(game, camera, componentCharacter.CharacterService.Character, componentGuns.GunService, componentEnemy.enemyService);
                         game.Components.Add(componentGui);
-                        ComponentPause componentPause = new ComponentPause(game,componentCar,componentCharacter,componentEnemy,componentGameGraphics,componentGuns,componentGui,componentQuestSystem);
+                        ComponentPause componentPause = new ComponentPause(game, componentCar, componentCharacter, componentEnemy, componentGameGraphics, componentGuns, componentGui, componentQuestSystem, componentInventory,componentItem);
                         game.Components.Add(componentPause);
                         game.ComponentEnable(this, false);
-                        Game.IsMouseVisible = false;
                         break;
                     case "Load":
                         game.EGameState = EGameState.Load;
@@ -130,25 +131,8 @@ namespace GrandTheftAuto.MenuFolder.Components
             {
                 game.ComponentEnable(componentAbout, false);
             }
-            //menuItems.CursorPosition();
+            menuItems.CursorPosition();
             base.Update(gameTime);
-        }
-        /// <summary>
-        /// Show the scene
-        /// </summary>
-        public virtual void Show()
-        {
-            Visible = true;
-            Enabled = true;
-        }
-
-        /// <summary>
-        /// Hide the scene
-        /// </summary>
-        public virtual void Hide()
-        {
-            Visible = false;
-            Enabled = false;
         }
         /// <summary>
         /// Drawable method
@@ -157,7 +141,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
-            game.spriteBatch.Draw(game.spritMenuBackground, new Rectangle(0,0,game.graphics.PreferredBackBufferWidth,game.graphics.PreferredBackBufferHeight), Color.White);
+            game.spriteBatch.Draw(game.spritMenuBackground, new Rectangle(0, 0, game.graphics.PreferredBackBufferWidth, game.graphics.PreferredBackBufferHeight), Color.White);
             menuItems.Draw();
             game.spriteBatch.Draw(game.cursor, game.mouseState.Position.ToVector2(), Color.White);
             game.spriteBatch.End();

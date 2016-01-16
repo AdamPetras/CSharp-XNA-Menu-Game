@@ -15,7 +15,6 @@ namespace GrandTheftAuto.GameFolder.Components
         private float animation;
         private ComponentCharacter componentCharacter;
         private double getOutOfCarTimer;
-        private GameGraphics gameGraphics;
 
         /// <summary>
         /// Constructor
@@ -23,13 +22,12 @@ namespace GrandTheftAuto.GameFolder.Components
         /// <param name="game"></param>
         /// <param name="camera"></param>
         /// <param name="componentCharacter"></param>
-        public ComponentCar(GameClass game, Camera camera, ComponentCharacter componentCharacter,GameGraphics gameGraphics)
+        public ComponentCar(GameClass game, Camera camera, ComponentCharacter componentCharacter)
             : base(game)
         {
             this.game = game;
             this.camera = camera;
             this.componentCharacter = componentCharacter;
-            this.gameGraphics = gameGraphics;
             animation = 0;
         }
         /// <summary>

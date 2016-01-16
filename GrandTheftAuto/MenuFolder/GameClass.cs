@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GrandTheftAuto.GameFolder.Classes;
 using GrandTheftAuto.GameFolder.Classes.CarFolder;
 using GrandTheftAuto.GameFolder.Classes.GunFolder;
@@ -8,6 +9,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using GrandTheftAuto.MenuFolder.Components;
+using Microsoft.Xna.Framework.Audio;
+
 namespace GrandTheftAuto.MenuFolder
 {
     public enum EGameState
@@ -20,23 +23,25 @@ namespace GrandTheftAuto.MenuFolder
         InGameCar,
         InGameOut,
         Reloading,
+        Inventory,
         GameOver
     }
+
     public enum EKeys
     {
         Up = 0, //go up
-        Down,   //go down
-        Left,   //go left
-        Right,  //go right
-        Space,  //handbrake
-        E,      //enter the car
-        R,      //reload gun
-        Q,      //change gun
-        Shift,  //run
-        C,      //open character stats
-        T,      //open talent list
-        F,      //talk with NPCs
-        I       //quest info
+        Down, //go down
+        Left, //go left
+        Right, //go right
+        Space, //handbrake
+        E, //enter the car
+        R, //reload gun
+        Q, //change gun
+        Shift, //run
+        C, //open character stats
+        T, //open talent list
+        F, //talk with NPCs
+        I //quest info
     }
 
     /// <summary>
@@ -54,7 +59,17 @@ namespace GrandTheftAuto.MenuFolder
 
         public EGameState EGameState;
 
+        public SoundEffect[] gunSoundShots;
+        public SoundEffect[] gunSoundReloads;
+        public SoundEffect menuSound;
+        public SoundEffect pickUpItemSound;
+        public SoundEffect moveItemSound;
+        public SoundEffect questCompleteSound;
+        public SoundEffect FXOpenSound;
+        public SoundEffect FXCloseSound;
+
         #region Textury
+
         public Texture2D spritMenuBackground;
         public Texture2D spritAbout;
         public Texture2D spritCar;
@@ -62,11 +77,12 @@ namespace GrandTheftAuto.MenuFolder
         public Texture2D spritTree;
         public Texture2D spritExplosion;
         public Texture2D[] spritCharacter;
+        public Texture2D[] spritCharacterWithGun;
         public Texture2D spritRoad;
-        public Texture2D spritCrossRoad;            //200x200
-        public Texture2D spritRoadCurveLeft;        //200x200
-        public Texture2D spritRoadCurveRight;       //200x200
-        public Texture2D[] spritHouse;              //300x300 //300x300 //500x250
+        public Texture2D spritCrossRoad; //200x200
+        public Texture2D spritRoadCurveLeft; //200x200
+        public Texture2D spritRoadCurveRight; //200x200
+        public Texture2D[] spritHouse; //300x300 //300x300 //500x250
         public Texture2D[] spritGuns;
         public Texture2D[] spritEnemy;
         public Texture2D spritCharacterHealth;
@@ -92,12 +108,25 @@ namespace GrandTheftAuto.MenuFolder
         public Texture2D cursor;
         public Texture2D spritQuestComplete;
         public Texture2D spritSpeakBubble;
+        public Texture2D spritOrc;
+        public Texture2D[] spritStarterArmour;
+        public Texture2D[] spritFighterArmour;
+        public Texture2D[] spritBloodStrikerArmour;
+        public Texture2D[] spritHeadHunterArmour;
+        public Texture2D[] spritAllStarsArmour;
+        public Texture2D[] spritDroppedArmour;
+        public Texture2D spritInventoryEmpty;
+        public Texture2D[] spritWearEmpty;
+
         #endregion
+
         #region Fonty
+
         public SpriteFont bigFont;
         public SpriteFont normalFont;
         public SpriteFont smallFont;
         public SpriteFont smallestFont;
+
         #endregion
 
         public static int width = 1600, height = 900;
@@ -105,10 +134,11 @@ namespace GrandTheftAuto.MenuFolder
         public List<SavedData> saveList;
         public List<SavedControls> controlsList;
         public List<Car> carList;
-        public List<Item> itemList; 
+        public List<Item> itemList;
 
         public GunsOptions gunsOptions;
         private double ClickTimer;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -122,9 +152,11 @@ namespace GrandTheftAuto.MenuFolder
         /// Initialiaze method implemets from IInitializable
         /// </summary>
         protected override void Initialize()
-        {          
+        {
             #region DefiniceOkna
 
+            Window.Position = new Point(0, 0);
+            Window.Title = "Survive that!";
             graphics.PreferredBackBufferWidth = width;
             graphics.PreferredBackBufferHeight = height;
             graphics.ApplyChanges();
@@ -132,11 +164,14 @@ namespace GrandTheftAuto.MenuFolder
             #endregion
 
             #region NaèteníFontù
+
             bigFont = Content.Load<SpriteFont>(@"Font");
             normalFont = Content.Load<SpriteFont>(@"NormalFont");
             smallFont = Content.Load<SpriteFont>(@"SmallFont");
             smallestFont = Content.Load<SpriteFont>(@"smallestFont");
+
             #endregion
+
             //********************Inicializace komponenty pro menu*************************
             componentGameMenu = new ComponentGameMenu(this);
             //-----------------------------------------------------------------------------
@@ -165,8 +200,8 @@ namespace GrandTheftAuto.MenuFolder
             controlsList.Add(new SavedControls("questinfo", Keys.I));
             spritEnemy = new Texture2D[3];
             spritCharacter = new Texture2D[5];
+            spritCharacterWithGun = new Texture2D[5];
             spritHouse = new Texture2D[3];
-            spritGuns = new Texture2D[1];
             spritPergamen = new Texture2D[2];
             spritTalents = new Texture2D[13];
             spritNPCs = new Texture2D[8];
@@ -180,6 +215,14 @@ namespace GrandTheftAuto.MenuFolder
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            gunSoundShots = LoadSoundEffects(@"Sound/Shot/", "M9","P90","M4A1","Ak47","M4A1","Ak47","PKP","M60");
+            gunSoundReloads = LoadSoundEffects(@"Sound/Reload/", "M9Reload", "P90Reload", "M4A1Reload", "Ak47Reload", "M4A1Reload", "Ak47Reload", "PKPReload", "M60Reload");
+            menuSound = Content.Load<SoundEffect>(@"Sound/FXSound/Menu");
+            pickUpItemSound = Content.Load<SoundEffect>(@"Sound/FXSound/PickUpItem");
+            moveItemSound = Content.Load<SoundEffect>(@"Sound/FXSound/MoveItem");
+            FXCloseSound = Content.Load<SoundEffect>(@"Sound/FXSound/FXClose");
+            FXOpenSound = Content.Load<SoundEffect>(@"Sound/FXSound/FXOpen");
+            questCompleteSound = Content.Load<SoundEffect>(@"Sound/FXSound/QuestComplete");
 
             #region Naètení spritù
 
@@ -198,6 +241,7 @@ namespace GrandTheftAuto.MenuFolder
             spritRoadCurveRight = Content.Load<Texture2D>(@"Sprits/Road/roadcurveright");
             spritTCross = Content.Load<Texture2D>(@"Sprits/Road/Tcross");
             spritDeadEndRoad = Content.Load<Texture2D>(@"Sprits/Road/deadEnd");
+            spritInventoryEmpty = Content.Load<Texture2D>(@"Sprits/InventoryWear/InventoryEmpty");
 
             spritHouse[0] = Content.Load<Texture2D>(@"Sprits/Houses/house1");
             spritHouse[1] = Content.Load<Texture2D>(@"Sprits/Houses/house2");
@@ -212,20 +256,28 @@ namespace GrandTheftAuto.MenuFolder
             spritCharacter[2] = Content.Load<Texture2D>(@"Sprits/Character/characterGoTwo");
             spritCharacter[3] = Content.Load<Texture2D>(@"Sprits/Character/characterGoThree");
             spritCharacter[4] = Content.Load<Texture2D>(@"Sprits/Character/characterGoFour");
+            spritCharacterWithGun[0] = Content.Load<Texture2D>(@"Sprits/Character/CharacterWithGun/characterStop");
+            spritCharacterWithGun[1] = Content.Load<Texture2D>(@"Sprits/Character/CharacterWithGun/characterGoOne");
+            spritCharacterWithGun[2] = Content.Load<Texture2D>(@"Sprits/Character/CharacterWithGun/characterGoTwo");
+            spritCharacterWithGun[3] = Content.Load<Texture2D>(@"Sprits/Character/CharacterWithGun/characterGoThree");
+            spritCharacterWithGun[4] = Content.Load<Texture2D>(@"Sprits/Character/CharacterWithGun/characterGoFour");
             spritExperienceBar = Content.Load<Texture2D>(@"Sprits/Character/ExperienceBar");
             spritExperienceCharge = Content.Load<Texture2D>(@"Sprits/Character/ExperienceCharge");
+
             #endregion
 
-            spritEnemy[0] = Content.Load<Texture2D>(@"Sprits/Enemy/zombie");            
+            spritEnemy[0] = Content.Load<Texture2D>(@"Sprits/Enemy/zombie");
             spritBlood = Content.Load<Texture2D>(@"Sprits/Enemy/Blood");
             spritEnemyHealthBar = Content.Load<Texture2D>(@"Sprits/Enemy/enemyHealthBar");
 
             #region Zbranì
 
-            spritGuns[0] = Content.Load<Texture2D>(@"Sprits/Guns/M4A1");
+            spritGuns = LoadTextures(@"Sprits/Guns/", "M9", "P90", "M4A1", "AK47", "SCAR-L", "ACW-R", "PKP", "M60");
             spritBullet = Content.Load<Texture2D>(@"Sprits/Guns/bullet");
             spritAmmo = Content.Load<Texture2D>(@"Sprits/Guns/Ammo");
+
             #endregion
+
             spritPergamen[0] = Content.Load<Texture2D>(@"Sprits/TalentsAndStats/pergamen");
             spritPergamen[1] = Content.Load<Texture2D>(@"Sprits/Quest/pergamen2");
             spritHealthAndEnergyBar = Content.Load<Texture2D>(@"Sprits/HealthAndEnergyBar/Bar");
@@ -237,15 +289,31 @@ namespace GrandTheftAuto.MenuFolder
             spritDialogBubble = Content.Load<Texture2D>(@"Sprits/Dialog/dialogBubble");
             spritSpeakBubble = Content.Load<Texture2D>(@"Sprits/Quest/speakbubble");
             spritQuestComplete = Content.Load<Texture2D>(@"Sprits/Quest/questcomplete");
-            LoadTextures(spritTalents, @"Sprits/TalentsAndStats/talent",13);
-            LoadTextures(spritNPCs, @"Sprits/Character/NPCs/Npc",8);
+            LoadTextures(spritTalents, @"Sprits/TalentsAndStats/talent", 13);
+            LoadTextures(spritNPCs, @"Sprits/Character/NPCs/Npc", 8);
             cursor = Content.Load<Texture2D>(@"Sprits/cursor");
+            spritOrc = Content.Load<Texture2D>(@"Sprits/InventoryWear/orc");
+            spritStarterArmour = LoadTextures(@"Sprits/Item/Starter/", "Helm", "Chest", "Legs", "Boots", "Gloves",
+                "Shoulders", "Neck", "Ring");
+            spritDroppedArmour = LoadTextures(@"Sprits/Item/Dropped/", "Helm", "Chest", "Legs", "Boots", "Gloves",
+                "Shoulders", "Neck", "Ring");
+            spritFighterArmour = LoadTextures(@"Sprits/Item/Fighter/", "Helm", "Chest", "Legs", "Boots", "Gloves",
+                "Shoulders", "Neck", "Ring");
+            spritBloodStrikerArmour = LoadTextures(@"Sprits/Item/Bloodstriker/", "Helm", "Chest", "Legs", "Boots",
+                "Gloves", "Shoulders", "Neck", "Ring");
+            spritHeadHunterArmour = LoadTextures(@"Sprits/Item/HeadHunter/", "Helm", "Chest", "Legs", "Boots", "Gloves",
+                "Shoulders", "Neck", "Ring");
+            spritAllStarsArmour = LoadTextures(@"Sprits/Item/AllStars/", "Helm", "Chest", "Legs", "Boots", "Gloves",
+                "Shoulders", "Neck", "Ring");
+            spritWearEmpty = LoadTextures(@"Sprits/InventoryWear/", "HelmEmpty", "ChestEmpty", "LegsEmpty", "BootsEmpty",
+                "GlovesEmpty", "ShouldersEmpty", "NeckEmpty", "RingEmpty");
         }
 
         protected override void UnloadContent()
         {
 
         }
+
         /// <summary>
         /// Updatable method
         /// </summary>
@@ -257,8 +325,9 @@ namespace GrandTheftAuto.MenuFolder
             mouseStateBefore = mouseState;
             keyState = Keyboard.GetState();
             mouseState = Mouse.GetState();
-            base.Update(gameTime);
+            base.Update(gameTime);          
         }
+
         /// <summary>
         /// Drawable method
         /// </summary>
@@ -277,7 +346,7 @@ namespace GrandTheftAuto.MenuFolder
         /// <param name="key"></param>
         /// <param name="flickering"></param>
         /// <returns></returns>
-        public bool SingleClick(Keys key,bool flickering = true)
+        public bool SingleClick(Keys key, bool flickering = true)
         {
             if (keyState.IsKeyDown(key) && keyStateBefore.IsKeyUp(key))
             {
@@ -293,24 +362,29 @@ namespace GrandTheftAuto.MenuFolder
             }
             return false;
         }
+
         public bool SingleClickLeftMouse()
         {
-            if (mouseState.LeftButton == ButtonState.Pressed && mouseStateBefore.LeftButton == ButtonState.Released && ClickTimer > 0)
+            if (mouseState.LeftButton == ButtonState.Pressed && mouseStateBefore.LeftButton == ButtonState.Released &&
+                ClickTimer > 0)
             {
                 ClickTimer = 0;
                 return true;
             }
             return false;
         }
+
         public bool SingleClickRightMouse()
         {
-            if (mouseState.RightButton == ButtonState.Pressed && mouseStateBefore.RightButton == ButtonState.Released && ClickTimer > 100)
+            if (mouseState.RightButton == ButtonState.Pressed && mouseStateBefore.RightButton == ButtonState.Released &&
+                ClickTimer > 100)
             {
                 ClickTimer = 0;
                 return true;
             }
             return false;
         }
+
         /// <summary>
         /// Method to Enable/Disable components
         /// </summary>
@@ -322,6 +396,7 @@ namespace GrandTheftAuto.MenuFolder
             if (component is DrawableGameComponent)
                 ((DrawableGameComponent)component).Visible = active;
         }
+
         public Vector2 CalculatePosition(Vector2 position, float angle, ref double distance)
         {
             position.X = (float)(Math.Cos(angle) * distance + position.X);
@@ -351,10 +426,25 @@ namespace GrandTheftAuto.MenuFolder
             graphics.GraphicsDevice.Clear(color);
         }
 
-        public void LoadTextures(Texture2D[] texture,string trace,int howManyTextures)
+        public void LoadTextures(Texture2D[] texture, string trace, int howManyTextures)
         {
-            for (int i=0;i<=howManyTextures-1;i++)
-            texture[i] = Content.Load<Texture2D>(trace+i);
+            for (int i = 0; i <= howManyTextures - 1; i++)
+                texture[i] = Content.Load<Texture2D>(trace + i);
+        }
+
+        public Texture2D[] LoadTextures(string trace, params string[] names)
+        {
+            Texture2D[] texture = new Texture2D[names.Count()];
+            for (int i = 0; i <= names.Count() - 1; i++)
+                texture[i] = Content.Load<Texture2D>(trace + names[i]);
+            return texture;
+        }
+        public SoundEffect[] LoadSoundEffects(string trace, params string[] names)
+        {
+            SoundEffect[] soundEffects = new SoundEffect[names.Count()];
+            for (int i = 0; i <= names.Count() - 1; i++)
+                soundEffects[i] = Content.Load<SoundEffect>(trace + names[i]);
+            return soundEffects;
         }
     }
 }

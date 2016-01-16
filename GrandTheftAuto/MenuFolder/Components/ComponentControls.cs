@@ -49,7 +49,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         public override void Update(GameTime gameTime)
         {
             controlItems.Moving();
-            if (game.SingleClick(Keys.Enter) /*|| (game.SingleClickMouse() && controlItems.CursorColision()*/)
+            if (game.SingleClick(Keys.Enter) || (game.SingleClickLeftMouse() && controlItems.CursorColision()))
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
 
@@ -85,7 +85,7 @@ namespace GrandTheftAuto.MenuFolder.Components
                         break;
                 }
             }
-            //controlItems.CursorPosition();
+            controlItems.CursorPosition();
             base.Update(gameTime);
         }
         /// <summary>
@@ -95,8 +95,9 @@ namespace GrandTheftAuto.MenuFolder.Components
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin();
-            game.spriteBatch.Draw(game.spritMenuBackground, Vector2.Zero, Color.White);
+            game.spriteBatch.Draw(game.spritMenuBackground, new Rectangle(0, 0, game.graphics.PreferredBackBufferWidth, game.graphics.PreferredBackBufferHeight), Color.White);
             controlItems.Draw();
+            game.spriteBatch.Draw(game.cursor, game.mouseState.Position.ToVector2(), Color.White);
             game.spriteBatch.End();
             base.Draw(gameTime);
         }

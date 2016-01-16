@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GrandTheftAuto.GameFolder.Classes
@@ -16,16 +12,27 @@ namespace GrandTheftAuto.GameFolder.Classes
         public Texture2D Texture { get; set; }
         public int Column { get; set; }
         public int Row { get; set; }
-        public bool Grab { get; set; }
+        public EWearing EWearing { get; private set; }
 
-        public InventoryItem(int column,int row, Vector2 position, Texture2D texture)
+        public InventoryItem(int column, int row, Vector2 position, Texture2D texture)
         {
             Column = column;
             Row = row;
             Position = position;
-            Rectangle = new Rectangle((int) Position.X,(int) Position.Y,50,50);
+            Rectangle = new Rectangle((int)Position.X, (int)Position.Y, 64, 64);
             Texture = texture;
             Empty = true;
+            EWearing = EWearing.None;
+            Item = null;
+        }
+        public InventoryItem(Vector2 position, Texture2D texture, EWearing eWearing)
+        {
+            Position = position;
+            Rectangle = new Rectangle((int)Position.X, (int)Position.Y, 64, 64);
+            Texture = texture;
+            Empty = true;
+            Item = null;
+            EWearing = eWearing;
         }
     }
 }

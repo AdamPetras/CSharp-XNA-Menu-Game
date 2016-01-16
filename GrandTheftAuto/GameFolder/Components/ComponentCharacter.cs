@@ -1,5 +1,6 @@
 ﻿using GrandTheftAuto.GameFolder.Classes;
 using GrandTheftAuto.GameFolder.Classes.CarFolder;
+using GrandTheftAuto.GameFolder.Classes.GunFolder;
 using GrandTheftAuto.MenuFolder;
 using GrandTheftAuto.MenuFolder.Classes;
 using Microsoft.Xna.Framework;
@@ -18,14 +19,14 @@ namespace GrandTheftAuto.GameFolder.Components
         private readonly Camera camera;
         private readonly GameGraphics gameGraphics;
         private Vector2 before;
-        public ComponentCharacter(GameClass game, SavedData savedData, GameGraphics gameGraphics, Camera camera)
+        public ComponentCharacter(GameClass game, SavedData savedData, GameGraphics gameGraphics, Camera camera, BonusOption bonusOption)
             : base(game)
         {
             this.game = game;
             this.gameGraphics = gameGraphics;
             this.camera = camera;
             game.EGameState = EGameState.InGameOut;
-            CharacterService = new CharacterService(game, savedData);
+            CharacterService = new CharacterService(game, savedData, bonusOption);
         }
 
         /// <summary>
@@ -77,7 +78,6 @@ namespace GrandTheftAuto.GameFolder.Components
             game.SplashDisplay();       // čištění displeje
             base.Update(gameTime);
         }
-
         public override void Draw(GameTime gameTime)
         {
             game.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);

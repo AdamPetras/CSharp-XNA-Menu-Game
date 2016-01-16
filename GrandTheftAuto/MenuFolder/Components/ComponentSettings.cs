@@ -42,9 +42,7 @@ namespace GrandTheftAuto.MenuFolder.Components
                 }
             }
             position = new Vector2(game.graphics.PreferredBackBufferWidth/4,game.graphics.PreferredBackBufferHeight/2);
-            settings.AddItem("Display mode:",position,game.normalFont,value: values.IsFullScreen());
-            settings.AddItem("Resolution:", position, game.normalFont, value: values.GetResolution(index));
-            settings.AddItem("Back", position, game.normalFont);
+            WriteMenu();
             settings.Selected = settings.Items.First();
             settings.SetKeysDown(Keys.Down, Keys.S);
             settings.SetKeysUp(Keys.W, Keys.Up);
@@ -57,7 +55,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         public override void Update(GameTime gameTime)
         {
             settings.Moving();
-            if (game.SingleClick(Keys.Enter) /*|| (game.SingleClickMouse() && settings.CursorColision()*/)
+            if (game.SingleClick(Keys.Enter) || (game.SingleClickLeftMouse() && settings.CursorColision()))
             {
                 //Dìlej nìco pøi zmáèknutí enter na urèitém místì
                 switch (settings.Selected.Text)
@@ -65,7 +63,8 @@ namespace GrandTheftAuto.MenuFolder.Components
                     case "Display mode:":
                         game.graphics.IsFullScreen = !game.graphics.IsFullScreen;
                         game.graphics.ApplyChanges();
-                        settings.UpdateItem("Display mode:", 0, position, game.normalFont,value:values.IsFullScreen());
+                        position = new Vector2(game.graphics.PreferredBackBufferWidth / 4, game.graphics.PreferredBackBufferHeight / 2);
+                        WriteMenu();
                         break;
                     case "Resolution:":
                         //index = index < values.GetResolutionList().Count-1 ? index++ : index = 0;
@@ -75,13 +74,11 @@ namespace GrandTheftAuto.MenuFolder.Components
                         IsResolutionChanged = true;
                         game.graphics.PreferredBackBufferWidth = values.GetResolutionList()[index].Width;
                         game.graphics.PreferredBackBufferHeight = values.GetResolutionList()[index].Height;
-                        position = new Vector2(game.graphics.PreferredBackBufferWidth / 4, game.graphics.PreferredBackBufferHeight / 2);
-                        settings.UpdateItem("Display mode:", 0, position, game.normalFont,value:values.IsFullScreen());
-                        settings.UpdateItem("Resolution:", 1, position, game.normalFont, value:values.GetResolution(index));
-                        settings.UpdateItem("Back", 2, position, game.normalFont);
                         game.graphics.ApplyChanges();
                         game.componentGameMenu = new ComponentGameMenu(game);
                         settings.Selected = settings.Items.Find(s => s.Text=="Resolution:");
+                        position = new Vector2(game.graphics.PreferredBackBufferWidth / 4, game.graphics.PreferredBackBufferHeight / 2);
+                        WriteMenu();
                         break;
                     case "Back":
                         game.ComponentEnable(this,false);
@@ -92,7 +89,7 @@ namespace GrandTheftAuto.MenuFolder.Components
                         break;
                 }
             } 
-            //settings.CursorPosition();
+            settings.CursorPosition();
             base.Update(gameTime);
         }
         /// <summary>
@@ -104,8 +101,17 @@ namespace GrandTheftAuto.MenuFolder.Components
             game.spriteBatch.Begin();
             game.spriteBatch.Draw(game.spritMenuBackground, new Rectangle(0, 0, game.graphics.PreferredBackBufferWidth, game.graphics.PreferredBackBufferHeight), Color.White);  //vykreslení backgroundu pro settings
             settings.Draw();
+            game.spriteBatch.Draw(game.cursor, game.mouseState.Position.ToVector2(), Color.White);
             game.spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        private void WriteMenu()
+        {
+            settings.Items.Clear();
+            settings.AddItem("Display mode:", position, game.normalFont, value: values.IsFullScreen());
+            settings.AddItem("Resolution:", position, game.normalFont, value: values.GetResolution(index));
+            settings.AddItem("Back", position, game.normalFont);
         }
     }
 }

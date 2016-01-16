@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using GrandTheftAuto.GameFolder.Classes;
+﻿using GrandTheftAuto.GameFolder.Classes;
 using GrandTheftAuto.MenuFolder;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -102,7 +98,7 @@ namespace GrandTheftAuto.GameFolder.Components
                         timerIfComplete = 0;
                         questComplete = false;
                         ExitThisComponent();
-                    }                
+                    }
                 }
                 game.spriteBatch.End();
 
@@ -122,6 +118,12 @@ namespace GrandTheftAuto.GameFolder.Components
                     currentQuestMaster.QuestList.Remove(currentQuest);
                     character.QuestList.Remove(currentQuest);
                     character.QuestPoints++;
+                    if (currentQuest.ItemReward != null)    //přidání itemu do item listu
+                    {
+                        currentQuest.ItemReward.Position = character.Position;  //nastavení pozice, kde stojí charakter
+                        currentQuest.ItemReward.UpdateRectangle();  //update kvůli detekci kolize
+                        game.itemList.Add(currentQuest.ItemReward);
+                    }
                 }
             }
             else if (currentQuest.ETypeOfQuest == ETypeOfQuest.SearchAndDestroy)
@@ -134,6 +136,12 @@ namespace GrandTheftAuto.GameFolder.Components
                     currentQuestMaster.QuestList.Remove(currentQuest);
                     character.QuestList.Remove(currentQuest);
                     character.QuestPoints++;
+                    if (currentQuest.ItemReward != null)    //přidání itemu do item listu
+                    {
+                        currentQuest.ItemReward.Position = character.Position; //nastavení pozice, kde stojí charakter
+                        currentQuest.ItemReward.UpdateRectangle();  //update kvůli detekci kolize
+                        game.itemList.Add(currentQuest.ItemReward);
+                    }
                 }
                 else if (currentQuest.EQuestState == EQuestState.Active) ExitThisComponent();
             }
@@ -147,6 +155,12 @@ namespace GrandTheftAuto.GameFolder.Components
                     currentQuestMaster.QuestList.Remove(currentQuest);
                     character.QuestList.Remove(currentQuest);
                     character.QuestPoints++;
+                    if (currentQuest.ItemReward != null)    //přidání itemu do item listu
+                    {
+                        currentQuest.ItemReward.Position = character.Position;  //nastavení pozice, kde stojí charakter
+                        currentQuest.ItemReward.UpdateRectangle();  //update kvůli detekci kolize
+                        game.itemList.Add(currentQuest.ItemReward);
+                    }
                 }
                 else if (currentQuest.EQuestState == EQuestState.Active) ExitThisComponent();
             }

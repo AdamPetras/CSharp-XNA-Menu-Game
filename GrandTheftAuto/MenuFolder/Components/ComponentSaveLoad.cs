@@ -68,7 +68,7 @@ namespace GrandTheftAuto.MenuFolder.Components
         public override void Update(GameTime gameTime)
         {
             load.Moving();
-            if (game.SingleClick(Keys.Enter) /*|| (game.SingleClickMouse() && load.CursorColision()*/)
+            if (game.SingleClick(Keys.Enter) || (game.SingleClickLeftMouse() && load.CursorColision()))
             {
                 switch (load.Selected.Text)
                 {
@@ -92,7 +92,7 @@ namespace GrandTheftAuto.MenuFolder.Components
                         break;
                 }
             }
-            //load.CursorPosition();
+            load.CursorPosition();
             base.Update(gameTime);
         }
         /// <summary>
@@ -103,8 +103,9 @@ namespace GrandTheftAuto.MenuFolder.Components
         {
             game.spriteBatch.Begin();
             DrawOrder = 10;
-            game.spriteBatch.Draw(game.spritMenuBackground, Vector2.Zero, Color.White);
+            game.spriteBatch.Draw(game.spritMenuBackground, new Rectangle(0, 0, game.graphics.PreferredBackBufferWidth, game.graphics.PreferredBackBufferHeight), Color.White);
             load.Draw();
+            game.spriteBatch.Draw(game.cursor, game.mouseState.Position.ToVector2(), Color.White);
             game.spriteBatch.End();
         }
         /// <summary>
@@ -166,14 +167,5 @@ namespace GrandTheftAuto.MenuFolder.Components
             }
             #endregion
         }
-        /// <summary>
-        /// Method to draw statistics of saving
-        /// </summary>
-        /* private void DrawStats()
-         {
-             DrawOrder = 10;
-             for (int i = 0; i < game.saveList.Count; i++)
-                 game.spriteBatch.DrawString(game.normalFont, game.saveList[i].Time, new Vector2(position.X + game.normalFont.MeasureString(game.saveList[i].Time).X, position.Y + i * game.normalFont.MeasureString(game.saveList[i].Time).Y), Color.White);
-         }*/
     }
 }

@@ -32,10 +32,11 @@ namespace GrandTheftAuto.MenuFolder.Components
             about.AddItem("", position, game.smallFont);
             about.AddItem("Main programmer: ", position, game.smallFont);
             about.AddItem("Adam Petráš", position, game.smallFont);
-            about.AddItem("", position, game.smallFont);
             about.AddItem("Main graphics: ", position, game.smallFont);
             about.AddItem("Adam Petráš", position, game.smallFont);
             about.AddItem("Jiří Mrhálek", position, game.smallFont);
+            about.AddItem("Thoughts:", position, game.smallFont);
+            about.AddItem("Martin Fiedor", position, game.smallFont);
             about.AddItem("THANK YOU!!!", position, game.smallFont);
             base.Initialize();
         }

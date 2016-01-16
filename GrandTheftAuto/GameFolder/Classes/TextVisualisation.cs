@@ -9,20 +9,10 @@ namespace GrandTheftAuto.GameFolder.Classes
 {
     public abstract class TextVisualisation
     {
-        public string LineFormat(string text, int lineLength)
-        {
-            lineLength = 25; //počet písmen na řádku
-            for (int i = 1; i < (text.Length / lineLength); i++)
-            {
-                text = text.Insert(i * lineLength, "\n");
-            }
-            return text;
-        }
-
         public string WrapText(SpriteFont spriteFont, string text, float maxLineWidth)
         {
-            string[] words = text.Split(' ');
-            StringBuilder sb = new StringBuilder();
+            string[] words = text.Split(' ');   //rozdělení textu do pole pomocí splitu, který zjišťuje mezery
+            StringBuilder stringBuilder = new StringBuilder();
             float lineWidth = 0f;
             float spaceWidth = spriteFont.MeasureString(" ").X;
             foreach (string word in words)
@@ -32,17 +22,17 @@ namespace GrandTheftAuto.GameFolder.Classes
                     lineWidth = 0;
                 if (lineWidth + size.X < maxLineWidth)
                 {
-                    sb.Append(word + " ");
+                    stringBuilder.Append(word + " ");
                     lineWidth += size.X + spaceWidth;
                 }
                 else
                 {
-                    sb.Append("\n" + word + " ");
+                    stringBuilder.Append("\n" + word + " ");
                     lineWidth = size.X + spaceWidth;
                 }
             }
 
-            return sb.ToString();
+            return stringBuilder.ToString();
         }
     }
 }

@@ -81,7 +81,9 @@ namespace GrandTheftAuto.GameFolder.Components
                 {
                     //vykreslení infa o zbrani
                     game.spriteBatch.DrawString(game.normalFont, characterUsingGuns.SelectedGun.EGun + "\n" + characterUsingGuns.SelectedGun.Magazine + "/" + characterUsingGuns.SelectedGun.Ammo, new Vector2(camera.Centering.X, camera.Centering.Y), Color.White);
-                    for (int i = 0; i < characterUsingGuns.SelectedGun.Magazine; i++)   //vykreslení nábojů graficky
+                    //if pro omezení nábojů graficky                  
+                    int Ammo = characterUsingGuns.SelectedGun.Magazine > 30 ? 30 : characterUsingGuns.SelectedGun.Magazine;
+                    for (int i = 0; i < Ammo; i++)   //vykreslení nábojů graficky
                         game.spriteBatch.Draw(game.spritAmmo, new Vector2(camera.Centering.X + (game.spritAmmo.Width + 1) * i, camera.Centering.Y + 2 * game.normalFont.MeasureString("A").Y), Color.White);
                 }
                 else

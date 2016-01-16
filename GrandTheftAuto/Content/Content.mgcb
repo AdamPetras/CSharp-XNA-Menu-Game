@@ -19,3 +19,111 @@
 /processorParam:TextureFormat=Compressed
 /build:smallestFont.spritefont
 
+#begin Sound/Ak47.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Ak47.mp3
+
+#begin Sound/M4A1.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/M4A1.mp3
+
+#begin Sound/M9.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/M9.mp3
+
+#begin Sound/P90.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/P90.mp3
+
+#begin Sound/M60.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/M60.mp3
+
+#begin Sound/PKP.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/PKP.mp3
+
+#begin Sound/Ak47Reload.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Ak47Reload.mp3
+
+#begin Sound/M4A1Reload.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/M4A1Reload.mp3
+
+#begin Sound/M9Reload.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/M9Reload.mp3
+
+#begin Sound/M60Reload.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/M60Reload.mp3
+
+#begin Sound/P90Reload.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/P90Reload.mp3
+
+#begin Sound/PKPReload.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/PKPReload.mp3
+
+#begin Sound/Menu.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Menu.wav
+
+#begin Sound/PickUpItem.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/PickUpItem.wav
+
+#begin Sound/MoveItem.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/MoveItem.mp3
+
+#begin Sound/FXClose.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/FXClose.mp3
+
+#begin Sound/FXOpen.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/FXOpen.mp3
+
+#begin Sound/QuestComplete.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/QuestComplete.mp3
+

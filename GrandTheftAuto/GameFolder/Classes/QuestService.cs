@@ -15,19 +15,19 @@ namespace GrandTheftAuto.GameFolder.Classes
         }
 
         public void AddQuest(string name, string description, SpriteFont spriteFont, int reward, int levelToActive,
-            QuestMaster start, QuestMaster end)
+            QuestMaster start, QuestMaster end, Item itemReward = null)
         {
-            QuestList.Add(new Quest(name, description, spriteFont, reward, start, end, levelToActive));
+            QuestList.Add(new Quest(name, description, spriteFont, reward, start, end, levelToActive, itemReward));
         }
         public void AddQuest(string name, string description, SpriteFont spriteFont, int reward, int levelToActive,
-            int valueToSuccess, QuestMaster start, QuestMaster end,Rectangle? placeToDo, params EEnemies[] eEnemies)
+            int valueToSuccess, QuestMaster start, QuestMaster end, Rectangle? placeToDo, Item itemReward = null, params EEnemies[] eEnemies)
         {
-            QuestList.Add(new Quest(name, description, spriteFont, reward, valueToSuccess, start, end, levelToActive,placeToDo,eEnemies));
+            QuestList.Add(new Quest(name, description, spriteFont, reward, valueToSuccess, start, end, levelToActive, placeToDo, itemReward, eEnemies));
         }
 
-        public void AddQuest(string name, string description, SpriteFont spriteFont, int reward, int levelToActive, QuestMaster start, QuestMaster end, params QuestMaster[] speakWith)
+        public void AddQuest(string name, string description, SpriteFont spriteFont, int reward, int levelToActive, QuestMaster start, QuestMaster end, Item itemReward = null, params QuestMaster[] speakWith)
         {
-            QuestList.Add(new Quest(name, description, spriteFont, reward, start, end, levelToActive, speakWith));
+            QuestList.Add(new Quest(name, description, spriteFont, reward, start, end, levelToActive, itemReward, speakWith));
         }
     }
 

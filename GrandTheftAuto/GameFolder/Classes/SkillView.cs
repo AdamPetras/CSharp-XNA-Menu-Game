@@ -9,12 +9,13 @@ namespace GrandTheftAuto.GameFolder.Classes
         private SkillService skillService;
         private GameClass game;
         private Character character;
-
-        public SkillView(GameClass game, Character character)
+        private BonusOption bonusOption;
+        public SkillView(GameClass game, Character character,BonusOption bonusOption)
         {
             this.game = game;
             this.character = character;
-            skillService = new SkillService(game, character);
+            skillService = new SkillService(game, character,bonusOption);
+            this.bonusOption = bonusOption;
             AddAllSkills();
         }
         public void AddSkillPoint()
@@ -49,7 +50,7 @@ namespace GrandTheftAuto.GameFolder.Classes
     new Vector2(skillService.GetDescriptionOfSkill().Rectangle.Right,
         skillService.GetDescriptionOfSkill().Position.Y), Color.White);
             }
-            game.spriteBatch.DrawString(game.normalFont, "Vitality bonus: " + skillService.BonusOption.VitalityBonus + "\nIntelect bonus: " + skillService.BonusOption.IntelectBonus + "\nStamina bonus: " + skillService.BonusOption.StaminaBonus + "\nSprit bonus: " + skillService.BonusOption.SpiritBonus + "\nAgility bonus: " + skillService.BonusOption.AgilityBonus + "\nActual skill level: " + character.ActualSkillLevel+"\nSkill points: "+character.SkillPoints, new Vector2(100, 100), Color.White);
+            game.spriteBatch.DrawString(game.normalFont, "Vitality bonus: " + bonusOption.VitalityBonus + "\nIntelect bonus: " + bonusOption.IntelectBonus + "\nStamina bonus: " + bonusOption.StaminaBonus + "\nSprit bonus: " + bonusOption.SpiritBonus + "\nAgility bonus: " + bonusOption.AgilityBonus + "\nActual skill level: " + character.ActualSkillLevel+"\nSkill points: "+character.SkillPoints, new Vector2(100, 100), Color.White);
 
         }
 

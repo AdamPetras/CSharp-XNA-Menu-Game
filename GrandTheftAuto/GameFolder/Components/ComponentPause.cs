@@ -23,7 +23,9 @@ namespace GrandTheftAuto.GameFolder.Components
         private ComponentGuns componentGuns;
         private ComponentGUI componentGui;
         private ComponentQuestSystem componentQuestSystem;
-        public ComponentPause(GameClass game, ComponentCar componentCar, ComponentCharacter componentCharacter, ComponentEnemy componentEnemy, ComponentGameGraphics componentGameGraphics, ComponentGuns componentGuns, ComponentGUI componentGui,ComponentQuestSystem componentQuestSystem)
+        private ComponentInventory componentInventory;
+        private ComponentItem componentItem;
+        public ComponentPause(GameClass game, ComponentCar componentCar, ComponentCharacter componentCharacter, ComponentEnemy componentEnemy, ComponentGameGraphics componentGameGraphics, ComponentGuns componentGuns, ComponentGUI componentGui, ComponentQuestSystem componentQuestSystem, ComponentInventory componentInventory,ComponentItem componentItem)
             : base(game)
         {
             this.game = game;
@@ -34,6 +36,8 @@ namespace GrandTheftAuto.GameFolder.Components
             this.componentGameGraphics = componentGameGraphics;
             this.componentGuns = componentGuns;
             this.componentGui = componentGui;
+            this.componentInventory = componentInventory;
+            this.componentItem = componentItem;
         }
 
         /// <summary>
@@ -43,7 +47,7 @@ namespace GrandTheftAuto.GameFolder.Components
         public override void Initialize()
         {
             pause = new MenuItems(game);
-            Vector2 position = new Vector2(game.graphics.PreferredBackBufferWidth/2,game.graphics.PreferredBackBufferHeight/2);
+            Vector2 position = new Vector2(game.graphics.PreferredBackBufferWidth / 2, game.graphics.PreferredBackBufferHeight / 2);
             pause.AddItem("Back", position, game.bigFont);
             pause.AddItem("Load", position, game.bigFont);
             pause.AddItem("Save", position, game.bigFont);
@@ -65,26 +69,14 @@ namespace GrandTheftAuto.GameFolder.Components
             {
                 componentGuns.Enabled = false;
                 componentEnemy.Enabled = false;
+                game.ComponentEnable(componentInventory,false);
                 pause.Moving();
-                if (game.SingleClick(Keys.Enter) /*|| (game.SingleClickMouse() && pause.CursorColision()*/)
+                if (game.SingleClick(Keys.Enter) || (game.SingleClickLeftMouse() && pause.CursorColision()))
                 {
                     switch (pause.Selected.Text)
                     {
                         case "Back":
-                            if (eGameStateBefore == EGameState.InGameCar)
-                            {
-                                game.EGameState = EGameState.InGameCar;
-                                componentCar.Enabled = true;
-                                componentEnemy.Enabled = true;
-                                componentGuns.Enabled = true;
-                            }
-                            else if (eGameStateBefore == EGameState.InGameOut)
-                            {
-                                game.EGameState = EGameState.InGameOut;
-                                componentCharacter.Enabled = true;
-                                componentEnemy.Enabled = true;
-                                componentGuns.Enabled = true;
-                            }
+                            Exit();
                             Game.IsMouseVisible = false;
                             break;
                         case "Load":
@@ -106,7 +98,9 @@ namespace GrandTheftAuto.GameFolder.Components
                             game.Components.Remove(componentGuns);
                             game.Components.Remove(componentGameGraphics);
                             game.Components.Remove(componentQuestSystem);
+                            game.Components.Remove(componentInventory);
                             game.Components.Remove(this);
+                            game.Components.Remove(componentItem);
                             game.ComponentEnable(game.componentGameMenu);
                             game.ComponentEnable(this, false);
                             break;
@@ -117,22 +111,9 @@ namespace GrandTheftAuto.GameFolder.Components
                 }
                 if (game.SingleClick(Keys.Escape))
                 {
-                    if (eGameStateBefore == EGameState.InGameCar)
-                    {
-                        game.EGameState = EGameState.InGameCar;
-                        componentCar.Enabled = true;
-                        componentEnemy.Enabled = true;
-                        componentGuns.Enabled = true;
-                    }
-                    else if (eGameStateBefore == EGameState.InGameOut)
-                    {
-                        game.EGameState = EGameState.InGameOut;
-                        componentCharacter.Enabled = true;
-                        componentEnemy.Enabled = true;
-                        componentGuns.Enabled = true;
-                    }                   
+                    Exit();
                 }
-                //pause.CursorPosition();
+                pause.CursorPosition();
                 game.SplashDisplay();       //èištìní displeje
             }
             else if (game.EGameState == EGameState.InGameOut || game.EGameState == EGameState.InGameCar)
@@ -148,7 +129,7 @@ namespace GrandTheftAuto.GameFolder.Components
             game.spriteBatch.Begin();
             if (game.EGameState == EGameState.Pause)
             {
-                game.spriteBatch.Draw(game.spritPauseBackground,new Rectangle(0,0,game.graphics.PreferredBackBufferWidth,game.graphics.PreferredBackBufferHeight),Color.White*0.6f);
+                game.spriteBatch.Draw(game.spritPauseBackground, new Rectangle(0, 0, game.graphics.PreferredBackBufferWidth, game.graphics.PreferredBackBufferHeight), Color.White * 0.6f);
                 pause.Draw();
                 DrawOrder = 9;
                 game.spriteBatch.DrawString(game.normalFont, eGameStateBefore.ToString(), new Vector2(0, 0), Color.White);
@@ -156,6 +137,23 @@ namespace GrandTheftAuto.GameFolder.Components
             }
             game.spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        private void Exit()
+        {
+            if (eGameStateBefore == EGameState.InGameCar)
+            {
+                game.EGameState = EGameState.InGameCar;
+                componentCar.Enabled = true;
+            }
+            else if (eGameStateBefore == EGameState.InGameOut)
+            {
+                game.EGameState = EGameState.InGameOut;
+                componentCharacter.Enabled = true;
+            }
+            componentEnemy.Enabled = true;
+            componentGuns.Enabled = true;
+            game.ComponentEnable(componentInventory);
         }
     }
 }

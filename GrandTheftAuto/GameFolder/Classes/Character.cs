@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
-using GrandTheftAuto.MenuFolder;
-using GrandTheftAuto.MenuFolder.Classes;
-using GrandTheftAuto.MenuFolder.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GrandTheftAuto.GameFolder.Classes
 {
-    public class Character:Statistics
+    public class Character : Statistics
     {
         public bool Regeneration { get; set; }
         public int CurrentFrame { get; set; }
+        public bool IsGunInHand { get; set; }
         public float DefaultSpeed { get; private set; }
-
         public int Vitality { get; set; }       //životy
         public int Intelect { get; set; }       //energie
         public int Spirit { get; set; }     //vyčerpání energie
@@ -32,18 +29,17 @@ namespace GrandTheftAuto.GameFolder.Classes
         public List<Quest> QuestList { get; set; }
         public int QuestPoints { get; set; }
 
+        //konstanty, kterými se násobí staty
         private const int VITALITY = 10;
         private const int ENERGY = 5;
         private const int MINENERGYREGEN = 100;
-        private const double ENERGYREGENERATION = 5;
+        private const double ENERGYREGENERATION = 1;
         private const int MINHPREGEN = 5000;
         private const int MINSPEED = 1;
         private const double SPEED = 0.02;
         private const double HPREGENERATION = 20;
-        public Character(Vector2 position, Texture2D texture,int level = 0, bool alive = true, float angle = 0, int currentFrame = 0, bool regeneration = false)
+        public Character(Vector2 position, Texture2D texture, int level = 1, bool alive = true, float angle = 0, int currentFrame = 0, bool regeneration = false)
         {
-            Vitality = 9;
-            Intelect = 9;
             Position = position;
             Texture = texture;
             Alive = alive;
@@ -54,7 +50,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             SkillPoints = 0;
             ActualSkillLevel = 0;
             ActualExperiences = 0;
-            LevelUpExperience = 400;
+            LevelUpExperience = 200;
             EnemyKilled = null;
             QuestList = new List<Quest>();
             QuestPoints = 0;
@@ -62,27 +58,12 @@ namespace GrandTheftAuto.GameFolder.Classes
 
         public void UpdateRectangle()
         {
-            Rectangle = new Rectangle((int)Position.X-Texture.Width/2,(int)Position.Y-Texture.Height/2,Texture.Width,Texture.Height);
+            Rectangle = new Rectangle((int)Position.X - Texture.Width / 2, (int)Position.Y - Texture.Height / 2, Texture.Width, Texture.Height);
         }
-
-        public void LevelUp(int vitality, int intelect, int stamina, int spirit, int agility)
-        {
-            Vitality += vitality;
-            Intelect += intelect;
-            Stamina += stamina;
-            Spirit += spirit;
-            Agility += agility;
-        }
-
         public void UpdateStats()
         {
-            if (Hp == MaxHp)
-            {
-                Hp = Vitality * VITALITY;
-                MaxHp = Hp;
-            }
-            else
                 MaxHp = Vitality * VITALITY;
+            Hp = MaxHp;
             if (Energy == MaxEnergy)
             {
                 Energy = Intelect * ENERGY;
@@ -92,7 +73,7 @@ namespace GrandTheftAuto.GameFolder.Classes
                 MaxEnergy = Intelect * ENERGY;
             HpRegen = MINHPREGEN - Stamina * HPREGENERATION;
             EnergyRegen = MINENERGYREGEN - Spirit * ENERGYREGENERATION;
-            Speed = (float) (MINSPEED + Agility * SPEED);
+            Speed = (float)(MINSPEED + Agility * SPEED);
             DefaultSpeed = Speed;
         }
     }

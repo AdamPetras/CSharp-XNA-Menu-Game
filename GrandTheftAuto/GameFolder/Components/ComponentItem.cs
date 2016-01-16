@@ -9,11 +9,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GrandTheftAuto.GameFolder.Components
 {
-    public class ComponentItem:DrawableGameComponent
+    public class ComponentItem : DrawableGameComponent
     {
         private GameClass game;
         private Camera camera;
-        public ComponentItem(GameClass game,Camera camera) : base(game)
+        private double dropTimer;
+        public ComponentItem(GameClass game, Camera camera)
+            : base(game)
         {
             this.game = game;
             this.camera = camera;
@@ -21,12 +23,14 @@ namespace GrandTheftAuto.GameFolder.Components
 
         public override void Initialize()
         {
-            game.itemList.Add(new Item("Lol", "xD", new Vector2(-100, 0), game.spritCar, game.spritCar));
+            game.itemList.Add(new Item("Lol", "Epic", new Vector2(-100, 0), game.spritDroppedArmour[(int)EWearing.Helm], game.spritStarterArmour[(int)EWearing.Helm], EWearing.Helm, false, new Item.ItemStats(10, EWhichBonus.Vitality), new Item.ItemStats(5, EWhichBonus.Intelect)));
+            game.itemList.Add(new Item("Lol", "Epic", new Vector2(-100, 0), game.spritDroppedArmour[(int)EWearing.Helm], game.spritStarterArmour[(int)EWearing.Helm], EWearing.Helm, false, new Item.ItemStats(10, EWhichBonus.Vitality), new Item.ItemStats(5, EWhichBonus.Intelect)));
             base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
+            IsDropped(gameTime);
             base.Update(gameTime);
         }
 
@@ -40,6 +44,19 @@ namespace GrandTheftAuto.GameFolder.Components
             }
             game.spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        private void IsDropped(GameTime gameTime)
+        {
+            foreach (Item item in game.itemList.Where(s => s.Dropped))
+            {
+                dropTimer += gameTime.ElapsedGameTime.Milliseconds;
+                if (dropTimer >= 5000)
+                {
+                    item.Dropped = false;
+                    dropTimer = 0;
+                }
+            }
         }
     }
 }

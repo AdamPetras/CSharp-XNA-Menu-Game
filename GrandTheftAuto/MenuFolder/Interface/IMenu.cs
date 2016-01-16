@@ -15,9 +15,8 @@ namespace Menu.MenuFolder.Interface
         void Moving();
         void SetKeysUp(params Keys[] keys);
         void SetKeysDown(params Keys[] keys);
-        void UpdateItem(string text, int i, Vector2 position, SpriteFont font, bool centerText = true, string value = "", float rotation = 0f, int spaceBeforeValue = 0);
-        /*
+        bool CursorColision();
         void CursorPosition();
-        bool CursorColision();*/
+        void UpdateItem(string text, int i, Vector2 position, SpriteFont font, bool centerText = true, string value = "", float rotation = 0f, int spaceBeforeValue = 0);
     }
 }

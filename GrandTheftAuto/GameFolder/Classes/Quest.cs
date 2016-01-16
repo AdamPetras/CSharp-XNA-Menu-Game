@@ -39,11 +39,11 @@ namespace GrandTheftAuto.GameFolder.Classes
         public List<QuestMaster> SpeakWith { get; set; }
         public List<QuestMaster> SpeakedWith { get; set; }
         public Rectangle? PlaceToDo { get; private set; }
-
+        public Item ItemReward { get; private set; }
         private SpriteFont SpriteFont { get; set; }
 
         #region Delivery quest
-        public Quest(string name, string description, SpriteFont spriteFont, int reward, QuestMaster start, QuestMaster end, int id)
+        public Quest(string name, string description, SpriteFont spriteFont, int reward, QuestMaster start, QuestMaster end, int id,Item itemReward)
         {
             Name = name;
             SpriteFont = spriteFont;
@@ -56,11 +56,11 @@ namespace GrandTheftAuto.GameFolder.Classes
             End = end;
             ActualValue = 0;
             EQuestState = EQuestState.Inactive;
-
+            ItemReward = itemReward;
         }
         #endregion
         #region Kill quest
-        public Quest(string name, string description, SpriteFont spriteFont, int reward, int valueToSuccess, QuestMaster start, QuestMaster end, int id,Rectangle? placeToDo, params EEnemies[] eEnemies)
+        public Quest(string name, string description, SpriteFont spriteFont, int reward, int valueToSuccess, QuestMaster start, QuestMaster end, int id, Rectangle? placeToDo, Item itemReward, params EEnemies[] eEnemies)
         {
             EEnemies = new List<EEnemies>();
             Name = name;
@@ -77,10 +77,11 @@ namespace GrandTheftAuto.GameFolder.Classes
             PlaceToDo = placeToDo;
             EEnemies = eEnemies.ToList();
             EQuestState = EQuestState.Inactive;
+            ItemReward = itemReward;
         }
         #endregion
         #region Speaking quest
-        public Quest(string name, string description, SpriteFont spriteFont, int reward, QuestMaster start, QuestMaster end, int id, params QuestMaster[] speakWith)
+        public Quest(string name, string description, SpriteFont spriteFont, int reward, QuestMaster start, QuestMaster end, int id, Item itemReward, params QuestMaster[] speakWith)
         {
             SpeakWith = new List<QuestMaster>();
             SpeakedWith = new List<QuestMaster>();
@@ -96,7 +97,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             ActualValue = 0;
             SpeakWith = speakWith.ToList();
             EQuestState = EQuestState.Inactive;
-
+            ItemReward = itemReward;
         }
         #endregion
     }

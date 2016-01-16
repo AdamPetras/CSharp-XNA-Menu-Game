@@ -22,7 +22,8 @@ namespace GrandTheftAuto.GameFolder.Classes
         public int Score { get; set; }
 
         private GameClass game;
-        private EnemyAi enemyAi;
+        public EnemyAi enemyAi;
+        private DropOption dropOption;
         private double attackTimer;
         private double hitTimer;
         private Vector2 hitPosition;
@@ -43,6 +44,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             EnemyList = new List<Enemy>();
             DiedList = new List<DiedEnemy>();
             enemyAi = new EnemyAi(obstactleList);
+            dropOption = new DropOption(game);
             Score = 0;
             hitPosition = Vector2.Zero;
             enemyHitDamage = 0;
@@ -52,7 +54,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             eHit = EHit.None;
         }
 
-        private void AddEnemy(Vector2 position,Texture2D texture2d)
+        private void AddEnemy(Vector2 position, Texture2D texture2d)
         {
             Random rnd = new Random();
             string name = "";
@@ -66,7 +68,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             int rand = rnd.Next(10, 100);
             Texture2D texture = texture2d;
             EnemyOption enemyOption = new EnemyOption(game);
-            enemyOption.GetEnemy(ref name,rand, ref hp, ref damage, ref speed, ref texture, ref score, ref chanceToMiss, ref exp);
+            enemyOption.GetEnemy(ref name, rand, ref hp, ref damage, ref speed, ref texture, ref score, ref chanceToMiss, ref exp);
             EnemyList.Add(new Enemy(name, hp, damage, speed, texture, position, angle, score, chanceToMiss, exp));
         }
 
@@ -130,10 +132,9 @@ namespace GrandTheftAuto.GameFolder.Classes
                         if (EnemyList[i].Rectangle.Contains(bulletList[j].Position.X, bulletList[j].Position.Y))
                         {
                             EnemyList[i].IsAngry = true;
-                            bulletHitDamage = bulletList[j].Damage +
-                                              rnd.Next(-bulletList[j].DamageRange, bulletList[j].DamageRange);
+                            bulletHitDamage = bulletList[j].Damage;
                             EnemyList[i].Hp -= bulletHitDamage;
-                            cryticalHitDamage = bulletList[j].Damage + bulletList[j].DamageRange - 1;
+                            cryticalHitDamage = bulletList[j].MaxDamage;
                             HitMethod(camera, EnemyList[i].Position, EnemyList[i].Texture);
                             EnemyTarget = EnemyList[i];
                             bulletList.Remove(bulletList[j]);
@@ -141,6 +142,7 @@ namespace GrandTheftAuto.GameFolder.Classes
                     }
                     if (EnemyList[i].Hp <= 0)
                     {
+                        dropOption.SelectListOfItems(EnemyList[i], character);
                         OnEventEnemyDie(EnemyList[i], character);
                     }
                 }
@@ -170,7 +172,7 @@ namespace GrandTheftAuto.GameFolder.Classes
             {
                 Texture2D texture = game.spritCharacter[0];
                 Random rand = new Random();
-                AddEnemy(enemyAi.GeneratePosition(rand, characterRectangle,texture),texture);
+                AddEnemy(enemyAi.GeneratePosition(rand, characterRectangle, texture), texture);
             }
         }
 

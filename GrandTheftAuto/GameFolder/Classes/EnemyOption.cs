@@ -11,29 +11,30 @@ namespace GrandTheftAuto.GameFolder.Classes
         Damage,
         EliteTank,
         EliteDamage,
+        EliteUniversal,
         BossTank,
-        BossDamage,
+        BossDamage
     }
 
     public class EnemyOption
     {
         private GameClass game;
         private EEnemies eEnemies;
-        public int HowManyZombies; 
+        public int HowManyZombies;
         public EnemyOption(GameClass game)
         {
             this.game = game;
             HowManyZombies = 0;
         }
 
-        public void GetEnemy(ref string name,int generate, ref int hp, ref int damage, ref float speed, ref Texture2D texture, ref int score, ref double chanceToMiss, ref int exp,int i=0)
+        public void GetEnemy(ref string name, int generate, ref int hp, ref int damage, ref float speed, ref Texture2D texture, ref int score, ref double chanceToMiss, ref int exp, int i = 0)
         {
-            TypeOfEnemy(ref name,generate, ref hp, ref damage, ref speed, ref texture, ref score, ref chanceToMiss, ref exp, i);
+            TypeOfEnemy(ref name, generate, ref hp, ref damage, ref speed, ref texture, ref score, ref chanceToMiss, ref exp, i);
         }
 
-        private void TypeOfEnemy(ref string name,int generate, ref int hp, ref int damage, ref float speed, ref Texture2D texture, ref int score, ref double chanceToMiss, ref int exp,int i)
+        private void TypeOfEnemy(ref string name, int generate, ref int hp, ref int damage, ref float speed, ref Texture2D texture, ref int score, ref double chanceToMiss, ref int exp, int i)
         {
-            if (generate<= 100 &&generate>80)
+            if (generate <= 100 && generate > 80)
             {
                 HowManyZombies++;
                 eEnemies = EEnemies.Speed;
@@ -93,7 +94,19 @@ namespace GrandTheftAuto.GameFolder.Classes
                 score = 30;
                 exp = 140;
             }
-            else if (generate <= 20 && generate > 15)
+            else if (generate <= 20 && generate > 10)
+            {
+                HowManyZombies++;
+                eEnemies = EEnemies.EliteUniversal;
+                hp = 300;
+                damage = 45;
+                chanceToMiss = 9;
+                speed = 0.9f;
+                texture = game.spritEnemy[0];
+                score = 30;
+                exp = 140;
+            }
+            else if (generate <= 10 && generate > 5)
             {
                 HowManyZombies++;
                 eEnemies = EEnemies.BossTank;
@@ -105,7 +118,7 @@ namespace GrandTheftAuto.GameFolder.Classes
                 score = 100;
                 exp = 400;
             }
-            else if (generate <= 15 && generate > 10)
+            else if (generate <= 5 && generate > 0)
             {
                 HowManyZombies++;
                 eEnemies = EEnemies.BossDamage;

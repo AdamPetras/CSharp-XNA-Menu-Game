@@ -21,7 +21,7 @@ namespace GrandTheftAuto.GameFolder.Components
             this.game = game;
             this.camera = camera;
             dialogService = new DialogService(game);
-            dialogService.AddBackgroundDialog(new Vector2(0, 0),game.spritDialogBubble, game.smallFont,Color.White, "K U U UU U U U U U U U U U UUUUUU UUUUUUUUUUUU UUUUUUUUU UUUUUUUUU UUUUUUUUFFF FFFFFFFFF", 10);
+            dialogService.AddBackgroundDialog(new Vector2(0, 0),game.spritDialogBubble, game.smallFont,Color.White, "Dialog", 10);
         }
 
         public override void Initialize()

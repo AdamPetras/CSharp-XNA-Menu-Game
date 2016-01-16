@@ -3,6 +3,7 @@ using System.Linq;
 using GrandTheftAuto.GameFolder.Classes;
 using Menu.MenuFolder.Interface;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -16,7 +17,6 @@ namespace GrandTheftAuto.MenuFolder.Classes
         private Keys[] Up;
         private Keys[] Down;
         private int id;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -28,8 +28,9 @@ namespace GrandTheftAuto.MenuFolder.Classes
             id = 0;
         }
         public void AddItem(string text, Vector2 position, SpriteFont font, bool centerText = true, string value = "", float rotation = 0f, int spaceBeforeValue = 0, bool nonClick = false, Camera camera = null)
-        {         
-            Items item = new Items(text, new Vector2(position.X, position.Y + (font.MeasureString(text).Y * Items.Count)), font, rotation,id++, centerText, new Rectangle((int)position.X, (int)(position.Y + (font.MeasureString(text).Y * Items.Count)), (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value, nonClick, spaceBeforeValue, camera);
+        {
+            Vector2 origin = font.MeasureString(text) / 2;
+            Items item = new Items(text, new Vector2(position.X, position.Y + (font.MeasureString(text).Y * Items.Count)), font, rotation, id++, centerText, new Rectangle((int)(position.X - origin.X), (int)(position.Y - origin.Y + (font.MeasureString(text).Y * Items.Count)), (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value, nonClick, spaceBeforeValue, camera);
             if (!Items.Exists(s => s.Text == item.Text && s.Value == item.Value))
             {
                 Items.Add(item);
@@ -77,16 +78,24 @@ namespace GrandTheftAuto.MenuFolder.Classes
         /// </summary>
         private void Next()
         {
-            int index = Items.IndexOf(Selected);
-            Selected = index < Items.Count - 1 ? Items[index + 1] : Items[0];
+            if (Items.Count != 0)
+            {
+                int index = Items.IndexOf(Selected);
+                Selected = index < Items.Count - 1 ? Items[index + 1] : Items[0];
+                Game.menuSound.Play();
+            }
         }
         /// <summary>
         /// Method to set selected item - 1
         /// </summary>
         private void Before()
         {
-            int index = Items.IndexOf(Selected);
-            Selected = index > 0 ? Items[index - 1] : Items[Items.Count - 1];
+            if (Items.Count != 0)
+            {
+                int index = Items.IndexOf(Selected);
+                Selected = index > 0 ? Items[index - 1] : Items[Items.Count - 1];
+                Game.menuSound.Play();
+            }
         }
         /// <summary>
         /// Method to update item
@@ -96,12 +105,12 @@ namespace GrandTheftAuto.MenuFolder.Classes
         /// <param name="value"></param>
         public void UpdateItem(string text, int i, Vector2 position, SpriteFont font, bool centerText = true, string value = "", float rotation = 0f, int spaceBeforeValue = 0)
         {
-            Items item = new Items(text, new Vector2(position.X, position.Y + font.MeasureString(text).Y * i), font, rotation,i+1, centerText, new Rectangle((int)position.X, (int)position.Y, (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value, spaceBeforeValue: spaceBeforeValue);
+            Items item = new Items(text, new Vector2(position.X, position.Y + font.MeasureString(text).Y * i), font, rotation, i + 1, centerText, new Rectangle((int)position.X, (int)position.Y, (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y), value, spaceBeforeValue: spaceBeforeValue);
             Items.Insert(i, item);
             Items.RemoveAt(i + 1);
             Selected = item;
         }
-        /*
+
         /// <summary>
         /// Method to get if cursor has Colision
         /// </summary>
@@ -112,6 +121,8 @@ namespace GrandTheftAuto.MenuFolder.Classes
                 if (item.Rectangle.Contains(Game.mouseState.Position) && !item.NonClick)
                 {
                     CursorColision();
+                    if (item != Selected)   //pokud neni vybrám Item
+                        Game.menuSound.Play();
                     Selected = item;
                 }
             }
@@ -123,7 +134,7 @@ namespace GrandTheftAuto.MenuFolder.Classes
         public bool CursorColision()
         {
             return Items.Any(item => item.Rectangle.Contains(Game.mouseState.Position) && !item.NonClick);
-        }*/
+        }
 
         public void PositionIfCameraMoving(Vector2 offset)
         {

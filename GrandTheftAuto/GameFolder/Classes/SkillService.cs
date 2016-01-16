@@ -20,16 +20,16 @@ namespace GrandTheftAuto.GameFolder.Classes
     public class SkillService
     {
         private GameClass game;
-        public BonusOption BonusOption { get; private set; }
+        private BonusOption bonusOption;
         public List<Skill> ListOfSkills { get; private set; }
         private Character character;
 
-        public SkillService(GameClass game, Character character)
+        public SkillService(GameClass game, Character character,BonusOption bonusOption)
         {
             this.game = game;
             this.character = character;
             ListOfSkills = new List<Skill>();
-            BonusOption = new BonusOption();
+            this.bonusOption = bonusOption;
         }
 
         public void AddSkill(string name, string description, int level, bool procentual, int eSkill, double bonus, Texture2D texture)
@@ -52,7 +52,7 @@ namespace GrandTheftAuto.GameFolder.Classes
                     character.SkillPoints -= 1;
                     character.ActualSkillLevel += 1;
                     skill.Activated = true;
-                    TypeOfBonus(skill.ESkill, skill.Bonus, skill.Procentual);
+                    bonusOption.TypeOfBonus(skill.ESkill,skill.Bonus,skill.Procentual,character);
                 }
                 else if ((skill.Rectangle.Contains(game.mouseState.Position) &&
                           game.mouseState.LeftButton == ButtonState.Pressed) && (character.SkillPoints == 0 ||
@@ -70,16 +70,6 @@ namespace GrandTheftAuto.GameFolder.Classes
             {
                 skill.Activable = true;
             }
-        }
-
-        public void UpdateStatistics()
-        {
-            character.Vitality += (int)BonusOption.VitalityBonus;
-            character.Intelect += (int)BonusOption.IntelectBonus;
-            character.Stamina += (int)BonusOption.StaminaBonus;
-            character.Spirit += (int)BonusOption.SpiritBonus;
-            character.Agility += (int)BonusOption.AgilityBonus;
-            character.UpdateStats();
         }
 
         public Vector2 SkillPosition(Texture2D texture, int level)
@@ -102,38 +92,6 @@ namespace GrandTheftAuto.GameFolder.Classes
                         list[i].UpdateRectangle();  //update rectanglu
                     }
             }
-        }
-
-        private void TypeOfBonus(EWhichBonus eSkill, double bonus, bool procentual)
-        {
-            if (eSkill == EWhichBonus.Vitality)
-            {
-                BonusOption.VitalityBonus += Bonus(procentual, bonus, character.Vitality);
-            }
-            else if (eSkill == EWhichBonus.Agility)
-            {
-                BonusOption.AgilityBonus += Bonus(procentual, bonus, character.Agility);
-            }
-            else if (eSkill == EWhichBonus.Stamina)
-            {
-                BonusOption.StaminaBonus += Bonus(procentual, bonus, character.Stamina);
-            }
-            else if (eSkill == EWhichBonus.Spirit)
-            {
-                BonusOption.SpiritBonus += Bonus(procentual, bonus, character.Spirit);
-            }
-            else if (eSkill == EWhichBonus.Intelect)
-            {
-                BonusOption.IntelectBonus += Bonus(procentual, bonus, character.Intelect);
-            }
-            UpdateStatistics();
-        }
-
-        private double Bonus(bool procentual, double bonus, double actualValue)
-        {
-            if (!procentual)
-                return bonus;
-            return (int)(actualValue * bonus * 0.01);
         }
     }
 }

@@ -113,7 +113,7 @@ CurrentQuestMaster(character)
                                 quester.Position.Y)-origin,
                             Color.White);
                     }
-                    //pokud má npc nějaké questy, pokud je nějaký aktivovatelný a je hotov tak...
+                    //pokud má npc nějaké questy, pokud je nějaký aktivní a je hotov tak...
                     else if (quester.QuestList.Count > 0 &&
                         quester.QuestList.Any(s => s.Activable && s.EQuestState == EQuestState.Complete))
                     {
@@ -132,7 +132,7 @@ CurrentQuestMaster(character)
                                 quester.Position.Y)-origin,
                             Color.White);
                     }
-                    //pokud má npc nějaké questy, pokud je nějaký aktivovatelný a je aktivní tak...
+                    //pokud má npc nějaké questy, pokud je aktivní tak...
                     else if (quester.QuestList.Count > 0 &&
                              quester.QuestList.Any(s => s.Activable && s.EQuestState == EQuestState.Active))
                     {

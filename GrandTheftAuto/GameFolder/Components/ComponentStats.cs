@@ -38,20 +38,20 @@ namespace GrandTheftAuto.GameFolder.Components
             {
                 game.EGameState = EGameState.Pause;
                 game.ComponentEnable(this, false);
-                characterService.IsStatsRunning = false;
+                characterService.IsStatsRunning = false;    //nastavení pomocné proměnné
             }
             if (game.SingleClick(game.controlsList[(int)EKeys.C].Key,false) && statsService != null && skillView == null) //vypnutí statů
             {
-                characterService.IsStatsRunning = false;
+                characterService.IsStatsRunning = false;    //nastavení pomocné proměnné
                 game.ComponentEnable(this, false);
+                game.FXCloseSound.Play();
             }
             else if (game.SingleClick(game.controlsList[(int)EKeys.T].Key,false) && skillView != null) //vypnutí talentu
             {
-                characterService.IsStatsRunning = false;
+                characterService.IsStatsRunning = false;    //nastavení pomocné proměnné
                 game.ComponentEnable(this, false);
+                game.FXCloseSound.Play();
             }
-            if (skillView != null)
-                skillView.Update();
             base.Update(gameTime);
         }
 
@@ -59,8 +59,11 @@ namespace GrandTheftAuto.GameFolder.Components
         {
             game.spriteBatch.Begin();
             DrawOrder = 5;
-            if (statsService != null && skillView == null)
+            if (statsService != null && skillView == null)  //Otevření statistik
             {
+                if (!characterService.IsStatsRunning)
+                    game.FXOpenSound.Play();
+                characterService.IsStatsRunning = true;
                 string text = "Level:" + characterService.Character.Level + "\n" +
                               "Vitality:" + characterService.Character.Vitality + "      Health:" + characterService.Character.Hp +
                               "\n" +
@@ -79,9 +82,13 @@ namespace GrandTheftAuto.GameFolder.Components
                     new Vector2(game.graphics.PreferredBackBufferWidth / 2 - game.smallFont.MeasureString(text).X / 2,
                         game.graphics.PreferredBackBufferHeight / 2 - game.smallFont.MeasureString(text).Y / 2), Color.Red);
             }
-            if (skillView != null)
+            if (skillView != null)  //otevření tabulky skillu
             {
-                skillView.DrawSkillTable();
+                if (!characterService.IsStatsRunning)
+                    game.FXOpenSound.Play();
+                characterService.IsStatsRunning = true;
+                skillView.DrawSkillTable();     //vykreslení tabulky skillů
+                skillView.Update();             //updatování skillview
                 game.spriteBatch.Draw(game.cursor, game.mouseState.Position.ToVector2(), Color.White);
             }
             game.spriteBatch.End();

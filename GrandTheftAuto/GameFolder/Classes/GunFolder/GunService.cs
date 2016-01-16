@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using GrandTheftAuto.MenuFolder;
 using GrandTheftAuto.MenuFolder.Classes;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -19,9 +21,8 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
         private float shotTimer;                //timer pro střílení 
         private float reloadTimer;              //timer pro nabíjení
         private double spawnTimer;              //timer pro objevení zbraně
-        private const int reloading = 2000;     //konstanta pro určení doby nabíjení
+        private const int reloading = 1500;     //konstanta pro určení doby nabíjení
         private Character character;
-
         public delegate void ChangeGunHandle();
         public event ChangeGunHandle EventChangeGun;
         /// <summary>
@@ -63,9 +64,12 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
                 }
                 if (game.EGameState == EGameState.Reloading)
                 {
+                    SelectedGun.GunReloadEffect.IsLooped = true;
+                    SelectedGun.GunReloadEffect.Play();
                     reloadTimer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                    if (reloadTimer > reloading)
+                    if (reloadTimer > SelectedGun.TimeToReload)
                     {
+                        SelectedGun.GunReloadEffect.Stop();
                         game.EGameState = EGameState.InGameOut;
                         reloadTimer = 0;
                     }
@@ -78,7 +82,7 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
             if (20000 < spawnTimer)
             {
                 Random rand = new Random();
-                game.gunsOptions.AddGun(GeneratePosition(rand, graphicsRectangles), rand.Next(0, Enum.GetNames(typeof(EGuns)).Length));
+                game.gunsOptions.AddGun(GeneratePosition(rand, graphicsRectangles), rand.Next(1, Enum.GetNames(typeof(EGuns)).Length)); //od jedničky kvůli tomu, že jednička jsou ruce
                 spawnTimer = 0;
             }
         }
@@ -98,11 +102,14 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
                 shotTimer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (SelectedGun.FireRate < shotTimer)
                 {
+                    SelectedGun.GunShotEffect.Play();
                     SelectedGun.Magazine--;
                     double d = 20;
+                    Random rnd = new Random();
+                    SelectedGun.Damage = rnd.Next(SelectedGun.MinDamage, SelectedGun.MaxDamage + 1);
                     Bullet bullet =
                         new Bullet(game.CalculatePosition(character.Position, character.Angle + 1f, ref d),
-                        game.spritBullet, character.Angle, SelectedGun.Damage, SelectedGun.FireRange,SelectedGun.DamageRange);
+                        game.spritBullet, character.Angle, SelectedGun.Damage, SelectedGun.FireRange, SelectedGun.MaxDamage, SelectedGun.MinDamage);
                     BulletList.Add(bullet);
                     shotTimer = 0;
                 }
@@ -117,7 +124,7 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
                 {
                     if (BulletList[i].BulletRange())    // pokud neni kulka na konci dostřelu tak letí
                     {
-                        double bulletSpeed = 10;
+                        double bulletSpeed = 20;
                         BulletList[i].FireRange += (int)bulletSpeed;
                         BulletList[i].Position = game.CalculatePosition(BulletList[i].Position, BulletList[i].Angle, ref bulletSpeed);
                     }
@@ -129,6 +136,7 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
 
         public void SelectGun()
         {
+            character.IsGunInHand = SelectedGun != null;
             if (game.EGameState != EGameState.Reloading && character.Alive)
             {
                 OnEventChangeGun();
@@ -177,7 +185,7 @@ namespace GrandTheftAuto.GameFolder.Classes.GunFolder
             }
         }
 
-        protected virtual void OnEventChangeGun()       
+        protected virtual void OnEventChangeGun()
         {
             if (EventChangeGun != null) EventChangeGun();
         }
